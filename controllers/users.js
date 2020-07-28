@@ -67,9 +67,14 @@ const changeAvatar = async (req, res, next) => {
   }
 };
 
+const socialLogin = async (req,res,next) => {
+  
+}
+
 module.exports = {
   register,
   login,
   getUser,
-  changeAvatar
+  changeAvatar,
+  socialLogin
 };

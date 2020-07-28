@@ -9,29 +9,31 @@ const getAllBooks = async (req, res, next) => {
   }
 };
 
-const create = async (req, res, next) => {
-  const { title, authors, status, bookId } = req.body;
-  const book = new Book({
-    title,
-    authors,
-    status,
-    bookId,
-    reader: req.user._id
-  });
+const createOrUpdate = async (req, res, next) => {
   try {
-    await book.save();
+    const book = await Book.findOneAndUpdate(
+      { bookId: req.body.bookId },
+      { ...req.body, reader: req.user._id },
+      { upsert: true, new: true }
+    );
     res.json({ book });
   } catch (error) {
     next(error);
   }
 };
 
-const update = async (req, res, next) => {
+const checkBook = async (req, res, next) => {
+  console.log(req.params.id);
   try {
-    const book = await Book.findOne({ _id: req.params.id });
-    book.status = req.body.status;
-    await book.save();
-    res.json(book);
+    const book = await Book.findOne({
+      bookId: req.params.id,
+      reader: req.user._id,
+    });
+    if (book) {
+      res.json({ bookStatus: book.status });
+    } else {
+      res.json({ bookStatus: null });
+    }
   } catch (error) {
     next(error);
   }
@@ -39,7 +41,7 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    await Book.findOneAndDelete({ _id: req.params.id });
+    await Book.findOneAndDelete({ bookId: req.params.id });
     res.json({ ok: true });
   } catch (error) {
     next(error);
@@ -48,7 +50,7 @@ const remove = async (req, res, next) => {
 
 module.exports = {
   getAllBooks,
-  create,
-  update,
-  remove
+  createOrUpdate,
+  checkBook,
+  remove,
 };

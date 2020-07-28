@@ -9,13 +9,14 @@ const {
   register,
   login,
   getUser,
-  changeAvatar
+  changeAvatar,
+  socialLogin,
 } = require("../controllers/users");
 
 const userExist = async (req, res, next) => {
   try {
     const count = await User.count({
-      email: req.body.email
+      email: req.body.email,
     });
     if (count > 0) {
       throw new Error("Email is already taken");
@@ -30,6 +31,8 @@ const userExist = async (req, res, next) => {
 router.post("/register", upload.single("avatar"), userExist, register);
 
 router.post("/login", login);
+
+router.post("/social-login", socialLogin);
 
 router.get(
   "/users/profile",
