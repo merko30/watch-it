@@ -11,15 +11,26 @@ const {
   getUser,
   changeAvatar,
   socialLogin,
+  sendResetPasswordMail,
+  resetPassword,
+  verifyResetCode,
+  updateUser,
+  updatePassword,
 } = require("../controllers/users");
 
 const userExist = async (req, res, next) => {
+  const { username, email } = req.body;
   try {
-    const count = await User.count({
-      email: req.body.email,
+    const count = await User.countDocuments({
+      email,
     });
-    if (count > 0) {
+    const countByUsername = await User.countDocuments({
+      username,
+    });
+    if (count) {
       throw new Error("Email is already taken");
+    } else if (countByUsername) {
+      throw new Error("Username is already taken");
     } else {
       next();
     }
@@ -28,22 +39,38 @@ const userExist = async (req, res, next) => {
   }
 };
 
-router.post("/register", upload.single("avatar"), userExist, register);
+router.post("/register", userExist, register);
 
 router.post("/login", login);
 
-router.post("/social-login", socialLogin);
+router.post("/forgot", sendResetPasswordMail);
 
-router.get(
-  "/users/profile",
+router.put("/verify/:code", verifyResetCode);
+
+router.put("/reset", resetPassword);
+
+router.put("/email", userExist, updateUser);
+
+router.put(
+  "/password",
   passport.authenticate("jwt", { session: false }),
-  getUser
+  updatePassword
 );
 
-router.patch(
-  "/users/avatar",
-  upload.single("avatar"),
+// router.post("/social-login", socialLogin);
+
+router.get("/user", passport.authenticate("jwt", { session: false }), getUser);
+
+router.put(
+  "/user",
   passport.authenticate("jwt", { session: false }),
+  updateUser
+);
+
+router.put(
+  "/avatar",
+  passport.authenticate("jwt", { session: false }),
+  upload.single("avatar"),
   changeAvatar
 );
 

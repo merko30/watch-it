@@ -1,5 +1,3 @@
 <resources>
-    <string name="app_name">app</string>
-    <string name="facebook_app_id">177349846841370</string>
-
+    <string name="app_name">client</string>
 </resources>

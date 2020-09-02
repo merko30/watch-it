@@ -1,8 +1,12 @@
 const Book = require("../models/book");
 
 const getAllBooks = async (req, res, next) => {
+  let query = { reader: req.user._id };
+
+  query = { ...query, ...req.query };
+
   try {
-    const books = await Book.find({ reader: req.user._id });
+    const books = await Book.find(query);
     res.json({ books });
   } catch (error) {
     next(error);
@@ -23,7 +27,6 @@ const createOrUpdate = async (req, res, next) => {
 };
 
 const checkBook = async (req, res, next) => {
-  console.log(req.params.id);
   try {
     const book = await Book.findOne({
       bookId: req.params.id,

@@ -1,0 +1,101 @@
+import React, {useState} from 'react';
+import {Formik} from 'formik';
+import {View, ActivityIndicator} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {useTheme} from '@shopify/restyle';
+import * as Yup from 'yup';
+
+import {Message, TextField, Button, AuthHeader} from '../components';
+
+import {RootState} from '../store/reducers';
+import {sendResetPasswordMail} from '../store/reducers/auth';
+
+import {Theme} from '../theme';
+import Code from '../components/Code';
+import {useCode} from 'react-native-reanimated';
+
+const forgotPasswordSchema = Yup.object().shape({
+  email: Yup.string().required('This field is required').email('Invalid email'),
+});
+
+interface ForgotPasswordProps {}
+
+const ForgotPassword = (props: ForgotPasswordProps) => {
+  const [code, setCode] = useState('');
+
+  const dispatch = useDispatch();
+  const {colors, spacing, fontSizes} = useTheme<Theme>();
+
+  const {loading, error, message} = useSelector(
+    (state: RootState) => state.auth,
+  );
+
+  const onSubmit = (email: string) => {
+    dispatch(sendResetPasswordMail(email));
+  };
+
+  return (
+    <View
+      style={{
+        flex: 1,
+        paddingHorizontal: spacing.l,
+      }}>
+      <AuthHeader
+        back
+        title="Forgot your password"
+        text="We're here to help you"
+      />
+
+      <Formik
+        initialValues={{email: ''}}
+        validationSchema={forgotPasswordSchema}
+        onSubmit={(values) => onSubmit(values.email)}>
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          touched,
+          errors,
+          values,
+        }) => {
+          return (
+            <View style={{flex: 1.4}}>
+              {!loading ? (
+                <>
+                  {error && <Message variant="negative" message={error} />}
+                  {message && <Message variant="positive" message={message} />}
+
+                  <TextField
+                    autoCapitalize="none"
+                    onChangeText={handleChange('email')}
+                    onBlur={handleBlur('email')}
+                    error={errors['email']}
+                    touched={touched['email']}
+                    value={values.email}
+                    label="Email"
+                  />
+
+                  <Button
+                    color={colors.primary}
+                    onPress={handleSubmit}
+                    label="Reset password"
+                    textStyle={{
+                      fontWeight: '700',
+                      fontSize: fontSizes.textSm,
+                      textTransform: 'uppercase',
+                    }}
+                    containerStyle={{marginTop: 40, paddingVertical: 12}}
+                  />
+                </>
+              ) : (
+                <ActivityIndicator size="large" />
+              )}
+            </View>
+          );
+        }}
+      </Formik>
+    </View>
+  );
+};
+
+export default ForgotPassword;

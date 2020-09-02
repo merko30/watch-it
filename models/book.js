@@ -6,11 +6,12 @@ var bookSchema = new schema({
   authors: [String],
   status: {
     type: String,
-    enum: ["wishlist", "reading", "read"]
+    enum: ["wishlist", "reading", "read"],
   },
   bookId: String,
   // bookId is id from Google books API
-  reader: String
+  reader: String,
+  thumbnail: String,
 });
 
 module.exports = mongoose.model("Book", bookSchema);

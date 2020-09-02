@@ -1,20 +1,19 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const transporter = require("../config/nodemailer");
+
 const User = require("../models/user");
+const { findByIdAndUpdate } = require("../models/user");
+
+const generateSixDigitNumber = () => {
+  let number = Math.floor(Math.pow(10, 6) * Math.random());
+
+  return number.toString().length < 6 ? generateSixDigitNumber() : number;
+};
 
 const register = async (req, res, next) => {
-  const { name, email, password } = req.body;
-
-  let user = new User({
-    name,
-    email,
-    password
-  });
-
-  if (req.file) {
-    user.avatar = req.file.filename;
-  }
+  let user = new User(req.body);
 
   try {
     await user.save();
@@ -26,15 +25,18 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const { emailOrUsername, password } = req.body;
+    const user = await User.findOne({
+      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+    });
     if (user) {
-      const match = await bcrypt.compare(req.body.password, user.password);
+      const match = await bcrypt.compare(password, user.password);
       if (!match) {
         throw new Error("Wrong password");
       } else {
         const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
         res.json({
-          token
+          token,
         });
       }
     } else {
@@ -54,6 +56,15 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const updateUser = async (req, res, next) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.user._id, req.body);
+    res.json({ user, message: "Your profile has been updated" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const changeAvatar = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.user._id }, { password: 0 });
@@ -61,20 +72,110 @@ const changeAvatar = async (req, res, next) => {
       user.avatar = req.file.filename;
     }
     await user.save();
-    res.json({ user });
+    res.json({
+      avatar: req.file.filename,
+      message: "Your avatar has been updated",
+    });
   } catch (error) {
     next(error);
   }
 };
 
-const socialLogin = async (req,res,next) => {
-  
-}
+const sendResetPasswordMail = async (req, res, next) => {
+  const { email } = req.body;
+
+  var mailOptions = (token) => ({
+    from: "Booker",
+    to: req.body.email,
+    subject: "Reset your password",
+    text: "Here is a link to reset your password",
+    html: `<div style="text-align:center;">
+    <h1 style="font-family:'Tahoma', sans-serif;">Here is your code</h1>
+  <div style='display:inline-block;background-color:lightgray;padding:10px;'>
+    <h1 style="padding:10px;background-color:white;font-family:'Tahoma',sans-serif;">${token}</h1>
+  </div>
+    </div>`,
+  });
+
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const token = generateSixDigitNumber();
+      await transporter.sendMail(mailOptions(token));
+      user.resetPasswordToken = token;
+      await user.save();
+      res.json({ email, message: "The mail has been sent. Check your inbox!" });
+    } else {
+      throw new Error("User not found");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const verifyResetCode = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    if (user.resetPasswordToken !== req.params.code) {
+      throw new Error("Wrong code or it's expired.");
+    }
+
+    user.resetPasswordToken = null;
+
+    await user.save();
+
+    res.json({ message: "Well done. Set your new password" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+
+    user.password = req.body.password;
+
+    await user.save();
+
+    res.json({ message: "Your password has been updated" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updatePassword = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    const validPassword = bcrypt.compareSync(req.body.password, user.password);
+
+    if (validPassword) {
+      user.password = req.body.newPassword;
+
+      await user.save();
+
+      res.json({ user, message: "Your account has been updated" });
+    } else {
+      throw new Error("Wrong old password");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const socialLogin = async (req, res, next) => {};
 
 module.exports = {
   register,
   login,
   getUser,
   changeAvatar,
-  socialLogin
+  socialLogin,
+  sendResetPasswordMail,
+  resetPassword,
+  verifyResetCode,
+  updateUser,
+  updatePassword,
 };
