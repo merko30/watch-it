@@ -13,4 +13,4 @@ In order to run the application, you need to do few things:
     * SMTP_PORT=port
     * GOOGLE_BOOKS_API_KEY=key
     * GOOGLE_BOOKS_API_BASE_URL=https://www.googleapis.com/books/v1/volumes
-* Add your API endpoint in client/config/axios.ts - you'll get the IP address on server start, add the port, eg. 192.168.1.8:5000/api 
+* Add your API endpoint in client/config/axios.ts - you'll get the IP address on server start, add the port, eg. http://192.168.1.8:5000/api 
