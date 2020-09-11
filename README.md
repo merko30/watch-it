@@ -18,4 +18,4 @@ In order to run the application, you need to do few things:
 * `pod install` in ios folder - for iOS
 
 
-**Note: I'm not sure about application on Android devices, I'm going to go through eventual bugs later.
+**Note: I'm not sure about application on Android devices, I'm going to go through eventual bugs later.**
