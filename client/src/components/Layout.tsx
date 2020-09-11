@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, SafeAreaView} from 'react-native';
+import {Text, SafeAreaView} from 'react-native';
 import {useTheme} from '@shopify/restyle';
 
 import {Theme} from '../theme';
@@ -13,10 +13,14 @@ const Layout = ({title, children}: LayoutProps) => {
   const {spacing, fontSizes, colors} = useTheme<Theme>();
   return (
     <SafeAreaView
-      style={{flex: 1, paddingHorizontal: spacing.m, backgroundColor: 'white'}}>
+      style={{
+        flex: 1,
+        paddingHorizontal: spacing.m,
+        backgroundColor: colors.background,
+      }}>
       <Text
         style={{
-          fontSize: fontSizes.titleLg,
+          fontSize: fontSizes.titleXl,
           fontWeight: 'bold',
           color: colors.dark,
           paddingVertical: spacing.m,

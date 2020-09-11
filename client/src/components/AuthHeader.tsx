@@ -1,30 +1,22 @@
 import React from 'react';
-import {View, StyleSheet, Text} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
 import BackIcon from './BackIcon';
 
-import theme from '../theme';
+import theme, {Text} from '../theme';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
   },
-  title: {
-    fontWeight: '600',
-    fontSize: theme.fontSizes.titleLg,
-  },
-  text: {
-    fontSize: theme.fontSizes.textLg,
-    color: theme.colors.primary,
-  },
   icon: {
     marginBottom: 10,
     backgroundColor: 'rgba(255,255,255,0.9)',
     justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 25,
+    borderRadius: theme.borderRadii.xl,
     width: 50,
     height: 50,
     ...theme.shadows.medium,
@@ -48,8 +40,12 @@ const AuthHeader = ({title, text, back}: AuthHeaderProps) => {
           onPress={() => goBack()}
         />
       )}
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.text}>{text}</Text>
+      <Text variant="header" color="foreground">
+        {title}
+      </Text>
+      <Text variant="body" color="secondary">
+        {text}
+      </Text>
     </View>
   );
 };

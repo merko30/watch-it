@@ -10,7 +10,6 @@ import {
   StyleProp,
   ViewStyle,
   Platform,
-  processColor,
 } from 'react-native';
 import Animated, {
   useValue,
@@ -18,14 +17,8 @@ import Animated, {
   cond,
   eq,
   set,
-  concat,
 } from 'react-native-reanimated';
-import {
-  timing,
-  useClock,
-  interpolateColor,
-  mixColor,
-} from 'react-native-redash';
+import {timing, useClock} from 'react-native-redash';
 import {useTheme} from '@shopify/restyle';
 
 import theme, {Theme} from '../theme';
@@ -48,7 +41,7 @@ const styles = StyleSheet.create({
   textarea: {
     borderWidth: 1,
     borderColor: theme.colors.lightGray,
-    borderRadius: 5,
+    borderRadius: theme.borderRadii.s,
     paddingLeft: 5,
   },
 });
@@ -72,14 +65,14 @@ const TextField = ({
   animateLabel = true,
   ...props
 }: TextFieldProps) => {
-  const {colors} = useTheme<Theme>();
+  const {colors, fontSizes} = useTheme<Theme>();
   const ref = useRef<TextInput>(null);
   const TRANSLATE = MARGIN_VERTICAL + PADDING_VERTICAL + LINE_HEIGHT;
   const focused = useValue<0 | 1>(0);
   const translateY = useValue(TRANSLATE);
   const clock = useClock();
   const isTextArea = props.multiline;
-  const color = mixColor(focused, 'rgb(0,0,0)', 'rgb(0,0,0)', 'rgb');
+  // const color = mixColor(focused, 'rgb(0,0,0)', 'rgb(0,0,0)', 'rgb');
 
   // const fontWeight = mix(focused, 400, 600);
 
@@ -111,8 +104,6 @@ const TextField = ({
     }
   };
 
-  console.log({touched});
-
   return (
     <View style={containerStyle}>
       {label && (
@@ -121,6 +112,7 @@ const TextField = ({
             styles.labelStyle,
             {
               transform: [{translateY: animateLabel ? translateY : 0}],
+              color: colors.foreground,
             },
             labelStyle,
           ]}>
@@ -131,11 +123,13 @@ const TextField = ({
         {...props}
         numberOfLines={Platform.OS === 'ios' ? undefined : numberOfLines}
         ref={ref}
-        placeholderTextColor={colors.gray}
+        placeholderTextColor={colors.foreground}
         style={[
           props.style,
           styles.input,
+
           {
+            color: colors.foreground,
             minHeight:
               Platform.OS === 'ios' && numberOfLines
                 ? LINE_HEIGHT * numberOfLines
@@ -147,7 +141,12 @@ const TextField = ({
         onBlur={onBlur}
       />
       {touched && error && (
-        <Text style={{fontSize: 12, marginTop: 10, color: '#FF0D10'}}>
+        <Text
+          style={{
+            fontSize: fontSizes.small,
+            marginTop: 10,
+            color: colors.negative,
+          }}>
           {error}
         </Text>
       )}

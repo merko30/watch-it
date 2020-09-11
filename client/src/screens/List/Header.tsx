@@ -4,6 +4,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useNavigation} from '@react-navigation/native';
 
 import BackIcon from '../../components/BackIcon';
+import theme from 'src/theme';
 
 const styles = StyleSheet.create({
   container: {
@@ -14,7 +15,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   title: {
-    fontSize: 24,
+    fontSize: theme.fontSizes.textLg,
     flex: 1,
     textAlign: 'center',
   },

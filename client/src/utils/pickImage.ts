@@ -19,18 +19,24 @@ const pickImage = (title: string, callback: (options: Options) => void) => {
   return ImagePicker.showImagePicker(
     options,
     (response: ImagePickerResponse) => {
-      let path = response.uri;
-      if (Platform.OS === 'ios') {
-        path = '~' + path.substring(path.indexOf('/Documents'));
-      }
-      if (!response.fileName) response.fileName = path.split('/').pop();
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else {
+        let path = response.uri;
+        if (Platform.OS === 'ios') {
+          path = '~' + path.substring(path.indexOf('/Documents'));
+        }
+        if (!response.fileName) response.fileName = path.split('/').pop();
 
-      if (response) {
-        callback({
-          uri: response.uri,
-          type: response.type,
-          name: response.fileName,
-        });
+        if (response) {
+          callback({
+            uri: response.uri,
+            type: response.type,
+            name: response.fileName,
+          });
+        }
       }
     },
   );

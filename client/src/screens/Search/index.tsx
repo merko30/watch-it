@@ -1,46 +1,41 @@
-import React, {useEffect} from 'react';
-import {View, SafeAreaView, StatusBar} from 'react-native';
+import React from 'react';
+import {SafeAreaView, ActivityIndicator} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from '@shopify/restyle';
 
-import Loading from '../../components/Loading';
 import BookList from './components/BookList';
 import SearchBar from './components/SearchBar';
 
 import {search} from '../../store/reducers/books';
 import {RootState} from '../../store/reducers';
-import {Theme} from '../../theme';
+
+import {Theme, Box} from '../../theme';
 
 const Search = () => {
   const {colors} = useTheme<Theme>();
   const dispatch = useDispatch();
-  const {books, loading} = useSelector(
-    ({books: {searchResults, loading}}: RootState) => ({
-      books: searchResults,
-      loading,
-    }),
+  const {searchResults: books, loadings} = useSelector(
+    (state: RootState) => state.books,
   );
-
-  // useEffect(() => {}, [books]);
 
   const onSearch = (term: string) => {
     dispatch(search(term));
   };
 
   return (
-    <>
-      <View
-        style={{
-          height: 48,
-          backgroundColor: colors.secondary,
-        }}
-      />
-      <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-        <SearchBar onSearch={onSearch} />
-        <Loading show={loading} />
-        {books && <BookList books={books} />}
-      </SafeAreaView>
-    </>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: colors.background,
+      }}>
+      <SearchBar onSearch={onSearch} />
+      <Box flex={1} justifyContent="center">
+        {loadings.status && (
+          <ActivityIndicator size="large" color={colors.foreground} />
+        )}
+        {books && !loadings.status && <BookList books={books} />}
+      </Box>
+    </SafeAreaView>
   );
 };
 

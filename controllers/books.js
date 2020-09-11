@@ -1,3 +1,5 @@
+const fetch = require("node-fetch");
+
 const Book = require("../models/book");
 
 const getAllBooks = async (req, res, next) => {
@@ -51,9 +53,43 @@ const remove = async (req, res, next) => {
   }
 };
 
+const getSingleBook = async (req, res, next) => {
+  try {
+    const book = await (
+      await fetch(
+        `${process.env.GOOGLE_BOOKS_API_BASE_URL}/${req.params.id}?key=${process.env.GOOGLE_BOOKS_API_KEY}`,
+        { method: "GET" }
+      )
+    ).json();
+    res.json({ book });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const search = async (req, res, next) => {
+  try {
+    const response = await fetch(
+      `${process.env.GOOGLE_BOOKS_API_BASE_URL}?key=${process.env.GOOGLE_BOOKS_API_KEY}&projection=full&q=${req.params.term}`,
+      { method: "GET" }
+    );
+
+    if (response.status === 200) {
+      const books = await response.json();
+      res.json({ books });
+    } else {
+      throw new Error("Something went wrong");
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getAllBooks,
   createOrUpdate,
   checkBook,
   remove,
+  search,
+  getSingleBook,
 };

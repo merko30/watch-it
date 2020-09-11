@@ -1,14 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  Text,
-  ScrollView,
-  SafeAreaView,
-} from 'react-native';
+import React, {useState, useCallback} from 'react';
+import {StyleSheet, View, ScrollView, SafeAreaView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {useTheme} from '@shopify/restyle';
 import {State, TapGestureHandler} from 'react-native-gesture-handler';
 import Animated, {
   useCode,
@@ -25,21 +17,25 @@ import {
   withTransition,
   onScrollEvent,
 } from 'react-native-redash';
+import useDeepCompareEffect from 'use-deep-compare-effect';
+import {useFocusEffect} from '@react-navigation/native';
+import {useTheme} from '@shopify/restyle';
 
-import {deleteBook, getBooks} from '../../store/reducers/books';
+import {getBooks} from '../../store/reducers/books';
+import {RootState} from 'src/store/reducers';
 
 import Bookshelf from './components/Bookshelf';
-import {RootState} from 'src/store/reducers';
+
+import theme, {Theme, Text, Box} from '../../theme';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
     padding: 20,
   },
   scene: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
   },
   row: {
     marginVertical: 10,
@@ -48,22 +44,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: theme.fontSizes.textLg,
     textTransform: 'uppercase',
   },
-  showAll: {backgroundColor: 'rgba(0,0,0,0.2)', padding: 5, borderRadius: 5},
+  showAll: {
+    padding: 5,
+    borderRadius: theme.borderRadii.s,
+  },
 });
 
 const SHELVES = [
   {
     name: 'wishlist',
     title: 'Wishlist',
-    backgroundColor: 'gold',
+    backgroundColor: 'orange',
   },
   {
     name: 'reading',
     title: 'Reading',
-    backgroundColor: 'orange',
+    backgroundColor: 'chocolate',
   },
   {
     name: 'read',
@@ -74,19 +73,19 @@ const SHELVES = [
 
 const Home = () => {
   const [shelves] = useState(SHELVES);
+  const {colors} = useTheme<Theme>();
   const [text, setText] = useState('Show all');
   const dispatch = useDispatch();
 
-  const {books, loading} = useSelector(
-    ({books: {loading, books}}: RootState) => ({
-      books,
-      loading,
-    }),
+  const {books} = useSelector((state: RootState) => state.books);
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getBooks({}));
+    }, []),
   );
 
-  useEffect(() => {
-    dispatch(getBooks({}));
-  }, []);
+  useDeepCompareEffect(() => {}, [books]);
 
   const showAll = useValue<0 | 1>(0);
   const state = useValue(State.UNDETERMINED);
@@ -115,17 +114,23 @@ const Home = () => {
   );
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={{flex: 1}}
         showsVerticalScrollIndicator={false}
         bounces={false}>
         <View style={styles.row}>
-          <Text style={styles.title}>Your bookshelves</Text>
+          <Text color="foreground" variant="body" style={styles.title}>
+            Your bookshelves
+          </Text>
           <TapGestureHandler {...gestureHandler}>
-            <Animated.View style={styles.showAll}>
-              <Text>{text}</Text>
+            <Animated.View>
+              <Box backgroundColor="lightGray" padding="s" borderRadius="s">
+                <Text color="gray" variant="body">
+                  {text}
+                </Text>
+              </Box>
             </Animated.View>
           </TapGestureHandler>
         </View>
@@ -134,6 +139,7 @@ const Home = () => {
           style={{
             marginTop,
           }}
+          scrollEventThrottle={16}
           onScroll={onScrollEvent({y})}>
           {shelves.map((shelf, i) => {
             const last = i === shelves.length - 1;

@@ -1,5 +1,11 @@
 export type BookStatus = 'wishlist' | 'reading' | 'read';
 
+export enum Loading {
+  COMMON = 'common',
+  STATUS = 'status',
+  DELETE = 'delete',
+}
+
 export interface Book {
   _id: string;
   bookId: string;
@@ -16,11 +22,18 @@ export interface GoogleBook {
     title: string;
     categories: string[];
     imageLinks: {
-      thumbnail?: string;
-      smallThumbnail?: string;
+      smallThumbnail: string;
+      thumbnail: string;
+      small: string;
+      medium: string;
+      large: string;
+      extraLarge: string;
     };
     authors: string[];
-    description: string[];
-    averageRating: number;
+    description: string;
+    averageRating?: number;
+    pageCount: number;
+    mainCategory?: string;
+    ratingsCount?: number;
   };
 }

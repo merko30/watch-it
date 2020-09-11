@@ -1,9 +1,8 @@
 import React from 'react';
-import {View, Button, ActivityIndicator} from 'react-native';
+import {View, ActivityIndicator} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
-import {useTheme} from '@shopify/restyle';
 
-import {AuthHeader, Message} from '../components';
+import {Message, AuthLayout} from '../components';
 import Code from '../components/Code';
 
 import {AuthStackParamList} from '../navigation/AuthNavigator';
@@ -11,7 +10,6 @@ import {AuthStackParamList} from '../navigation/AuthNavigator';
 import {RootState} from '../store/reducers';
 import {verifyResetCode} from '../store/reducers/auth';
 
-import {Theme} from '../theme';
 import {useSelector, useDispatch} from 'react-redux';
 
 interface VerifyCodeProps
@@ -22,7 +20,6 @@ const VerifyCode = ({
     params: {email, code},
   },
 }: VerifyCodeProps) => {
-  const {spacing} = useTheme<Theme>();
   const dispatch = useDispatch();
 
   const {loading, error, message} = useSelector(
@@ -34,17 +31,10 @@ const VerifyCode = ({
   };
 
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingHorizontal: spacing.l,
-      }}>
-      <AuthHeader
-        back
-        title="Here is a final step"
-        text="Enter the code from email"
-      />
-
+    <AuthLayout
+      back
+      title="Here is a final step"
+      text="Enter the code from email">
       <View style={{flex: 1.4}}>
         {!loading ? (
           <>
@@ -61,7 +51,7 @@ const VerifyCode = ({
           <ActivityIndicator size="large" />
         )}
       </View>
-    </View>
+    </AuthLayout>
   );
 };
 

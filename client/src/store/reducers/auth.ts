@@ -9,7 +9,6 @@ import {
   updateAvatar,
   sendResetMail,
   updatePassword,
-  updateEmailRequest,
   verifyCode,
   updateUserRequest,
   updatePasswordRequest,
@@ -140,6 +139,8 @@ export const register = (data: Partial<User>): AppThunk => async (dispatch) => {
   dispatch(setLoading(true));
   try {
     await createUser(data);
+    dispatch(setLoading(false));
+    navigate('Login');
   } catch (err) {
     dispatch(error(errorHandler(err)));
   }

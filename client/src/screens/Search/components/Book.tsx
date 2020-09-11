@@ -1,36 +1,40 @@
-import React from 'react';
-import {
-  View,
-  Image,
-  Dimensions,
-  TouchableOpacity,
-  StyleSheet,
-  Text,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, {useEffect, useState} from 'react';
+import {View, TouchableOpacity, StyleSheet, Image} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {useTheme} from '@shopify/restyle';
 
-import Authors from '../../../components/Authors';
+import {Authors, BookCover, Rating} from '../../../components';
 
 import {GoogleBook} from '../../../types/Book';
 
-import theme, {Theme} from '../../../theme';
-
-const {width} = Dimensions.get('window');
+import theme, {Box, Text, Theme} from '../../../theme';
+import {useTheme} from '@shopify/restyle';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'row',
-    marginVertical: 20,
+    marginVertical: theme.spacing.l,
+    padding: theme.spacing.m,
+    borderRadius: theme.borderRadii.m,
+    ...theme.shadows.small,
   },
-  imageContainer: {
-    height: 180,
-    width: width * 0.3,
-    padding: 2,
-    borderColor: theme.colors.secondary,
-    borderWidth: 1,
+  background: {
+    flex: 1,
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    zIndex: -1,
+    minHeight: 90,
+    backgroundColor: theme.colors.lightGray,
+  },
+  title: {
+    color: theme.colors.dark,
+    fontSize: theme.fontSizes.textLg,
+    paddingRight: theme.spacing.m,
+  },
+  author: {
+    fontSize: theme.fontSizes.text,
+    color: theme.colors.primary,
   },
 });
 
@@ -38,66 +42,58 @@ interface BookProps {
   book: GoogleBook;
 }
 
+const IMAGE_RATIO = 0.6;
+
 const Book = ({book}: BookProps) => {
-  const {colors} = useTheme<Theme>();
+  const {spacing} = useTheme<Theme>();
+  const [width, setWidth] = useState(80);
   const {navigate} = useNavigation();
 
+  useEffect(() => {
+    if (book) {
+      if (book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.thumbnail) {
+        Image.getSize(book.volumeInfo.imageLinks.thumbnail, (width) => {
+          setWidth(width * IMAGE_RATIO);
+        });
+      }
+    }
+  }, [book]);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        {book.volumeInfo.imageLinks && (
-          <Image
-            source={{
-              uri: book.volumeInfo.imageLinks.smallThumbnail,
-            }}
-            style={{width: '100%', height: '100%'}}
-            resizeMode="contain"
-          />
-        )}
-      </View>
-      <View style={{flex: 1, marginLeft: 10}}>
+    <TouchableOpacity
+      onPress={() => navigate('Details', {id: book.id})}
+      style={styles.container}>
+      {book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.thumbnail ? (
+        <BookCover uri={book.volumeInfo.imageLinks.thumbnail} />
+      ) : (
+        <BookCover />
+      )}
+      <View style={styles.background}>
         <View
           style={{
-            flexDirection: 'row',
+            paddingTop: 8,
+            paddingLeft: spacing.m * 2 + width,
           }}>
-          {book.volumeInfo.title && (
-            <Text
-              style={{color: colors.primary, fontSize: 18}}
-              numberOfLines={2}>
-              {book.volumeInfo.title}
-            </Text>
-          )}
-        </View>
-        <View>
+          <Box flexDirection="row">
+            {book.volumeInfo.title && (
+              <Text style={styles.title} numberOfLines={2}>
+                {book.volumeInfo.title}
+              </Text>
+            )}
+          </Box>
           {book.volumeInfo.authors && (
-            <Authors numberOfLines={2} authors={book.volumeInfo.authors} />
+            <Authors
+              numberOfLines={1}
+              textStyle={styles.author}
+              authors={book.volumeInfo.authors}
+            />
           )}
-          {book.volumeInfo.categories &&
-            book.volumeInfo.categories.map((category) => {
-              return (
-                <Text key={category} style={{}}>
-                  {category}
-                </Text>
-              );
-            })}
           {book.volumeInfo.averageRating && (
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Icon name="star" />
-              <Text style={{margin: 5}}>{book.volumeInfo.averageRating}</Text>
-            </View>
+            <Rating rating={book.volumeInfo.averageRating} />
           )}
-          <TouchableOpacity>
-            <Text
-              style={{
-                color: '#1793f6',
-              }}
-              onPress={() => navigate('Details', {id: book.id})}>
-              See more
-            </Text>
-          </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

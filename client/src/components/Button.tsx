@@ -3,51 +3,60 @@ import {
   TouchableOpacity,
   StyleSheet,
   Text,
-  ColorValue,
   StyleProp,
   ViewStyle,
   TextStyle,
+  ActivityIndicator,
 } from 'react-native';
+
+import theme, {Theme} from '../theme';
+import {useTheme} from '@shopify/restyle';
 
 const styles = StyleSheet.create({
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 13,
+    borderRadius: theme.borderRadii.m,
     paddingVertical: 10,
   },
   buttonText: {
-    color: 'white',
+    color: theme.colors.background,
   },
 });
 
 interface ButtonProps {
   onPress: () => void;
-  color?: ColorValue;
+  color?: keyof Theme['colors'];
   containerStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
-  label: string;
   link?: boolean;
+  loading?: boolean;
+  label: string;
 }
-
 const Button = ({
   onPress,
-  color: backgroundColor,
+  color: backgroundColor = 'positive',
   containerStyle,
   textStyle,
   label,
+  loading,
   link,
 }: ButtonProps) => {
+  const {colors} = useTheme<Theme>();
   const paddingHorizontal = link ? 0 : 10;
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[
         styles.button,
-        {backgroundColor, paddingHorizontal},
+        {backgroundColor: colors[backgroundColor], paddingHorizontal},
         containerStyle,
       ]}>
-      <Text style={[styles.buttonText, textStyle]}>{label}</Text>
+      {loading ? (
+        <ActivityIndicator size="small" color="gray" />
+      ) : (
+        <Text style={[styles.buttonText, textStyle]}>{label}</Text>
+      )}
     </TouchableOpacity>
   );
 };

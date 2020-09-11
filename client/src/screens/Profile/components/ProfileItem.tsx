@@ -1,16 +1,10 @@
 import React from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
-import {useNavigation, ParamListBase} from '@react-navigation/native';
+import {StyleSheet, TouchableOpacity, StyleProp, ViewStyle} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 import RoundedIcon from '../../../components/RoundedIcon';
-import theme from '../../../theme';
+import theme, {Theme, Box, Text} from '../../../theme';
+import {useTheme} from '@shopify/restyle';
 
 const styles = StyleSheet.create({
   container: {
@@ -22,7 +16,7 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
   },
   title: {
-    fontSize: theme.fontSizes.subTitle,
+    fontSize: theme.fontSizes.titleM,
     marginLeft: theme.spacing.l,
     fontWeight: '600',
   },
@@ -31,7 +25,7 @@ const styles = StyleSheet.create({
 type ProfileItemProps = {
   title: string;
   icon: string;
-  color: string;
+  color: keyof Theme['colors'];
   style?: StyleProp<ViewStyle>;
 } & (
   | {name: string; params?: Record<string, any>; onPress?: never}
@@ -48,6 +42,7 @@ const ProfileItem = ({
   onPress: _onPress,
 }: ProfileItemProps) => {
   const navigation = useNavigation();
+  const {borderRadii} = useTheme<Theme>();
 
   const onPress = () => {
     if (name) {
@@ -58,16 +53,18 @@ const ProfileItem = ({
   };
   return (
     <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
-      <View
+      <Box
+        backgroundColor={color}
         style={{
           ...StyleSheet.absoluteFillObject,
           opacity: 0.05,
-          backgroundColor: color,
-          borderRadius: 25,
+          borderRadius: borderRadii.xl,
         }}
       />
       <RoundedIcon icon={icon} size={42} color={color} />
-      <Text style={[styles.title, {color}]}>{title}</Text>
+      <Text color={color} style={[styles.title]}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };

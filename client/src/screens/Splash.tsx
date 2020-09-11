@@ -5,13 +5,13 @@ import theme from '../theme';
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: 36,
+    fontSize: theme.fontSizes.titleXl,
     marginBottom: 10,
     fontFamily: 'Calistoga-Regular',
     color: theme.colors.primary,
   },
   background: {
-    backgroundColor: theme.colors.light,
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,

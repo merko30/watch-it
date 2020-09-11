@@ -9,9 +9,10 @@ interface BackIconProps {
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
   iconStyle?: StyleProp<ViewStyle>;
+  color?: string;
 }
 
-const BackIcon = ({onPress, style, iconStyle}: BackIconProps) => {
+const BackIcon = ({onPress, style, iconStyle, color}: BackIconProps) => {
   const {spacing} = useTheme<Theme>();
   return (
     <TouchableOpacity onPress={onPress} style={style}>
@@ -19,6 +20,7 @@ const BackIcon = ({onPress, style, iconStyle}: BackIconProps) => {
         name="chevron-back"
         style={[{marginLeft: spacing.s}, iconStyle]}
         size={32}
+        color={color}
       />
     </TouchableOpacity>
   );

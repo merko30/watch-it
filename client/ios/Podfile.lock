@@ -1,5 +1,7 @@
 PODS:
   - boost-for-react-native (1.63.0)
+  - BVLinearGradient (2.5.6):
+    - React
   - CocoaAsyncSocket (7.6.4)
   - CocoaLibEvent (1.0.0)
   - DoubleConversion (1.1.6)
@@ -11,20 +13,6 @@ PODS:
     - React-Core (= 0.63.0)
     - React-jsi (= 0.63.0)
     - ReactCommon/turbomodule/core (= 0.63.0)
-  - FBSDKCoreKit (7.1.1):
-    - FBSDKCoreKit/Basics (= 7.1.1)
-    - FBSDKCoreKit/Core (= 7.1.1)
-  - FBSDKCoreKit/Basics (7.1.1)
-  - FBSDKCoreKit/Core (7.1.1):
-    - FBSDKCoreKit/Basics
-  - FBSDKLoginKit (7.1.1):
-    - FBSDKLoginKit/Login (= 7.1.1)
-  - FBSDKLoginKit/Login (7.1.1):
-    - FBSDKCoreKit (~> 7.1.1)
-  - FBSDKShareKit (7.1.1):
-    - FBSDKShareKit/Share (= 7.1.1)
-  - FBSDKShareKit/Share (7.1.1):
-    - FBSDKCoreKit (~> 7.1.1)
   - Flipper (0.41.5):
     - Flipper-Folly (~> 2.2)
     - Flipper-RSocket (~> 1.1)
@@ -250,20 +238,6 @@ PODS:
     - React-cxxreact (= 0.63.0)
     - React-jsi (= 0.63.0)
   - React-jsinspector (0.63.0)
-  - react-native-fbsdk (2.0.0):
-    - React
-    - react-native-fbsdk/Core (= 2.0.0)
-    - react-native-fbsdk/Login (= 2.0.0)
-    - react-native-fbsdk/Share (= 2.0.0)
-  - react-native-fbsdk/Core (2.0.0):
-    - FBSDKCoreKit (~> 7.0)
-    - React
-  - react-native-fbsdk/Login (2.0.0):
-    - FBSDKLoginKit (~> 7.0)
-    - React
-  - react-native-fbsdk/Share (2.0.0):
-    - FBSDKShareKit (~> 7.0)
-    - React
   - react-native-image-picker (2.3.3):
     - React
   - react-native-safe-area-context (3.1.1):
@@ -336,7 +310,7 @@ PODS:
     - React
   - RNGestureHandler (1.7.0):
     - React
-  - RNReanimated (1.10.1):
+  - RNReanimated (1.13.0):
     - React
   - RNScreens (2.9.0):
     - React
@@ -349,6 +323,7 @@ PODS:
     - Yoga (~> 1.14)
 
 DEPENDENCIES:
+  - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
@@ -385,7 +360,6 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
-  - react-native-fbsdk (from `../node_modules/react-native-fbsdk`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -413,9 +387,6 @@ SPEC REPOS:
     - boost-for-react-native
     - CocoaAsyncSocket
     - CocoaLibEvent
-    - FBSDKCoreKit
-    - FBSDKLoginKit
-    - FBSDKShareKit
     - Flipper
     - Flipper-DoubleConversion
     - Flipper-Folly
@@ -427,6 +398,8 @@ SPEC REPOS:
     - YogaKit
 
 EXTERNAL SOURCES:
+  BVLinearGradient:
+    :path: "../node_modules/react-native-linear-gradient"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   FBLazyVector:
@@ -457,8 +430,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
-  react-native-fbsdk:
-    :path: "../node_modules/react-native-fbsdk"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-safe-area-context:
@@ -504,14 +475,12 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
+  BVLinearGradient: e3aad03778a456d77928f594a649e96995f1c872
   CocoaAsyncSocket: 694058e7c0ed05a9e217d1b3c7ded962f4180845
   CocoaLibEvent: 2fab71b8bd46dd33ddb959f7928ec5909f838e3f
   DoubleConversion: cde416483dac037923206447da6e1454df403714
   FBLazyVector: 6f1045c66f816849b33c4ff28930b611e89059a0
   FBReactNativeSpec: e856d5103d749483f86f53afafd8df4ed8a776bd
-  FBSDKCoreKit: b46507dc8b8cefed31d644e74d7cc30e2a715ef8
-  FBSDKLoginKit: 1a61d79e2b25e2fc0d03dccab1e34b38bbdf2546
-  FBSDKShareKit: 00a055c1999b099596e00212dd1c0600c6697019
   Flipper: 33585e2d9810fe5528346be33bcf71b37bb7ae13
   Flipper-DoubleConversion: 38631e41ef4f9b12861c67d17cb5518d06badc41
   Flipper-Folly: c12092ea368353b58e992843a990a3225d4533c3
@@ -532,7 +501,6 @@ SPEC CHECKSUMS:
   React-jsi: 254710f3a97e587427bfbf3011dacec2af66a1fc
   React-jsiexecutor: 0e0cb4e170ca72d4bb1179843d08dcbea3d100ac
   React-jsinspector: fc661eff8edbfb7e22119382c13f33bcadde0f3c
-  react-native-fbsdk: 00c15d138bba6d4efa628670886fc58cec858c19
   react-native-image-picker: a6c3d644751a388b0fc8b56822ff7cbd398a3008
   react-native-safe-area-context: 4c3249e4840225c61fcd215b136af0a737bccb79
   react-native-webview: e2c0bce9a1a7c7edd4eb30f0c3016fce216245ce
@@ -549,7 +517,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: db711e29e5e0500d9bd21aa0c2e397efa45302b1
   RNCMaskedView: f5c7d14d6847b7b44853f7acb6284c1da30a3459
   RNGestureHandler: b6b359bb800ae399a9c8b27032bdbf7c18f08a08
-  RNReanimated: c2bb7438b57a3d987bb2e4e6e4bca94787e30b02
+  RNReanimated: 89f5e0a04d1dd52fbf27e7e7030d8f80a646a3fc
   RNScreens: c526239bbe0e957b988dacc8d75ac94ec9cb19da
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: da6fe858f5a65d7bbc3379540a889b0b12aa5976

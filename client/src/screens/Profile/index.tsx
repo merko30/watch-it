@@ -1,26 +1,21 @@
 import React, {useEffect} from 'react';
 import {
-  Text,
   SafeAreaView,
   View,
-  Image,
   StyleSheet,
   Dimensions,
   ScrollView,
-  ActivityIndicator,
 } from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from '@shopify/restyle';
-import {useNavigation} from '@react-navigation/native';
 
+import {Avatar, LoadingContent} from '../../components';
 import ProfileItem from './components/ProfileItem';
 
 import {signOut, getUser} from '../../store/reducers/auth';
 import {RootState} from '../../store/reducers';
 
-import theme, {Theme} from '../../theme';
-
-import {avatar} from '../../images';
+import theme, {Theme, Text, Box} from '../../theme';
 
 const {width} = Dimensions.get('window');
 
@@ -33,9 +28,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -80,
     alignSelf: 'center',
-    width: 160,
-    height: 160,
-    borderRadius: 80,
     borderWidth: 5,
     borderColor: 'white',
     // ...theme.shadows.large,
@@ -51,12 +43,12 @@ const styles = StyleSheet.create({
     //   marginHorizontal: theme.spacing.l,
   },
   name: {
-    fontSize: theme.fontSizes.titleLg * 1.1,
+    fontSize: theme.fontSizes.titleXl * 1.1,
     fontWeight: '400',
     alignSelf: 'center',
   },
   email: {
-    fontSize: theme.fontSizes.subTitle,
+    fontSize: theme.fontSizes.titleM,
     alignSelf: 'center',
     color: theme.colors.gray,
   },
@@ -65,7 +57,7 @@ const styles = StyleSheet.create({
     flex: 1,
     overflow: 'visible',
     marginTop: 20,
-    backgroundColor: 'white',
+    backgroundColor: theme.colors.background,
     padding: theme.spacing.xl,
     paddingBottom: 0,
     ...theme.shadows.large,
@@ -74,91 +66,90 @@ const styles = StyleSheet.create({
   },
   error: {
     alignSelf: 'center',
-    fontSize: theme.fontSizes.title,
+    fontSize: theme.fontSizes.titleLg,
     color: theme.colors.lightGray,
   },
 });
 
 interface ProfileProps {}
 
-const Profile = () => {
-  const {colors, fontSizes} = useTheme<Theme>();
-  const navigation = useNavigation();
+const Profile = (props: ProfileProps) => {
+  const {colors} = useTheme<Theme>();
   const dispatch = useDispatch();
-  const {user, loading, error} = useSelector(
-    ({auth: {user, loading, error}}: RootState) => ({
-      user,
-      loading,
-      error,
-    }),
-  );
+  const {user, loading, error} = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     dispatch(getUser());
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.light}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.primary}}>
       <View style={styles.container}>
         <View style={styles.subContainer}>
-          <View
-            style={[
-              styles.content,
-              {justifyContent: !user ? 'center' : 'flex-end'},
-            ]}>
+          <Box
+            width={width}
+            flex={1}
+            marginTop="m"
+            overflow="visible"
+            backgroundColor="background"
+            justifyContent={!user ? 'center' : 'flex-end'}
+            padding="xl"
+            borderTopLeftRadius="xl"
+            borderTopRightRadius="xl">
             {error && <Text style={styles.error}>{error}</Text>}
+            {loading && <Avatar style={styles.image} size={180} source={{}} />}
             {user && (
               <>
-                <Image
+                <Avatar
                   style={styles.image}
-                  source={
-                    user.avatar
-                      ? {uri: `http://192.168.1.8:5000/uploads/${user.avatar}`}
-                      : avatar
-                  }
+                  size={180}
+                  source={{
+                    uri: `http://192.168.1.8:5000/uploads/${user.avatar}`,
+                  }}
                 />
                 <View style={styles.userInfo}>
                   {user?.firstName && user?.lastName ? (
                     <Text
+                      color="foreground"
                       style={
                         styles.name
                       }>{`${user?.firstName} ${user?.lastName}`}</Text>
                   ) : (
-                    <Text style={styles.name}>{user.username}</Text>
+                    <Text color="foreground" style={styles.name}>
+                      {user.username}
+                    </Text>
                   )}
                   <Text style={styles.email}>{user.email}</Text>
                 </View>
-                <ScrollView>
+                <ScrollView showsVerticalScrollIndicator={false}>
                   <ProfileItem
                     title="Edit profile"
                     icon="person-circle"
                     name="EditProfile"
-                    color={colors.secondary}
+                    color="secondary"
                   />
                   <ProfileItem
-                    title="Statistics"
-                    icon="stats-chart"
-                    name="Stats"
-                    color={colors.secondary}
-                  />
-                  <ProfileItem
-                    title="Security settings"
+                    title="Settings"
                     icon="cog"
-                    name="Security"
-                    color={colors.secondary}
+                    name="Settings"
+                    color="secondary"
                   />
                   <ProfileItem
                     style={{marginTop: 30}}
                     title="Logout"
                     icon="exit"
                     onPress={() => dispatch(signOut())}
-                    color={colors.negative}
+                    color="negative"
                   />
                 </ScrollView>
               </>
             )}
-            {loading && <ActivityIndicator size={'large'} />}
-          </View>
+            {loading && (
+              <View style={{marginTop: 160, flex: 1}}>
+                <LoadingContent numOfLines={3} />
+              </View>
+            )}
+          </Box>
         </View>
       </View>
     </SafeAreaView>

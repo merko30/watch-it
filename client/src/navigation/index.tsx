@@ -3,26 +3,20 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector} from 'react-redux';
 import {useTheme} from '@shopify/restyle';
-import Icon from 'react-native-vector-icons/Ionicons';
 
 import {Details} from '../screens';
 
 import TabNavigator from './TabNavigator';
 import AuthNavigator from './AuthNavigator';
-
 import {navigationRef} from '../utils/navigation';
 
-import {Theme} from '../theme';
+import {BackIcon} from '../components';
 
 import {RootState} from '../store/reducers';
 
-const BLANK_HEADER = {
-  title: '',
-  headerStyle: {
-    backgroundColor: 'white',
-    shadowOffset: {width: 0, height: 0},
-  },
-};
+import {LEFT_ICON, BLANK_HEADER} from './headerStyles';
+
+import {Theme} from '../theme';
 
 export type RootStackParamList = {
   Details: {id: string};
@@ -34,8 +28,7 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 const Navigation = () => {
-  const {colors, spacing} = useTheme<Theme>();
-
+  const {colors} = useTheme<Theme>();
   const loggedIn = useSelector<RootState>((state) => state.auth.loggedIn);
 
   const linking = {
@@ -56,14 +49,7 @@ const Navigation = () => {
     <NavigationContainer linking={linking} ref={navigationRef}>
       <Stack.Navigator
         screenOptions={{
-          headerBackImage: () => (
-            <Icon
-              name="chevron-back"
-              style={{marginLeft: spacing.s}}
-              size={32}
-            />
-          ),
-          headerBackTitleVisible: false,
+          ...LEFT_ICON,
         }}>
         {!loggedIn ? (
           <Stack.Screen
@@ -84,6 +70,9 @@ const Navigation = () => {
               name="Details"
               options={{
                 ...BLANK_HEADER,
+                headerTintColor: colors.white,
+                headerBackImage: () => <BackIcon color={colors.white} />,
+                title: 'Book details',
               }}
               component={Details}
             />

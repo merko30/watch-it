@@ -1,35 +1,15 @@
 import React, {useRef, useEffect, useState} from 'react';
-import {
-  View,
-  NativeSyntheticEvent,
-  TextInputChangeEventData,
-  StyleSheet,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import {View, StyleSheet, StyleProp, ViewStyle} from 'react-native';
 import {TextInput} from 'react-native-gesture-handler';
 
-// Hook
-function usePrevious(value: string) {
-  // The ref object is a generic container whose current property is mutable ...
-  // ... and can hold any value, similar to an instance property on a class
-  const ref = useRef<string>();
-
-  // Store current value in ref
-  useEffect(() => {
-    ref.current = value;
-  }, [value]); // Only re-run if value changes
-
-  // Return previous value (happens before update in useEffect above)
-  return ref.current;
-}
+import theme from '../theme';
 
 const MARGIN = 5;
 
 const styles = StyleSheet.create({
   container: {flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'},
   field: {
-    borderRadius: 5,
+    borderRadius: theme.borderRadii.s,
     height: 60,
     width: 40,
     backgroundColor: 'lightblue',
@@ -64,10 +44,7 @@ const Code = ({
 }: CodeProps) => {
   const [width, setWidth] = useState(0);
   const [code, setCode] = useState('');
-  const [changed, setChanged] = useState(false);
   const refs = new Array(length).fill(0).map((x) => useRef<any>(null));
-
-  const prev = usePrevious(code);
 
   const onChangeCode = (text: string, i: number) => {
     setCode((prevCode) => {

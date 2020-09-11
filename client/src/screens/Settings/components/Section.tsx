@@ -1,19 +1,24 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import {useTheme} from '@shopify/restyle';
 
-import theme, {Theme} from '../../../theme';
+import theme, {Theme, Box, Text} from '../../../theme';
 
 const styles = StyleSheet.create({
   section: {
-    marginTop: theme.spacing.xl,
+    marginTop: theme.spacing.m,
   },
   row: {
+    paddingHorizontal: theme.spacing.m,
     paddingBottom: theme.spacing.m,
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.lightGray,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -31,11 +36,12 @@ const styles = StyleSheet.create({
 
 interface SectionProps {
   title: string;
-  icon: string;
+  icon?: string;
   children: React.ReactNode;
+  containerStyle?: StyleProp<ViewStyle>;
 }
 
-const Section = ({icon, title, children}: SectionProps) => {
+const Section = ({icon, title, children, containerStyle}: SectionProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const {colors} = useTheme<Theme>();
@@ -43,10 +49,12 @@ const Section = ({icon, title, children}: SectionProps) => {
   return (
     <View style={styles.section}>
       <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
-        <View style={styles.row}>
+        <View style={[styles.row, containerStyle]}>
           <View style={styles.titleContainer}>
-            <Icon name={icon} size={24} color={colors.gray} />
-            <Text style={styles.text}>{title}</Text>
+            {icon && <Icon name={icon} size={24} color={colors.foreground} />}
+            <Text variant="body" marginLeft="s" color="foreground">
+              {title}
+            </Text>
           </View>
           <Icon
             name={`chevron-${expanded ? 'up' : 'down'}`}
@@ -55,8 +63,7 @@ const Section = ({icon, title, children}: SectionProps) => {
           />
         </View>
       </TouchableWithoutFeedback>
-
-      {expanded && children}
+      <Box paddingHorizontal="m">{expanded && children}</Box>
     </View>
   );
 };

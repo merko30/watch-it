@@ -5,7 +5,7 @@ import {useTheme} from '@shopify/restyle';
 import ProfileNavigator from './ProfileNavigator';
 import Books from './BooksNavigator';
 
-import {Search, Profile} from '../screens';
+import {Search} from '../screens';
 
 import TabIcon from './components/TabIcon';
 
@@ -20,16 +20,17 @@ const TabNavigator = () => {
       tabBarOptions={{
         showLabel: false,
         style: {
-          paddingTop: 12,
-          backgroundColor: 'white',
+          backgroundColor: colors.background,
           borderTopWidth: 0,
         },
-        activeTintColor: colors.primary,
-        inactiveTintColor: colors.secondary,
+        activeTintColor: colors.secondary,
+        inactiveTintColor: colors.primary,
       }}>
       <Tab.Screen
         options={{
-          tabBarIcon: (props) => <TabIcon name="book" {...props} size={24} />,
+          tabBarIcon: (props) => (
+            <TabIcon name="library" {...props} size={24} />
+          ),
         }}
         name="Your books"
         component={Books}

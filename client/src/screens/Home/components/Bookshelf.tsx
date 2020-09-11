@@ -1,26 +1,17 @@
-import React, {useState, useEffect, useMemo, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   ColorValue,
   StyleSheet,
-  Text,
-  Platform,
   FlatList,
-  ListRenderItemInfo,
   TouchableOpacity,
 } from 'react-native';
 import {
   useValue,
   mix,
   onGestureEvent,
-  useClock,
-  timing,
   withTransition,
-  useValues,
-  withTimingTransition,
   withSpringTransition,
-  withSpring,
-  spring,
 } from 'react-native-redash';
 import Animated, {
   useCode,
@@ -33,15 +24,15 @@ import Animated, {
   onChange,
   Extrapolate,
   block,
-  and,
-  Easing,
-  debug,
 } from 'react-native-reanimated';
 import {TapGestureHandler, State} from 'react-native-gesture-handler';
-import Book from '../../../types/Book';
+import {useNavigation} from '@react-navigation/native';
+
+import {Book} from '../../../types';
 
 import BookCover from '../../../components/BookCover';
-import {useNavigation} from '@react-navigation/native';
+
+import theme, {Text} from '../../../theme';
 
 export const BOOKSHELF_HEIGHT = 320;
 export const TITLE_HEIGHT = 35;
@@ -50,7 +41,7 @@ const styles = StyleSheet.create({
   container: {
     height: BOOKSHELF_HEIGHT,
     padding: 10,
-    borderRadius: 10,
+    borderRadius: theme.borderRadii.m,
   },
   row: {
     flexDirection: 'row',
@@ -63,16 +54,9 @@ const styles = StyleSheet.create({
   },
   image: {
     marginVertical: 10,
-    marginHorizontal: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 4,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-
-    elevation: 5,
+    width: 100,
+    height: 120,
+    ...theme.shadows.medium,
   },
 });
 
@@ -99,6 +83,7 @@ const Bookshelf = ({
   name,
   y,
 }: BookshelfProps) => {
+  const [snapToInterval, setSnapToInterval] = useState(0);
   const [booksArray, setBooksArray] = useState<Book[][]>([]);
   const navigation = useNavigation();
   const [gestureHandleActive, setGestureHandlerActive] = useState(true);
@@ -118,7 +103,7 @@ const Bookshelf = ({
   const translateYInterpolation = withSpringTransition(
     interpolate(y, {
       inputRange: [0, 1],
-      outputRange: [0, -4 * index],
+      outputRange: [0, -0.2 * index],
       extrapolateRight: Extrapolate.CLAMP,
     }),
   );
@@ -150,26 +135,12 @@ const Bookshelf = ({
           }),
         ),
         cond(eq(showAll, 1), [
-          // set(scale, 1),
-          set(
-            scale,
-            1,
-            // timing({easing: Easing.linear, from: scaleInterpolation, to: 1}),
-          ),
+          set(scale, 1),
           set(marginBottom, marginBottomInterpolation),
           set(translateY, 0),
         ]),
         cond(eq(showAll, 0), [
-          set(
-            scale,
-            scaleInterpolation,
-            // timing({
-            //   easing: Easing.linear,
-            //   to: scaleInterpolation,
-            //   from: 1,
-            //   duration: 200,
-            // }),
-          ),
+          set(scale, scaleInterpolation),
           set(marginBottom, INACTIVE_MARGIN),
           set(translateY, translateYInterpolation),
         ]),
@@ -179,7 +150,7 @@ const Bookshelf = ({
 
   const renderBook = (item: Book[]) => {
     return (
-      <View style={{flex: 1}}>
+      <View style={{alignSelf: 'flex-start'}}>
         {item[0] && (
           <View key={item[0]._id} style={styles.image}>
             <BookCover uri={item[0].thumbnail!} />
@@ -216,21 +187,29 @@ const Bookshelf = ({
       <View style={styles.row}>
         <TapGestureHandler {...gestureHandler} enabled={gestureHandleActive}>
           <Animated.View>
-            <Text style={styles.title}>{title}</Text>
+            <Text color="foreground" variant="body" style={styles.title}>
+              {title}
+            </Text>
           </Animated.View>
         </TapGestureHandler>
         <TouchableOpacity
           onPress={() => navigation.navigate('List', {shelf: name})}>
-          <Text>Show all books</Text>
+          <Text color="foreground" variant="body">
+            Show all books
+          </Text>
         </TouchableOpacity>
       </View>
       <FlatList
+        onLayout={(e) => setSnapToInterval(e.nativeEvent.layout.width)}
         data={booksArray}
         keyExtractor={(item) => item.map((i) => i._id).join('')}
         horizontal
-        style={{flex: 1}}
-        contentContainerStyle={{}}
-        snapToInterval={350}
+        // style={{flex: 1}}
+        snapToInterval={snapToInterval}
+        contentContainerStyle={{
+          width: snapToInterval * (booksArray.length / 3),
+          justifyContent: 'space-evenly',
+        }}
         decelerationRate="fast"
         scrollEventThrottle={1}
         renderItem={({item}) => renderBook(item)}

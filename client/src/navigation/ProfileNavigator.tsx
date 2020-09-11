@@ -1,33 +1,33 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
+import {useTheme} from '@shopify/restyle';
 
-import {EditProfile, Security, Stats, Profile} from '../screens';
+import {EditProfile, Settings, Profile} from '../screens';
 
-import BackIcon from '../components/BackIcon';
+import {BackIcon} from '../components';
+
+import {Theme} from '../theme';
 
 export type ProfileNavigatorParamList = {
   Profile: undefined;
   EditProfile: undefined;
-  Security: undefined;
-  Stats: undefined;
-};
-
-const BLANK = {
-  headerStyle: {
-    backgroundColor: 'white',
-    shadowOffset: {width: 0, height: 0},
-  },
-  headerBackTitleVisible: false,
-  headerBackImage: () => <BackIcon />,
+  Settings: undefined;
 };
 
 const Stack = createStackNavigator<ProfileNavigatorParamList>();
 
 const ProfileNavigator = () => {
+  const {colors} = useTheme<Theme>();
   return (
     <Stack.Navigator
       screenOptions={{
-        ...BLANK,
+        headerBackTitleVisible: false,
+        headerTintColor: colors.foreground,
+        headerStyle: {
+          backgroundColor: colors.background,
+          shadowOffset: {width: 0, height: 0},
+        },
+        headerBackImage: () => <BackIcon color={colors.foreground} />,
       }}>
       <Stack.Screen
         options={{
@@ -43,17 +43,10 @@ const ProfileNavigator = () => {
       />
       <Stack.Screen
         options={{
-          title: '',
+          title: 'Settings',
         }}
-        name="Stats"
-        component={Stats}
-      />
-      <Stack.Screen
-        options={{
-          title: 'Security settings',
-        }}
-        name="Security"
-        component={Security}
+        name="Settings"
+        component={Settings}
       />
     </Stack.Navigator>
   );

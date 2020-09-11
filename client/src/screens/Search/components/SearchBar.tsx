@@ -1,21 +1,19 @@
-import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Keyboard,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import React, {useState, useEffect} from 'react';
+import {StyleSheet, Keyboard, TextInput} from 'react-native';
+import {useTheme} from '@shopify/restyle';
 
-import theme from '../../../theme';
+import theme, {Theme, Box} from '../../../theme';
+import {RoundedIcon} from '../../../components';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: theme.colors.secondary,
-    padding: 8,
+    backgroundColor: theme.colors.background,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     alignItems: 'center',
+    margin: 10,
+    ...theme.shadows.medium,
+    borderRadius: theme.borderRadii.m,
   },
   flex: {
     display: 'flex',
@@ -23,24 +21,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   input: {
-    backgroundColor: '#fff',
-    height: 40,
-    borderRadius: 8,
-    paddingLeft: 10,
-    flex: 2,
-    marginRight: 15,
-  },
-  button: {
-    color: '#eaae5b',
-    flex: 1,
-  },
-  error: {
-    alignSelf: 'flex-start',
-    color: 'white',
-    fontWeight: '100',
-    fontSize: 12,
-    marginTop: 4,
-    marginLeft: 1,
+    width: '100%',
+    backgroundColor: 'transparent',
+    lineHeight: 20,
+    fontSize: theme.fontSizes.textLg,
   },
 });
 
@@ -49,35 +33,58 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({onSearch}: SearchBarProps) => {
+  const {colors, shadows} = useTheme<Theme>();
   const [term, setTerm] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<boolean>(false);
 
   const search = () => {
     if (term) {
-      setError(null);
+      setError(false);
       onSearch(term);
       setTerm('');
       Keyboard.dismiss();
     } else {
-      setError('Type a search term');
+      setError(true);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
+  }, [error]);
+
+  const errorStyle = error && {borderColor: colors.negative, borderWidth: 1};
+
   return (
-    <View style={styles.container}>
-      <View style={styles.flex}>
-        <TextInput
-          underlineColorAndroid="transparent"
-          style={styles.input}
-          placeholder="Search for a book..."
-          onChangeText={(term) => setTerm(term)}
-          value={term}
-        />
-        <TouchableOpacity onPress={search}>
-          <Icon name="search" color="white" />
-        </TouchableOpacity>
-      </View>
-      {error && <Text style={styles.error}>{error}</Text>}
-    </View>
+    <Box
+      backgroundColor="white"
+      alignItems="center"
+      margin="m"
+      padding="s"
+      borderRadius="m"
+      style={[errorStyle, {...shadows.medium}]}>
+      <Box
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between">
+        <Box flex={2} backgroundColor="white" paddingLeft="m">
+          <TextInput
+            // underlineColorAndroid="transparent"
+            style={styles.input}
+            placeholder="Search for a book..."
+            onChangeText={(term: string) => setTerm(term)}
+            value={term}
+            // returnKeyLabel="Search"
+            onSubmitEditing={search}
+            returnKeyType="search"
+          />
+        </Box>
+        <RoundedIcon onPress={search} icon="search" size={48} color="primary" />
+      </Box>
+    </Box>
   );
 };
 

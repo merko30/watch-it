@@ -1,20 +1,26 @@
 import React from 'react';
-import {View, ImageSourcePropType, Image} from 'react-native';
+import {ImageSourcePropType, Image, StyleProp, ImageStyle} from 'react-native';
+import {avatar} from '../images';
 
 interface AvatarProps {
   size: number;
   source: ImageSourcePropType;
+  style?: StyleProp<ImageStyle>;
 }
 
-const Avatar = ({source, size}: AvatarProps) => {
+const Avatar = ({source, size, style}: AvatarProps) => {
   return (
     <Image
       source={source}
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-      }}
+      defaultSource={avatar}
+      style={[
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+        },
+        style,
+      ]}
     />
   );
 };

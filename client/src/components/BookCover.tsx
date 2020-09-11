@@ -1,24 +1,34 @@
 import React, {useEffect, useState} from 'react';
 import {Image, StyleProp, ImageStyle} from 'react-native';
+import {paper} from '../images';
 
 interface BookCoverProps {
-  uri: string;
+  uri?: string;
   ratio?: number;
   style?: StyleProp<ImageStyle>;
 }
 
-const BookCover = ({uri, style, ratio = 0.6}: BookCoverProps) => {
-  const [width, setWidth] = useState(0);
-  const [height, setHeight] = useState(0);
+const BookCover = ({uri, style, ratio}: BookCoverProps) => {
+  const [width, setWidth] = useState(80);
+  const [height, setHeight] = useState(120);
 
   useEffect(() => {
-    Image.getSize(uri, (w, h) => {
-      setWidth(w * ratio);
-      setHeight(h * ratio);
-    });
+    if (uri) {
+      Image.getSize(uri, (w, h) => {
+        setWidth(w * (ratio ? ratio : 0.6));
+        setHeight(h * (ratio ? ratio : 0.6));
+      });
+    }
   }, []);
 
-  return <Image source={{uri}} style={[{height, width}, style]} />;
+  return (
+    <Image
+      source={{uri}}
+      style={[{height, width}, style]}
+      loadingIndicatorSource={paper}
+      defaultSource={paper}
+    />
+  );
 };
 
 export default BookCover;

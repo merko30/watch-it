@@ -29,8 +29,6 @@ export const WISHLIST = {
 
 export const REMOVE = {text: 'Remove', key: 'remove'};
 
-const initialButtons = [{text: 'Cancel', icon: 'close', iconColor: '#25de5b'}];
-
 export const statusesToShow = (bookExists: Book, showInfo: boolean) => {
   let options: Option[] = showInfo ? [INFO] : [];
   const CANCEL_INDEX = options.length - 1;

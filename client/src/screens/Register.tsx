@@ -1,25 +1,17 @@
 import React from 'react';
-import {
-  View,
-  Dimensions,
-  ActivityIndicator,
-  Platform,
-  KeyboardAvoidingView,
-} from 'react-native';
+import {View, Platform, KeyboardAvoidingView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useTheme} from '@shopify/restyle';
 import {Formik, FormikValues} from 'formik';
 import * as Yup from 'yup';
 
-import {TextField, Button, Message, AuthHeader} from '../components';
+import {TextField, Button, Message, AuthLayout} from '../components';
 
 import {register} from '../store/reducers/auth';
 import {RootState} from '../store/reducers';
 
 import {Theme} from '../theme';
-
-const {width} = Dimensions.get('window');
 
 const registerSchema = Yup.object().shape({
   password: Yup.string()
@@ -35,7 +27,7 @@ const registerSchema = Yup.object().shape({
 
 const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
   const dispatch = useDispatch();
-  const {colors, spacing, fontSizes} = useTheme<Theme>();
+  const {colors, fontSizes} = useTheme<Theme>();
 
   const {loading, error} = useSelector((state: RootState) => state.auth);
 
@@ -47,17 +39,12 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
     <KeyboardAvoidingView
       behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
       style={{flex: 1}}>
-      <View
-        style={{
-          flex: 1,
-          paddingHorizontal: spacing.l,
-        }}>
-        <AuthHeader back title="Join today" text="Track your bookshelves" />
+      <AuthLayout back title="Join today" text="Track your bookshelves">
         <Formik
           initialValues={{
-            username: 'johndoe',
-            email: 'john@m.com',
-            password: 'password',
+            username: '',
+            email: '',
+            password: '',
           }}
           onSubmit={onSubmit}
           validationSchema={registerSchema}>
@@ -71,67 +58,64 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
           }) => {
             return (
               <View style={{flex: 2}}>
-                {!loading ? (
-                  <View>
-                    {error && <Message variant="negative" message={error} />}
+                {error && <Message variant="negative" message={error} />}
 
-                    <TextField
-                      onChangeText={handleChange('username')}
-                      onBlur={handleBlur('username')}
-                      error={errors['username']}
-                      touched={touched['username']}
-                      label="Username"
-                      value={values.username}
-                    />
+                <TextField
+                  onChangeText={handleChange('username')}
+                  onBlur={handleBlur('username')}
+                  error={errors['username']}
+                  touched={touched['username']}
+                  label="Username"
+                  value={values.username}
+                  autoCapitalize="none"
+                />
 
-                    <TextField
-                      onChangeText={handleChange('email')}
-                      onBlur={handleBlur('email')}
-                      error={errors['email']}
-                      touched={touched['email']}
-                      label="Email"
-                      value={values.email}
-                    />
+                <TextField
+                  onChangeText={handleChange('email')}
+                  onBlur={handleBlur('email')}
+                  error={errors['email']}
+                  touched={touched['email']}
+                  label="Email"
+                  value={values.email}
+                />
 
-                    <TextField
-                      onChangeText={handleChange('password')}
-                      onBlur={handleBlur('password')}
-                      error={errors['password']}
-                      touched={touched['password']}
-                      label="Password"
-                      value={values.password}
-                      secureTextEntry
-                    />
-                    <Button
-                      textStyle={{
-                        fontSize: fontSizes.textSm,
-                        textTransform: 'uppercase',
-                        fontWeight: '700',
-                      }}
-                      containerStyle={{marginTop: 40, paddingVertical: 12}}
-                      color={colors.primary}
-                      onPress={handleSubmit}
-                      label="Sign up"
-                    />
-                    <Button
-                      textStyle={{
-                        color: colors.primary,
-                        alignSelf: 'flex-start',
-                      }}
-                      link
-                      color="transparent"
-                      onPress={() => navigation.navigate('Login')}
-                      label="Have an account ? Sign in."
-                    />
-                  </View>
-                ) : (
-                  <ActivityIndicator size="large" />
-                )}
+                <TextField
+                  onChangeText={handleChange('password')}
+                  onBlur={handleBlur('password')}
+                  error={errors['password']}
+                  touched={touched['password']}
+                  label="Password"
+                  value={values.password}
+                  secureTextEntry
+                  passwordRules={null}
+                />
+                <Button
+                  textStyle={{
+                    fontSize: fontSizes.text,
+                    textTransform: 'uppercase',
+                    fontWeight: '700',
+                  }}
+                  containerStyle={{marginTop: 40, paddingVertical: 12}}
+                  color="primary"
+                  onPress={handleSubmit}
+                  label="Sign up"
+                  loading={loading}
+                />
+                <Button
+                  textStyle={{
+                    color: colors.primary,
+                    alignSelf: 'flex-start',
+                  }}
+                  link
+                  color="transparent"
+                  onPress={() => navigation.navigate('Login')}
+                  label="Have an account ? Sign in."
+                />
               </View>
             );
           }}
         </Formik>
-      </View>
+      </AuthLayout>
     </KeyboardAvoidingView>
   );
 };

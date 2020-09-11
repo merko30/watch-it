@@ -7,6 +7,8 @@ const {
   createOrUpdate,
   remove,
   checkBook,
+  search,
+  getSingleBook,
 } = require("../controllers/books");
 
 router.get("/", passport.authenticate("jwt", { session: false }), getAllBooks);
@@ -21,6 +23,18 @@ router.get(
   "/exists/:id",
   passport.authenticate("jwt", { session: false }),
   checkBook
+);
+
+router.get(
+  "/:id",
+  passport.authenticate("jwt", { session: false }),
+  getSingleBook
+);
+
+router.get(
+  `/search/:term`,
+  passport.authenticate("jwt", { session: false }),
+  search
 );
 
 router.delete("/:id", passport.authenticate("jwt", { session: false }), remove);

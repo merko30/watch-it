@@ -10,5 +10,4 @@ export {default as ForgotPassword} from './ForgotPassword';
 export {default as ResetPassword} from './ResetPassword';
 export {default as VerifyCode} from './VerifyCode';
 export {default as EditProfile} from './EditProfile';
-export {default as Security} from './Security';
-export {default as Stats} from './Stats';
+export {default as Settings} from './Settings';

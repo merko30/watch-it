@@ -1,6 +1,5 @@
 import {axios} from '../config/axios';
 import {Book} from '../types/Book';
-import Axios from 'axios';
 
 export interface GetBooksParams {
   page?: number;
@@ -24,25 +23,17 @@ export const put = async (book: Partial<Book>) => {
 };
 
 export const checkStatus = async (id: string) => {
-  return await axios.get(`${API_URL}/exits/${id}`);
+  return await axios.get(`${API_URL}/exists/${id}`);
 };
 
 export const remove = async (id: string) => {
   return await axios.delete(`${API_URL}/${id}`);
 };
 
-const GOOGLE_KEY = 'AIzaSyDaGGtPkgtg3dT4n5jp8ZfKZsT0ETTsHIc';
-
 export const searchBooksByTerm = async (term: string) => {
-  delete Axios.defaults.headers['Authorization'];
-  return await Axios.get(
-    `https://www.googleapis.com/books/v1/volumes?key=${GOOGLE_KEY}&q=${term}&printType=books`,
-  );
+  return await axios.get(`${API_URL}/search/${term}`);
 };
 
 export const getSingleBook = async (id: string) => {
-  delete Axios.defaults.headers['Authorization'];
-  return await Axios.get(
-    `https://www.googleapis.com/books/v1/volumes/${id}?key=${GOOGLE_KEY}`,
-  );
+  return await axios.get(`${API_URL}/${id}`);
 };

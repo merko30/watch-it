@@ -2,8 +2,10 @@ import {combineReducers} from '@reduxjs/toolkit';
 
 import auth from './auth';
 import books from './books';
+import ui from './ui';
 
 const reducer = combineReducers({
+  ui,
   auth,
   books,
 });
