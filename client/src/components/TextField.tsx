@@ -1,15 +1,15 @@
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useState} from 'react';
 import {
   StyleSheet,
   View,
   TextInput,
-  Text,
   TextInputProps,
   NativeSyntheticEvent,
   TextInputFocusEventData,
   StyleProp,
   ViewStyle,
   Platform,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Animated, {
   useValue,
@@ -20,8 +20,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import {timing, useClock} from 'react-native-redash';
 import {useTheme} from '@shopify/restyle';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import theme, {Theme} from '../theme';
+import theme, {Theme, Box, Text} from '../theme';
 
 const LINE_HEIGHT = 16;
 const PADDING_VERTICAL = 8;
@@ -29,10 +30,10 @@ const MARGIN_VERTICAL = 5;
 
 const styles = StyleSheet.create({
   input: {
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.lightGray,
     paddingVertical: PADDING_VERTICAL,
     lineHeight: LINE_HEIGHT,
+    flex: 1,
+    position: 'relative',
   },
   labelStyle: {
     marginVertical: MARGIN_VERTICAL,
@@ -43,6 +44,11 @@ const styles = StyleSheet.create({
     borderColor: theme.colors.lightGray,
     borderRadius: theme.borderRadii.s,
     paddingLeft: 5,
+  },
+  eye: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
   },
 });
 
@@ -65,7 +71,8 @@ const TextField = ({
   animateLabel = true,
   ...props
 }: TextFieldProps) => {
-  const {colors, fontSizes} = useTheme<Theme>();
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const {colors} = useTheme<Theme>();
   const ref = useRef<TextInput>(null);
   const TRANSLATE = MARGIN_VERTICAL + PADDING_VERTICAL + LINE_HEIGHT;
   const focused = useValue<0 | 1>(0);
@@ -104,6 +111,15 @@ const TextField = ({
     }
   };
 
+  const minHeight =
+    Platform.OS === 'ios' && numberOfLines
+      ? LINE_HEIGHT * numberOfLines
+      : undefined;
+
+  const textAreaStyles = isTextArea
+    ? {...styles.textarea, paddingLeft: 5}
+    : null;
+  const hidePassword = props.secureTextEntry && !passwordVisible;
   return (
     <View style={containerStyle}>
       {label && (
@@ -119,34 +135,40 @@ const TextField = ({
           {label}
         </Animated.Text>
       )}
-      <TextInput
-        {...props}
-        numberOfLines={Platform.OS === 'ios' ? undefined : numberOfLines}
-        ref={ref}
-        placeholderTextColor={colors.foreground}
-        style={[
-          props.style,
-          styles.input,
-
-          {
-            color: colors.foreground,
-            minHeight:
-              Platform.OS === 'ios' && numberOfLines
-                ? LINE_HEIGHT * numberOfLines
-                : undefined,
-            ...(isTextArea ? {...styles.textarea, paddingLeft: 5} : null),
-          },
-        ]}
-        onFocus={() => focused.setValue(1)}
-        onBlur={onBlur}
-      />
+      <Box
+        flexDirection="row"
+        borderBottomColor="lightGray"
+        borderBottomWidth={1}
+        alignItems="center">
+        <TextInput
+          {...props}
+          numberOfLines={Platform.OS === 'ios' ? undefined : numberOfLines}
+          ref={ref}
+          placeholderTextColor={colors.foreground}
+          style={[
+            props.style,
+            styles.input,
+            textAreaStyles,
+            {
+              color: colors.foreground,
+              minHeight,
+            },
+          ]}
+          onFocus={() => focused.setValue(1)}
+          onBlur={onBlur}
+          secureTextEntry={hidePassword}
+        />
+        {props.secureTextEntry && (
+          <TouchableWithoutFeedback
+            style={styles.eye}
+            onPressIn={() => setPasswordVisible(true)}
+            onPressOut={() => setPasswordVisible(false)}>
+            <Icon name="eye-outline" color={colors.foreground} size={24} />
+          </TouchableWithoutFeedback>
+        )}
+      </Box>
       {touched && error && (
-        <Text
-          style={{
-            fontSize: fontSizes.small,
-            marginTop: 10,
-            color: colors.negative,
-          }}>
+        <Text variant="small" color="negative" marginTop="s">
           {error}
         </Text>
       )}

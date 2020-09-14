@@ -1,11 +1,6 @@
 import React from 'react';
 import {Formik, FormikValues} from 'formik';
-import {
-  View,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import {ActivityIndicator} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from '@shopify/restyle';
 import {StackScreenProps} from '@react-navigation/stack';
@@ -19,6 +14,7 @@ import {resetPassword} from '../store/reducers/auth';
 import {Theme} from '../theme';
 
 import {AuthStackParamList} from 'src/navigation/AuthNavigator';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const resetPasswordSchema = Yup.object().shape({
   password: Yup.string().required('Type your new password'),
@@ -47,9 +43,7 @@ const ResetPassword = ({
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+    <KeyboardAwareScrollView style={{flex: 1}}>
       <AuthLayout
         back
         title="Reset your password"
@@ -67,7 +61,7 @@ const ResetPassword = ({
             values,
           }) => {
             return (
-              <View style={{flex: 1.4}}>
+              <>
                 {!loading ? (
                   <>
                     {error && <Message variant="negative" message={error} />}
@@ -83,6 +77,7 @@ const ResetPassword = ({
                       touched={touched['password']}
                       value={values.password}
                       label="Password"
+                      secureTextEntry
                     />
 
                     <TextField
@@ -94,6 +89,7 @@ const ResetPassword = ({
                       value={values.confirmPassword}
                       label="Confirm your password"
                       onSubmitEditing={handleSubmit}
+                      secureTextEntry
                     />
 
                     <Button
@@ -111,12 +107,12 @@ const ResetPassword = ({
                 ) : (
                   <ActivityIndicator size="large" />
                 )}
-              </View>
+              </>
             );
           }}
         </Formik>
       </AuthLayout>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

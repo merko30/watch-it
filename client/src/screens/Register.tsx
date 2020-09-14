@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Platform, KeyboardAvoidingView} from 'react-native';
+import {View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useTheme} from '@shopify/restyle';
@@ -12,6 +12,7 @@ import {register} from '../store/reducers/auth';
 import {RootState} from '../store/reducers';
 
 import {Theme} from '../theme';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const registerSchema = Yup.object().shape({
   password: Yup.string()
@@ -36,9 +37,7 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+    <KeyboardAwareScrollView style={{flex: 1}}>
       <AuthLayout back title="Join today" text="Track your bookshelves">
         <Formik
           initialValues={{
@@ -116,7 +115,7 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
           }}
         </Formik>
       </AuthLayout>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

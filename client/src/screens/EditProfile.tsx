@@ -1,41 +1,21 @@
 import React, {useState, useEffect} from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useTheme} from '@shopify/restyle';
 import {useSelector, useDispatch} from 'react-redux';
 import {useFormik} from 'formik';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {StackScreenProps} from '@react-navigation/stack';
 
-import {TextField, RoundedIcon, Message, Avatar} from '../components';
+import {TextField, RoundedIcon, Message, Avatar, Button} from '../components';
 
 import {RootState} from '../store/reducers';
 import {changeAvatar, updateUser} from '../store/reducers/auth';
 
-import theme, {Theme, Box, Text} from '../theme';
+import {Theme, Box} from '../theme';
 
 import {User} from '../types';
 
 import pickImage from '../utils/pickImage';
-
-// const {width} = Dimensions.get('window');
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-    alignItems: 'center',
-    paddingVertical: theme.spacing.xl,
-  },
-  changeAvatar: {
-    marginVertical: theme.spacing.s,
-  },
-});
 
 interface EditProfileProps {}
 
@@ -104,10 +84,16 @@ const EditProfile = ({
     onSubmit,
   });
 
+  const onChangeAvatar = () => {
+    pickImage('Select your profile photo', (p) => {
+      dispatch(changeAvatar(p));
+    });
+  };
+
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+    <KeyboardAwareScrollView
+      style={{flex: 1}}
+      contentContainerStyle={{flex: 1}}>
       <Box
         flex={1}
         backgroundColor="background"
@@ -121,24 +107,17 @@ const EditProfile = ({
             source={{uri: `http://192.168.1.8:5000/uploads/${user!.avatar}`}}
           />
         )}
-        <TouchableOpacity
-          onPress={() =>
-            pickImage('Select your profile photo', (p) => {
-              dispatch(changeAvatar(p));
-            })
-          }>
-          <Text color="foreground" style={styles.changeAvatar}>
-            Change avatar
-          </Text>
-        </TouchableOpacity>
-        <View
-          style={{
-            flex: 1,
-            width: '100%',
-            marginVertical: spacing.xl,
-            alignSelf: 'flex-start',
-            paddingHorizontal: spacing.m,
-          }}>
+        <Button
+          onPress={onChangeAvatar}
+          label="Change avatar"
+          color="transparent"
+        />
+        <Box
+          flex={1}
+          width="100%"
+          marginVertical="xl"
+          alignSelf="flex-start"
+          paddingHorizontal="m">
           {error && <Message variant="negative" message={error} />}
           {message && <Message variant="positive" message={message} />}
           {/* <KeyboardAvoidingView
@@ -176,11 +155,9 @@ const EditProfile = ({
             numberOfLines={5}
             multiline={true}
           />
-
-          {/* </KeyboardAvoidingView> */}
-        </View>
+        </Box>
       </Box>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

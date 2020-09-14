@@ -3,6 +3,7 @@ import React from 'react';
 import {Box} from '../theme';
 
 import AuthHeader from './AuthHeader';
+import {ScrollView, View} from 'react-native';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -14,8 +15,8 @@ interface AuthLayoutProps {
 const AuthLayout = ({children, title, text, back}: AuthLayoutProps) => {
   return (
     <Box flex={1} paddingHorizontal="l" backgroundColor="background">
-      <AuthHeader back title={title} text={text} />
-      {children}
+      <AuthHeader back={back} title={title} text={text} />
+      <View style={{flex: 2}}>{children}</View>
     </Box>
   );
 };

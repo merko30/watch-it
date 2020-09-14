@@ -26,7 +26,6 @@ const BookCover = ({uri, style, ratio}: BookCoverProps) => {
       source={{uri}}
       style={[{height, width}, style]}
       loadingIndicatorSource={paper}
-      defaultSource={paper}
     />
   );
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, KeyboardAvoidingView, Platform} from 'react-native';
+import {View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {StackScreenProps} from '@react-navigation/stack';
 
@@ -15,6 +15,7 @@ import {RootState} from '../store/reducers';
 import {Theme} from '../theme';
 
 import {LoginData} from '../types';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const loginSchema = Yup.object().shape({
   password: Yup.string().required('Password is required field'),
@@ -34,9 +35,7 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+    <KeyboardAwareScrollView style={{flex: 1}}>
       <AuthLayout title="Welcome back" text="We're happy to see you again.">
         <Formik
           initialValues={{emailOrUsername: '', password: ''}}
@@ -51,7 +50,7 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
             values,
           }) => {
             return (
-              <View style={{flex: 2}}>
+              <>
                 {error && <Message variant="negative" message={error} />}
                 {message && <Message variant="positive" message={message} />}
 
@@ -113,12 +112,12 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
                     label="Forgot password?"
                   />
                 </View>
-              </View>
+              </>
             );
           }}
         </Formik>
       </AuthLayout>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 

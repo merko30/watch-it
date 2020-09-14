@@ -1,11 +1,6 @@
 import React from 'react';
 import {Formik} from 'formik';
-import {
-  View,
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native';
+import {View, ActivityIndicator} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from '@shopify/restyle';
 import * as Yup from 'yup';
@@ -16,6 +11,7 @@ import {RootState} from '../store/reducers';
 import {sendResetPasswordMail} from '../store/reducers/auth';
 
 import {Theme} from '../theme';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const forgotPasswordSchema = Yup.object().shape({
   email: Yup.string().required('This field is required').email('Invalid email'),
@@ -36,9 +32,7 @@ const ForgotPassword = (props: ForgotPasswordProps) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
-      style={{flex: 1}}>
+    <KeyboardAwareScrollView style={{flex: 1}}>
       <AuthLayout
         back
         title="Forgot your password"
@@ -94,7 +88,7 @@ const ForgotPassword = (props: ForgotPasswordProps) => {
           }}
         </Formik>
       </AuthLayout>
-    </KeyboardAvoidingView>
+    </KeyboardAwareScrollView>
   );
 };
 
