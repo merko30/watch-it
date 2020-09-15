@@ -11,8 +11,8 @@ In order to run the application, you need to do few things:
     * SMTP_PASSWORD=password
     * SMTP_HOST=host
     * SMTP_PORT=port
-    * GOOGLE_BOOKS_API_KEY=key
-    * GOOGLE_BOOKS_API_BASE_URL=https://www.googleapis.com/books/v1/volumes
+    * GOODREADS_API_KEY=key
+    * GOODREADS_API_BASE_URL=https://www.goodreads.com
 * Add your API endpoint in client/config/axios.ts - you'll get the IP address on server start, add the port, eg. http://192.168.1.8:5000/api 
 * `npm i`in root and client folder
 * `pod install` in ios folder - for iOS
