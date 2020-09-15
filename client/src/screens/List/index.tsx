@@ -54,7 +54,7 @@ const List = ({
                 <Book
                   book={item}
                   last={last}
-                  onSwipe={() => dispatch(deleteBook(item.bookId))}
+                  onSwipe={() => dispatch(deleteBook(item.id))}
                 />
               );
             }}

@@ -109,7 +109,7 @@ const Book = ({book, last, onSwipe}: BookProps) => {
             <BookSlideIcon
               backgroundColor="gray"
               style={{width: divide(width, 2)}}
-              onPress={() => navigation.navigate('Details', {id: book.bookId})}
+              onPress={() => navigation.navigate('Details', {id: book.id})}
               icon="information-circle-outline"
             />
             <BookSlideIcon

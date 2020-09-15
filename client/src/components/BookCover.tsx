@@ -1,14 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleProp, ImageStyle} from 'react-native';
+import {
+  Image,
+  StyleProp,
+  ImageStyle,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {paper} from '../images';
 
 interface BookCoverProps {
   uri?: string;
   ratio?: number;
   style?: StyleProp<ImageStyle>;
+  onPress?: () => void;
 }
 
-const BookCover = ({uri, style, ratio}: BookCoverProps) => {
+const BookCover = ({uri, style, ratio, onPress}: BookCoverProps) => {
   const [width, setWidth] = useState(80);
   const [height, setHeight] = useState(120);
 
@@ -22,11 +28,13 @@ const BookCover = ({uri, style, ratio}: BookCoverProps) => {
   }, []);
 
   return (
-    <Image
-      source={{uri}}
-      style={[{height, width}, style]}
-      loadingIndicatorSource={paper}
-    />
+    <TouchableWithoutFeedback onPress={onPress}>
+      <Image
+        source={{uri}}
+        style={[{height, width}, style]}
+        loadingIndicatorSource={paper}
+      />
+    </TouchableWithoutFeedback>
   );
 };
 

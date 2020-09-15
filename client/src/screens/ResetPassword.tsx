@@ -43,7 +43,7 @@ const ResetPassword = ({
   };
 
   return (
-    <KeyboardAwareScrollView style={{flex: 1}}>
+    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
       <AuthLayout
         back
         title="Reset your password"

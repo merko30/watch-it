@@ -1,9 +1,10 @@
 const fetch = require("node-fetch");
+const xml2js = require("xml2js");
 
 const Book = require("../models/book");
 
 const getAllBooks = async (req, res, next) => {
-  let query = { reader: req.user._id };
+  let query = { user: req.user._id };
 
   query = { ...query, ...req.query };
 
@@ -16,10 +17,11 @@ const getAllBooks = async (req, res, next) => {
 };
 
 const createOrUpdate = async (req, res, next) => {
+  console.log(req.body);
   try {
     const book = await Book.findOneAndUpdate(
-      { bookId: req.body.bookId },
-      { ...req.body, reader: req.user._id },
+      { id: req.body.id },
+      { ...req.body, user: req.user._id },
       { upsert: true, new: true }
     );
     res.json({ book });
@@ -31,8 +33,8 @@ const createOrUpdate = async (req, res, next) => {
 const checkBook = async (req, res, next) => {
   try {
     const book = await Book.findOne({
-      bookId: req.params.id,
-      reader: req.user._id,
+      id: req.params.id,
+      user: req.user._id,
     });
     if (book) {
       res.json({ bookStatus: book.status });
@@ -46,7 +48,7 @@ const checkBook = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    await Book.findOneAndDelete({ bookId: req.params.id });
+    await Book.findOneAndDelete({ id: req.params.id });
     res.json({ ok: true });
   } catch (error) {
     next(error);
@@ -55,13 +57,32 @@ const remove = async (req, res, next) => {
 
 const getSingleBook = async (req, res, next) => {
   try {
-    const book = await (
-      await fetch(
-        `${process.env.GOOGLE_BOOKS_API_BASE_URL}/${req.params.id}?key=${process.env.GOOGLE_BOOKS_API_KEY}`,
-        { method: "GET" }
-      )
-    ).json();
-    res.json({ book });
+    const response = await fetch(
+      `${process.env.GOODREADS_API_BASE_URL}/book/show/${req.params.id}?key=${process.env.GOODREADS_API_KEY}`,
+      { method: "GET", mode: "no-cors" }
+    );
+
+    const xml = await response.text();
+
+    xml2js.parseString(
+      xml,
+      { trim: true, explicitArray: false, ignoreAttrs: true },
+      (err, data) => {
+        if (err) {
+          throw new Error("Something went wrong");
+        }
+
+        const response = data.GoodreadsResponse.book;
+        Object.entries(response.authors).map((t) => {
+          if (Array.isArray(t[1])) {
+            response.authors = [...t[1]];
+          } else {
+            response.authors = [t[1]];
+          }
+        });
+        res.json(response);
+      }
+    );
   } catch (error) {
     next(error);
   }
@@ -70,16 +91,29 @@ const getSingleBook = async (req, res, next) => {
 const search = async (req, res, next) => {
   try {
     const response = await fetch(
-      `${process.env.GOOGLE_BOOKS_API_BASE_URL}?key=${process.env.GOOGLE_BOOKS_API_KEY}&projection=full&q=${req.params.term}`,
-      { method: "GET" }
+      `${process.env.GOODREADS_API_BASE_URL}/search/index.xml?&q=${req.params.term}&key=${process.env.GOODREADS_API_KEY}`,
+      { method: "GET", mode: "no-cors" }
     );
 
-    if (response.status === 200) {
-      const books = await response.json();
-      res.json({ books });
-    } else {
-      throw new Error("Something went wrong");
-    }
+    const xml = await response.text();
+
+    xml2js.parseString(
+      xml,
+      { explicitArray: false, normalize: true, ignoreAttrs: true },
+      (err, data) => {
+        if (err) {
+          throw new Error("Something went wrong");
+        }
+        const response = data.GoodreadsResponse.search.results.work.map(
+          ({ best_book, ...rest }) => ({
+            ...rest,
+            ...best_book,
+          })
+        );
+
+        res.json(response);
+      }
+    );
   } catch (error) {
     next(error);
   }

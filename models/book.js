@@ -2,15 +2,17 @@ const mongoose = require("mongoose");
 var schema = mongoose.Schema;
 
 var bookSchema = new schema({
-  title: String,
-  authors: [String],
+  title: { type: String, required: true },
+  authors: { type: [String], required: true },
   status: {
+    required: true,
     type: String,
     enum: ["wishlist", "reading", "read"],
   },
-  bookId: String,
-  // bookId is id from Google books API
-  reader: String,
+  // ===== GOODREADS ID =====
+  id: { required: true, type: String },
+  // ===== GOODREADS ID =====
+  user: { type: schema.Types.ObjectId, ref: "User" },
   thumbnail: String,
 });
 

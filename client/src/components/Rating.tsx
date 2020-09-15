@@ -1,16 +1,17 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, ViewStyle, StyleProp} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaskedView from '@react-native-community/masked-view';
 
 interface RatingProps {
   rating: number;
   size?: number;
+  style?: StyleProp<ViewStyle>;
 }
 
-const Rating = ({rating, size = 18}: RatingProps) => {
+const Rating = ({rating, size = 18, style}: RatingProps) => {
   return (
-    <View style={{flexDirection: 'row', marginVertical: 8}}>
+    <View style={[{flexDirection: 'row', marginVertical: 8}, style]}>
       <MaskedView
         maskElement={
           <View style={{flexDirection: 'row'}}>

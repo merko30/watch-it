@@ -35,10 +35,10 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
   };
 
   return (
-    <KeyboardAwareScrollView style={{flex: 1}}>
+    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
       <AuthLayout title="Welcome back" text="We're happy to see you again.">
         <Formik
-          initialValues={{emailOrUsername: '', password: ''}}
+          initialValues={{emailOrUsername: 'joe7@gmail.com', password: ''}}
           validationSchema={loginSchema}
           onSubmit={onSubmit}>
           {({

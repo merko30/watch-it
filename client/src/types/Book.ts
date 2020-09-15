@@ -8,32 +8,32 @@ export enum Loading {
 
 export interface Book {
   _id: string;
-  bookId: string;
+  id: string;
   title: string;
   authors: string[];
-  reader: string;
+  user: string;
   status: BookStatus;
-  thumbnail?: string;
+  thumbnail: string;
 }
 
-export interface GoogleBook {
+export interface Author {
   id: string;
-  volumeInfo: {
-    title: string;
-    categories: string[];
-    imageLinks: {
-      smallThumbnail: string;
-      thumbnail: string;
-      small: string;
-      medium: string;
-      large: string;
-      extraLarge: string;
-    };
-    authors: string[];
-    description: string;
-    averageRating?: number;
-    pageCount: number;
-    mainCategory?: string;
-    ratingsCount?: number;
+  name: string;
+}
+
+export interface GoodreadsBook {
+  id: string;
+  isbn?: string;
+  image_url: string;
+  small_image_url: string;
+  publisher: string;
+  title: string;
+  authors: Author[];
+  description: string;
+  average_rating: number;
+  num_pages: number;
+  ratings_count: number;
+  similar_books: {
+    book: Partial<GoodreadsBook>[];
   };
 }

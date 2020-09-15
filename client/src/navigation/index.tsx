@@ -69,9 +69,12 @@ const Navigation = () => {
             <Stack.Screen
               name="Details"
               options={{
-                ...BLANK_HEADER,
-                headerTintColor: colors.white,
-                headerBackImage: () => <BackIcon color={colors.white} />,
+                headerStyle: {
+                  ...BLANK_HEADER.headerStyle,
+                  backgroundColor: colors.backgroundThree,
+                },
+                headerTintColor: colors.foreground,
+                headerBackImage: () => <BackIcon color={colors.foreground} />,
                 title: 'Book details',
               }}
               component={Details}

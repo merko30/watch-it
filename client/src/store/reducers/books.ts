@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {Book, BookStatus, GoogleBook, Loading} from '../../types';
+import {Book, BookStatus, GoodreadsBook, Loading} from '../../types';
 
 import {
   GetBooksParams,
@@ -18,11 +18,11 @@ import errorHandler from '../../utils/errorHandler';
 
 export interface State {
   books: Book[];
-  searchResults: any[];
+  searchResults: Partial<GoodreadsBook>[];
   loadings: Record<Loading, boolean>;
   error: string | null;
   bookStatus: null | BookStatus;
-  book: GoogleBook | null;
+  book: GoodreadsBook | null;
 }
 
 const initialState: State = {
@@ -59,6 +59,7 @@ const books = createSlice({
       state.bookStatus = action.payload;
     },
     getBooksSuccess: (state, action: PayloadAction<Book[]>) => {
+      console.log(action.payload);
       // state.books = groupBooksInShelves(state.books, action.payload);
       state.books = action.payload;
       state.loadings[Loading.COMMON] = false;
@@ -74,14 +75,14 @@ const books = createSlice({
     },
     deleteBookSuccess: (state, action: PayloadAction<string>) => {
       // state.books = groupBooksInShelves(state.books,ungroupBooks(state.books).filter((b) => b._id !== action.payload));
-      state.books = state.books.filter((b) => b.bookId !== action.payload);
+      state.books = state.books.filter((b) => b.id !== action.payload);
       state.loadings[Loading.DELETE] = false;
     },
-    searchSuccess: (state, action: PayloadAction<GoogleBook[]>) => {
+    searchSuccess: (state, action: PayloadAction<GoodreadsBook[]>) => {
       state.searchResults = action.payload;
       state.loadings[Loading.STATUS] = false;
     },
-    getBookSuccess: (state, action: PayloadAction<GoogleBook>) => {
+    getBookSuccess: (state, action: PayloadAction<GoodreadsBook>) => {
       state.book = action.payload;
       state.loadings[Loading.COMMON] = false;
     },
@@ -119,6 +120,7 @@ export const addOrUpdateBook = (book: Partial<Book>): AppThunk => async (
   dispatch,
 ) => {
   dispatch(startLoading({}));
+  console.log(book);
   try {
     const {
       data: {book: newBook},
@@ -151,13 +153,11 @@ export const deleteBook = (id: string): AppThunk => async (dispatch) => {
   }
 };
 
-export const getBook = (id: string): AppThunk => async (dispatch) => {
+export const getBook = (isbn: string): AppThunk => async (dispatch) => {
   dispatch(startLoading({}));
   try {
-    const {
-      data: {book},
-    } = await getSingleBook(id);
-    dispatch(getBookSuccess(book));
+    const {data} = await getSingleBook(isbn);
+    dispatch(getBookSuccess(data));
   } catch (err) {
     dispatch(error({error: errorHandler(err)}));
   }
@@ -166,12 +166,8 @@ export const getBook = (id: string): AppThunk => async (dispatch) => {
 export const search = (term: string): AppThunk => async (dispatch) => {
   dispatch(startLoading({key: Loading.STATUS}));
   try {
-    const {
-      data: {
-        books: {items: books},
-      },
-    } = await searchBooksByTerm(term);
-    dispatch(searchSuccess(books));
+    const {data} = await searchBooksByTerm(term);
+    dispatch(searchSuccess(data));
   } catch (err) {
     dispatch(error({error: errorHandler(err), loadingKey: Loading.STATUS}));
   }

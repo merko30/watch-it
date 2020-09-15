@@ -39,7 +39,9 @@ function App() {
       await checkAuth();
       await checkTheme();
 
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 2000);
     })();
   }, []);
 

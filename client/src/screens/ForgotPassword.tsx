@@ -21,7 +21,7 @@ interface ForgotPasswordProps {}
 
 const ForgotPassword = (props: ForgotPasswordProps) => {
   const dispatch = useDispatch();
-  const {fontSizes} = useTheme<Theme>();
+  const {fontSizes, colors} = useTheme<Theme>();
 
   const {loading, error, message} = useSelector(
     (state: RootState) => state.auth,
@@ -32,7 +32,7 @@ const ForgotPassword = (props: ForgotPasswordProps) => {
   };
 
   return (
-    <KeyboardAwareScrollView style={{flex: 1}}>
+    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
       <AuthLayout
         back
         title="Forgot your password"
@@ -50,7 +50,7 @@ const ForgotPassword = (props: ForgotPasswordProps) => {
             values,
           }) => {
             return (
-              <View style={{flex: 1.4}}>
+              <>
                 {!loading ? (
                   <>
                     {error && <Message variant="negative" message={error} />}
@@ -81,9 +81,9 @@ const ForgotPassword = (props: ForgotPasswordProps) => {
                     />
                   </>
                 ) : (
-                  <ActivityIndicator size="large" />
+                  <ActivityIndicator size="large" color={colors.foreground} />
                 )}
-              </View>
+              </>
             );
           }}
         </Formik>

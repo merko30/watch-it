@@ -20,12 +20,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import Setting from './components/Setting';
 
-import {
-  Theme as ThemeEnum,
-  toggleTheme,
-  FontSize,
-  setFontSize,
-} from '../../store/reducers/ui';
+import {Theme as ThemeEnum, toggleTheme} from '../../store/reducers/ui';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required('Email is required').email('Invalid email'),
@@ -75,24 +70,16 @@ const handleYupErrors = (
   });
 };
 
-const FONT_SIZES = [
-  {key: FontSize.SMALL, label: 'Small'},
-  {key: FontSize.MEDIUM, label: 'Medium'},
-  {key: FontSize.LARGE, label: 'Large'},
-];
-
 interface SettingsProps
   extends StackScreenProps<ProfileNavigatorParamList, 'Settings'> {}
 
 const Settings = (props: SettingsProps) => {
   const {colors, spacing} = useTheme<Theme>();
   const dispatch = useDispatch();
-  const {message, error, theme, fontSize} = useSelector(
-    ({auth, ui}: RootState) => ({
-      ...ui,
-      ...auth,
-    }),
-  );
+  const {message, error, theme} = useSelector(({auth, ui}: RootState) => ({
+    ...ui,
+    ...auth,
+  }));
 
   const [darkMode, setDarkMode] = useState(theme === ThemeEnum.DARK);
 
@@ -103,12 +90,6 @@ const Settings = (props: SettingsProps) => {
     setDarkMode(val);
 
     dispatch(toggleTheme());
-  };
-
-  const onChangeFontSize = async (size: FontSize) => {
-    await AsyncStorage.setItem('fontSize', size);
-
-    dispatch(setFontSize(size));
   };
 
   const {
@@ -173,13 +154,6 @@ const Settings = (props: SettingsProps) => {
           type="checkbox"
           checked={darkMode}
           onChange={onChangeTheme}
-        />
-        <Setting
-          label="Font size"
-          type="list"
-          value={fontSize}
-          items={FONT_SIZES}
-          onChange={onChangeFontSize}
         />
       </Section>
       <Section title="Account settings" icon="person-outline">

@@ -1,98 +1,56 @@
-import React, {useEffect, useState} from 'react';
-import {View, TouchableOpacity, StyleSheet, Image} from 'react-native';
+import React from 'react';
+import {TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-
-import {Authors, BookCover, Rating} from '../../../components';
-
-import {GoogleBook} from '../../../types/Book';
-
-import theme, {Box, Text, Theme} from '../../../theme';
 import {useTheme} from '@shopify/restyle';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'row',
-    marginVertical: theme.spacing.l,
-    padding: theme.spacing.m,
-    borderRadius: theme.borderRadii.m,
-    ...theme.shadows.small,
-  },
-  background: {
-    flex: 1,
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    zIndex: -1,
-    minHeight: 90,
-    backgroundColor: theme.colors.lightGray,
-  },
-  title: {
-    color: theme.colors.dark,
-    fontSize: theme.fontSizes.textLg,
-    paddingRight: theme.spacing.m,
-  },
-  author: {
-    fontSize: theme.fontSizes.text,
-    color: theme.colors.primary,
-  },
-});
+import {BookCover, Rating} from '../../../components';
+
+import {GoodreadsBook, Author} from '../../../types/Book';
+
+import {Box, Text, Theme} from '../../../theme';
 
 interface BookProps {
-  book: GoogleBook;
+  book: Partial<GoodreadsBook> & {author: Author};
 }
 
-const IMAGE_RATIO = 0.6;
+const IMAGE_RATIO = 0.7;
 
 const Book = ({book}: BookProps) => {
-  const {spacing} = useTheme<Theme>();
-  const [width, setWidth] = useState(80);
+  const {spacing, colors, borderRadii, shadows} = useTheme<Theme>();
   const {navigate} = useNavigation();
 
-  useEffect(() => {
-    if (book) {
-      if (book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.thumbnail) {
-        Image.getSize(book.volumeInfo.imageLinks.thumbnail, (width) => {
-          setWidth(width * IMAGE_RATIO);
-        });
-      }
-    }
-  }, [book]);
-
+  console.log(book.average_rating);
   return (
     <TouchableOpacity
       onPress={() => navigate('Details', {id: book.id})}
-      style={styles.container}>
-      {book.volumeInfo.imageLinks && book.volumeInfo.imageLinks.thumbnail ? (
-        <BookCover uri={book.volumeInfo.imageLinks.thumbnail} />
-      ) : (
-        <BookCover />
-      )}
-      <View style={styles.background}>
-        <View
-          style={{
-            paddingTop: 8,
-            paddingLeft: spacing.m * 2 + width,
-          }}>
-          <Box flexDirection="row">
-            {book.volumeInfo.title && (
-              <Text style={styles.title} numberOfLines={2}>
-                {book.volumeInfo.title}
-              </Text>
-            )}
-          </Box>
-          {book.volumeInfo.authors && (
-            <Authors
-              numberOfLines={1}
-              textStyle={styles.author}
-              authors={book.volumeInfo.authors}
+      style={{
+        marginVertical: spacing.m,
+        padding: spacing.m,
+        backgroundColor: colors.backgroundThree,
+        borderRadius: borderRadii.m,
+        ...shadows.large,
+        shadowColor: colors.gray,
+      }}>
+      <Box flexDirection="row">
+        <BookCover
+          uri={book.image_url!}
+          style={{borderRadius: borderRadii.m}}
+          ratio={IMAGE_RATIO}
+        />
+        <Box marginLeft="m" flexShrink={1} width="100%">
+          {book.title! && (
+            <Text variant="subTitle" numberOfLines={2}>
+              {book.title!}
+            </Text>
+          )}
+          {book.average_rating && (
+            <Rating
+              style={{alignSelf: 'flex-end', marginTop: 'auto'}}
+              rating={book.average_rating}
             />
           )}
-          {book.volumeInfo.averageRating && (
-            <Rating rating={book.volumeInfo.averageRating} />
-          )}
-        </View>
-      </View>
+        </Box>
+      </Box>
     </TouchableOpacity>
   );
 };

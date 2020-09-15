@@ -20,6 +20,7 @@ const palette = {
   darkGray: '#555',
   gray: '#666',
   lightGray: '#ececec',
+  lighterGray: '#f9f9f9',
 
   gold: 'gold',
   orange: 'orange',
@@ -30,6 +31,10 @@ const theme = createTheme({
     header: {
       fontSize: 36,
       fontFamily: 'Montserrat-SemiBold',
+    },
+    title: {
+      fontSize: 24,
+      fontfamily: 'Montserrat-SemiBold',
     },
     subTitle: {
       fontSize: 20,
@@ -99,7 +104,10 @@ const theme = createTheme({
   colors: {
     white: 'white',
     background: 'white',
+    backgroundTwo: palette.lightGray,
+    backgroundThree: palette.lighterGray,
     foreground: palette.darkestGray,
+    foregroundTwo: palette.darkerGray,
     foregroundBrown: palette.darkBrown,
     spacer: palette.lightGray,
     text: palette.gray,
@@ -109,6 +117,7 @@ const theme = createTheme({
     positiveLight: palette.greenLight,
     negative: palette.red,
     lightGray: palette.lightGray,
+    lighterGray: palette.lighterGray,
     gray: palette.gray,
     gold: palette.gold,
     dark: palette.darkestGray,
@@ -127,6 +136,7 @@ const theme = createTheme({
     m: 10,
     lg: 15,
     xl: 25,
+    xxl: 36,
   },
   breakpoints: {
     phone: 0,
@@ -139,7 +149,10 @@ const darkTheme: Theme = {
   colors: {
     ...theme.colors,
     background: palette.darkestGray,
+    backgroundTwo: palette.darkerGray,
+    backgroundThree: palette.darkGray,
     foreground: palette.lightGray,
+    foregroundTwo: palette.gray,
     foregroundBrown: palette.light,
     spacer: palette.darkerGray,
     primary: palette.brown,

@@ -37,7 +37,7 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
   };
 
   return (
-    <KeyboardAwareScrollView style={{flex: 1}}>
+    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
       <AuthLayout back title="Join today" text="Track your bookshelves">
         <Formik
           initialValues={{
