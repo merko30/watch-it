@@ -6,26 +6,23 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import {
-  useValue,
-  mix,
-  onGestureEvent,
-  withTransition,
-  withSpringTransition,
-} from 'react-native-redash';
 import Animated, {
-  useCode,
-  cond,
-  eq,
+  useValue,
   set,
   not,
-  interpolate,
-  call,
-  onChange,
   Extrapolate,
-  block,
+  useAnimatedGestureHandler,
+  interpolateNode,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue,
+  interpolate,
+  withSpring,
 } from 'react-native-reanimated';
-import {TapGestureHandler, State} from 'react-native-gesture-handler';
+import {
+  TapGestureHandler,
+  TapGestureHandlerStateChangeEvent,
+} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 
 import {Book} from '../../../types';
@@ -65,10 +62,10 @@ interface BookshelfProps {
   title: string;
   backgroundColor: ColorValue;
   name: string;
-  showAll: Animated.Node<0 | 1>;
+  showAll: Animated.SharedValue<number>;
   index: number;
   last: boolean;
-  y: Animated.Node<number>;
+  y: Animated.SharedValue<number>;
 }
 
 const INACTIVE_MARGIN = -BOOKSHELF_HEIGHT + 25;
@@ -87,66 +84,57 @@ const Bookshelf = ({
   const [booksArray, setBooksArray] = useState<Book[][]>([]);
   const navigation = useNavigation();
   const [gestureHandleActive, setGestureHandlerActive] = useState(true);
-  const open = useValue<0 | 1>(0);
-  const state = useValue(State.UNDETERMINED);
-  const gestureHandler = onGestureEvent({state});
+  const open = useSharedValue(0);
 
-  const transition = withTransition(open);
-  const marginBottom = useValue(0);
-  const marginBottomInterpolation = mix(
-    transition,
-    -BOOKSHELF_HEIGHT + TITLE_HEIGHT,
-    5,
+  const gestureHandler = useAnimatedGestureHandler<TapGestureHandlerStateChangeEvent>(
+    {
+      onStart: () => {
+        open.value = open.value ? withSpring(0) : withSpring(1);
+      },
+    },
   );
 
-  const translateY = useValue(0);
-  const translateYInterpolation = withSpringTransition(
-    interpolate(y, {
-      inputRange: [0, 1],
-      outputRange: [0, -0.2 * index],
-      extrapolateRight: Extrapolate.CLAMP,
-    }),
+  const translateYInterpolation = interpolate(
+    y.value,
+    [0, 1],
+    [0, -0.2 * index],
+    Extrapolate.CLAMP,
   );
 
-  const scale = useValue(0);
-  const scaleInterpolation = interpolate(index, {
-    inputRange: [0, 1, 2],
-    outputRange: [0.8, 0.9, 1],
-    extrapolate: Extrapolate.CLAMP,
-  });
+  const scaleInterpolation = interpolate(
+    index,
+    [0, 1, 2],
+    [0.8, 0.9, 1],
+    Extrapolate.CLAMP,
+  );
 
   useEffect(() => {
     setBooksArray(handleBooks(books));
   }, [books.length]);
 
-  useCode(() => [cond(eq(state, State.END), set(open, not(open)))], [
-    open,
-    state,
-    showAll,
-  ]);
+  const translateY = useDerivedValue(() => {
+    return showAll.value === 1
+      ? withSpring(0)
+      : withSpring(translateYInterpolation);
+  });
 
-  useCode(
-    () =>
-      block([
-        onChange(
-          showAll,
-          call([showAll], ([showAllBool]) => {
-            setGestureHandlerActive(!!showAllBool);
-          }),
-        ),
-        cond(eq(showAll, 1), [
-          set(scale, 1),
-          set(marginBottom, marginBottomInterpolation),
-          set(translateY, 0),
-        ]),
-        cond(eq(showAll, 0), [
-          set(scale, scaleInterpolation),
-          set(marginBottom, INACTIVE_MARGIN),
-          set(translateY, translateYInterpolation),
-        ]),
-      ]),
-    [showAll],
-  );
+  const scale = useDerivedValue(() => {
+    return showAll.value === 1 ? withSpring(1) : withSpring(scaleInterpolation);
+  });
+
+  const marginBottom = useDerivedValue(() => {
+    const marginBottomInterpolation = interpolate(
+      open.value,
+      [0, 1],
+      [-BOOKSHELF_HEIGHT + TITLE_HEIGHT, 5],
+      Extrapolate.CLAMP,
+    );
+    return showAll.value === 1 ? marginBottomInterpolation : INACTIVE_MARGIN;
+  }, [open.value, showAll.value]);
+
+  useEffect(() => {
+    setGestureHandlerActive(!!showAll.value);
+  });
 
   const renderBook = (item: Book[]) => {
     return (
@@ -174,18 +162,19 @@ const Bookshelf = ({
     return bookArrays;
   };
 
+  const style = useAnimatedStyle(() => ({
+    backgroundColor,
+    marginBottom: !last ? marginBottom.value : 0,
+    transform: [{scale: scale.value}, {translateY: translateY.value}],
+  }));
+
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          backgroundColor,
-          marginBottom: !last ? marginBottom : 0,
-          transform: [{scale, translateY}],
-        },
-      ]}>
+    <Animated.View style={[styles.container, style]}>
       <View style={styles.row}>
-        <TapGestureHandler {...gestureHandler} enabled={gestureHandleActive}>
+        <TapGestureHandler
+          onHandlerStateChange={gestureHandler}
+          // enabled={gestureHandleActive}
+        >
           <Animated.View>
             <Text color="foreground" variant="body" style={styles.title}>
               {title}

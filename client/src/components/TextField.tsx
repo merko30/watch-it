@@ -11,14 +11,19 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
+import {useTiming} from 'react-native-redash';
 import Animated, {
   useValue,
   useCode,
   cond,
   eq,
   set,
+  useSharedValue,
+  useDerivedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
 } from 'react-native-reanimated';
-import {timing, useClock} from 'react-native-redash';
 import {useTheme} from '@shopify/restyle';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -38,6 +43,7 @@ const styles = StyleSheet.create({
   labelStyle: {
     marginVertical: MARGIN_VERTICAL,
     fontWeight: '600',
+    color: theme.colors.background,
   },
   textarea: {
     borderWidth: 1,
@@ -75,41 +81,25 @@ const TextField = ({
   const {colors} = useTheme<Theme>();
   const ref = useRef<TextInput>(null);
   const TRANSLATE = MARGIN_VERTICAL + PADDING_VERTICAL + LINE_HEIGHT;
-  const focused = useValue<0 | 1>(0);
-  const translateY = useValue(TRANSLATE);
-  const clock = useClock();
+  const focused = useSharedValue(0);
   const isTextArea = props.multiline;
   // const color = mixColor(focused, 'rgb(0,0,0)', 'rgb(0,0,0)', 'rgb');
 
   // const fontWeight = mix(focused, 400, 600);
 
-  useCode(
-    () => [
-      cond(
-        eq(focused, 1),
-        [set(translateY, timing({clock, from: translateY, to: 0}))],
-        [set(translateY, timing({clock, from: translateY, to: TRANSLATE}))],
-      ),
-    ],
-    [focused],
-  );
+  const translateY = useDerivedValue(() => {
+    return focused.value === 1 ? 0 : TRANSLATE;
+  });
 
   useEffect(() => {
     if (props.value) {
       if (props.value.length) {
-        focused.setValue(1);
+        focused.value = 1;
+      } else {
+        focused.value = 0;
       }
     }
   }, [props.value]);
-
-  const onBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    if (!props.value!.length && !ref.current?.isFocused()) {
-      focused.setValue(0);
-    }
-    if (props.onBlur) {
-      props.onBlur(e);
-    }
-  };
 
   const minHeight =
     Platform.OS === 'ios' && numberOfLines
@@ -120,18 +110,14 @@ const TextField = ({
     ? {...styles.textarea, paddingLeft: 5}
     : null;
   const hidePassword = props.secureTextEntry && !passwordVisible;
+
+  const style = useAnimatedStyle(() => ({
+    transform: [{translateY: withTiming(translateY.value, {duration: 300})}],
+  }));
   return (
     <View style={containerStyle}>
       {label && (
-        <Animated.Text
-          style={[
-            styles.labelStyle,
-            {
-              transform: [{translateY: animateLabel ? translateY : 0}],
-              color: colors.foreground,
-            },
-            labelStyle,
-          ]}>
+        <Animated.Text style={[styles.labelStyle, style, labelStyle]}>
           {label}
         </Animated.Text>
       )}
@@ -154,8 +140,14 @@ const TextField = ({
               minHeight,
             },
           ]}
-          onFocus={() => focused.setValue(1)}
-          onBlur={onBlur}
+          onFocus={() => {
+            focused.value = 1;
+          }}
+          onBlur={() => {
+            if (!props.value) {
+              focused.value = 0;
+            }
+          }}
           secureTextEntry={hidePassword}
         />
         {props.secureTextEntry && (

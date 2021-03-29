@@ -1,22 +1,18 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect, useMemo} from 'react';
 import {StyleSheet, View, ScrollView, SafeAreaView} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
-import {State, TapGestureHandler} from 'react-native-gesture-handler';
-import Animated, {
-  useCode,
-  useValue,
-  set,
-  cond,
-  eq,
-  not,
-  onChange,
-  call,
-} from 'react-native-reanimated';
 import {
-  onGestureEvent,
-  withTransition,
-  onScrollEvent,
-} from 'react-native-redash';
+  TapGestureHandler,
+  TapGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
+import Animated, {
+  useAnimatedGestureHandler,
+  useAnimatedScrollHandler,
+  useSharedValue,
+  useDerivedValue,
+  useAnimatedStyle,
+} from 'react-native-reanimated';
+import {ReText} from 'react-native-redash';
 import useDeepCompareEffect from 'use-deep-compare-effect';
 import {useFocusEffect} from '@react-navigation/native';
 import {useTheme} from '@shopify/restyle';
@@ -74,7 +70,6 @@ const SHELVES = [
 const Home = () => {
   const [shelves] = useState(SHELVES);
   const {colors} = useTheme<Theme>();
-  const [text, setText] = useState('Show all');
   const dispatch = useDispatch();
 
   const {books} = useSelector((state: RootState) => state.books);
@@ -87,31 +82,34 @@ const Home = () => {
 
   useDeepCompareEffect(() => {}, [books]);
 
-  const showAll = useValue<0 | 1>(0);
-  const state = useValue(State.UNDETERMINED);
-  const gestureHandler = onGestureEvent({state});
-  const mt = useValue(0);
-  const marginTop = withTransition(mt);
-  const y = useValue(0);
+  const y = useSharedValue(0);
+  const showAll = useSharedValue(0);
 
-  useCode(
-    () => [
-      cond(eq(state, State.END), [set(showAll, not(showAll))]),
-      cond(eq(showAll, 0), set(mt, -20)),
-      cond(eq(showAll, 1), set(mt, 0)),
-      onChange(
-        showAll,
-        call([showAll], ([showAll]) => {
-          if (showAll) {
-            setText('Show less');
-          } else {
-            setText('Show all');
-          }
-        }),
-      ),
-    ],
-    [showAll, state],
+  const marginTop = useDerivedValue(() => {
+    return showAll.value === 1 ? 0 : -20;
+  });
+
+  const gestureHandler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>(
+    {
+      onStart: (e, ctx) => {
+        showAll.value = showAll.value ? 0 : 1;
+      },
+    },
   );
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (e) => {
+      y.value = e.contentOffset.y;
+    },
+  });
+
+  const text = useDerivedValue(() => {
+    return showAll.value === 1 ? 'See less' : 'See more';
+  }, [showAll]);
+
+  const style = useAnimatedStyle(() => ({
+    marginTop: marginTop.value,
+  }));
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
@@ -124,23 +122,19 @@ const Home = () => {
           <Text color="foreground" variant="body" style={styles.title}>
             Your bookshelves
           </Text>
-          <TapGestureHandler {...gestureHandler}>
+          <TapGestureHandler onHandlerStateChange={gestureHandler}>
             <Animated.View>
-              <Box backgroundColor="lightGray" padding="s" borderRadius="s">
-                <Text color="gray" variant="body">
-                  {text}
-                </Text>
+              <Box backgroundColor="lightGray" p="xs" borderRadius="s">
+                <ReText text={text} style={{color: colors.gray, padding: 0}} />
               </Box>
             </Animated.View>
           </TapGestureHandler>
         </View>
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
-          style={{
-            marginTop,
-          }}
+          style={style}
           scrollEventThrottle={16}
-          onScroll={onScrollEvent({y})}>
+          {...scrollHandler}>
           {shelves.map((shelf, i) => {
             const last = i === shelves.length - 1;
             return (
