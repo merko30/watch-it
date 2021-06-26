@@ -1,7 +1,6 @@
 import React, {useContext} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
 import {useTheme} from '@shopify/restyle';
 
 import {Details, Splash} from '../screens';
@@ -11,8 +10,6 @@ import AuthNavigator from './AuthNavigator';
 import {navigationRef} from '../utils/navigation';
 
 import {BackIcon} from '../components';
-
-import {RootState} from '../store/reducers';
 
 import {LEFT_ICON, BLANK_HEADER} from './headerStyles';
 

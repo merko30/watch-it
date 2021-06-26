@@ -1,8 +1,5 @@
 import React from 'react';
-import {Provider} from 'react-redux';
 import {QueryClient, QueryClientProvider} from 'react-query';
-
-import store from './store';
 
 import Navigation from './navigation';
 
@@ -15,11 +12,9 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Provider store={store}>
-          <ThemeProvider>
-            <Navigation />
-          </ThemeProvider>
-        </Provider>
+        <ThemeProvider>
+          <Navigation />
+        </ThemeProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

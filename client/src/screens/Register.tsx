@@ -8,7 +8,6 @@ import * as Yup from 'yup';
 import {TextField, Button, Message, AuthLayout} from '../components';
 
 import {register} from '../store/reducers/auth';
-import {RootState} from '../store/reducers';
 
 import {Theme} from '../theme';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';

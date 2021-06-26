@@ -1,4 +1,6 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+/* eslint-disable no-shadow */
+/* eslint-disable no-catch-shadow */
+import React, {createContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-community/async-storage';
 
 import {LoginData, User} from 'types';
@@ -17,8 +19,8 @@ export const AuthContext = createContext({
   loggedIn: false,
   loading: false,
   error: null,
-  login: async (_: LoginData) => new Promise((resolve) => resolve(null)),
-  register: async (_: Partial<User>) => new Promise((resolve) => resolve(null)),
+  login: async (_: LoginData) => new Promise(resolve => resolve(null)),
+  register: async (_: Partial<User>) => new Promise(resolve => resolve(null)),
 });
 
 const AuthProvider = ({children}: {children: React.ReactNode}) => {

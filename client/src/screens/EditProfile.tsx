@@ -1,75 +1,85 @@
-import React, {useState, useEffect} from 'react';
+import React, {
+  useState,
+  // useEffect
+} from 'react';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {useTheme} from '@shopify/restyle';
-import {useSelector, useDispatch} from 'react-redux';
+// import {useTheme} from '@shopify/restyle';
 import {useFormik} from 'formik';
-import Icon from 'react-native-vector-icons/Ionicons';
+// import Icon from 'react-native-vector-icons/Ionicons';
 import {StackScreenProps} from '@react-navigation/stack';
 
-import {TextField, RoundedIcon, Message, Avatar, Button} from '../components';
+import {
+  TextField,
+  RoundedIcon,
+  //  Message,
+  Avatar,
+  Button,
+} from '../components';
 
-import {RootState} from '../store/reducers';
-import {changeAvatar, updateUser} from '../store/reducers/auth';
+// import {RootState} from '../store/reducers';
+// import {changeAvatar, updateUser} from '../store/reducers/auth';
 
-import {Theme, Box} from '../theme';
+import {
+  // Theme,
+  Box,
+} from '../theme';
 
-import {User} from '../types';
+// import {User} from '../types';
 
-import pickImage from '../utils/pickImage';
+// import pickImage from '../utils/pickImage';
 
 interface EditProfileProps {}
 
-const EditProfile = ({
-  navigation,
-}: EditProfileProps & StackScreenProps<any, 'EditProfile'>) => {
-  const [initValues, setInitialValues] = useState({
+const EditProfile = ({}: // navigation,
+EditProfileProps & StackScreenProps<any, 'EditProfile'>) => {
+  const [initValues] = useState({
     firstName: '',
     lastName: '',
     username: '',
     about: '',
     email: '',
   });
-  const dispatch = useDispatch();
-  const {
-    user,
-    //  loading,
-    error,
-    message,
-  } = useSelector((state: RootState) => state.auth);
-  const {colors, spacing} = useTheme<Theme>();
+  // const dispatch = useDispatch();
+  // const {
+  //   user,
+  //   //  loading,
+  //   error,
+  //   message,
+  // } = useSelector((state: RootState) => state.auth);
+  // const {colors, spacing} = useTheme<Theme>();
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerStyle: {
-        backgroundColor: colors.background,
-        shadowOffset: {width: 0, height: 0},
-      },
-      headerTintColor: 'white',
-      headerRight: () => (
-        <Icon
-          color={colors.foreground}
-          name="checkmark"
-          style={{marginRight: spacing.m}}
-          onPress={handleSubmit}
-          size={32}
-        />
-      ),
-    });
-  }, []);
+  // useEffect(() => {
+  //   navigation.setOptions({
+  //     headerStyle: {
+  //       backgroundColor: colors.background,
+  //       shadowOffset: {width: 0, height: 0},
+  //     },
+  //     headerTintColor: 'white',
+  //     headerRight: () => (
+  //       <Icon
+  //         color={colors.foreground}
+  //         name="checkmark"
+  //         style={{marginRight: spacing.m}}
+  //         onPress={handleSubmit}
+  //         size={32}
+  //       />
+  //     ),
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    if (user) {
-      Object.entries(initValues).map(([key, value]) => {
-        if (user[key as keyof User]) {
-          setInitialValues((old) => ({...old, [key]: user[key as keyof User]}));
-        }
-      });
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     Object.entries(initValues).map(([key, value]) => {
+  //       if (user[key as keyof User]) {
+  //         setInitialValues((old) => ({...old, [key]: user[key as keyof User]}));
+  //       }
+  //     });
+  //   }
+  // }, [user]);
 
-  const onSubmit = () => {
-    dispatch(updateUser(values));
-  };
+  // const onSubmit = () => {
+  //   dispatch(updateUser(values));
+  // };
 
   const {
     values,
@@ -77,19 +87,20 @@ const EditProfile = ({
     handleChange,
     errors,
     touched,
-    handleSubmit,
+    // handleSubmit
   } = useFormik({
     initialValues: initValues,
     enableReinitialize: true,
-    onSubmit,
+    onSubmit: () => {},
   });
 
-  const onChangeAvatar = () => {
-    pickImage('Select your profile photo', (p) => {
-      dispatch(changeAvatar(p));
-    });
-  };
+  // const onChangeAvatar = () => {
+  //   pickImage('Select your profile photo', (p) => {
+  //     dispatch(changeAvatar(p));
+  //   });
+  // };
 
+  const avatar = 'string';
   return (
     <KeyboardAwareScrollView
       style={{flex: 1}}
@@ -99,16 +110,16 @@ const EditProfile = ({
         backgroundColor="background"
         alignItems="center"
         paddingVertical="xl">
-        {!user!.avatar ? (
+        {!avatar ? (
           <RoundedIcon icon="camera" size={64} color="foreground" />
         ) : (
           <Avatar
             size={72}
-            source={{uri: `http://192.168.1.8:5000/uploads/${user!.avatar}`}}
+            source={{uri: `http://192.168.1.8:5000/uploads/${avatar}`}}
           />
         )}
         <Button
-          onPress={onChangeAvatar}
+          onPress={() => console.log('change avatar')}
           label="Change avatar"
           color="transparent"
         />
@@ -118,8 +129,8 @@ const EditProfile = ({
           marginVertical="xl"
           alignSelf="flex-start"
           paddingHorizontal="m">
-          {error && <Message variant="negative" message={error} />}
-          {message && <Message variant="positive" message={message} />}
+          {/* {error && <Message variant="negative" message={error} />}
+          {message && <Message variant="positive" message={message} />} */}
           {/* <KeyboardAvoidingView
                 behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
                 style={{flex: 1, backgroundColor: 'red'}}> */}

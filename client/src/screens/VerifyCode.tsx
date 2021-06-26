@@ -2,33 +2,36 @@ import React from 'react';
 import {View, ActivityIndicator} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 
-import {Message, AuthLayout} from '../components';
+import {
+  // Message,
+  AuthLayout,
+} from '../components';
 import Code from '../components/Code';
 
 import {AuthStackParamList} from '../navigation/AuthNavigator';
 
-import {RootState} from '../store/reducers';
-import {verifyResetCode} from '../store/reducers/auth';
+// import {RootState} from '../store/reducers';
+// import {verifyResetCode} from '../store/reducers/auth';
 
-import {useSelector, useDispatch} from 'react-redux';
+// import {useSelector, useDispatch} from 'react-redux';
 
 interface VerifyCodeProps
   extends StackScreenProps<AuthStackParamList, 'VerifyCode'> {}
 
 const VerifyCode = ({
   route: {
-    params: {email, code},
+    // params: {email, code},
   },
 }: VerifyCodeProps) => {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
-  const {loading, error, message} = useSelector(
-    (state: RootState) => state.auth,
-  );
+  // const {loading, error, message} = useSelector(
+  //   (state: RootState) => state.auth,
+  // );
 
-  const onSubmit = (code: string) => {
-    dispatch(verifyResetCode({email, code}));
-  };
+  // const onSubmit = (code: string) => {
+  //   dispatch(verifyResetCode({email, code}));
+  // };
 
   return (
     <AuthLayout
@@ -36,15 +39,15 @@ const VerifyCode = ({
       title="Here is a final step"
       text="Enter the code from email">
       <View style={{flex: 1.4}}>
-        {!loading ? (
+        {!true ? (
           <>
-            {error && <Message variant="negative" message={error} />}
-            {message && <Message variant="positive" message={message} />}
+            {/* {error && <Message variant="negative" message={error} />}
+            {message && <Message variant="positive" message={message} />} */}
 
             <Code
               length={6}
               autoVerification={true}
-              onFilled={(code) => onSubmit(code)}
+              onFilled={code => console.log(code)}
             />
           </>
         ) : (

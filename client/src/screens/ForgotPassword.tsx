@@ -1,14 +1,18 @@
 import React from 'react';
 import {Formik} from 'formik';
-import {View, ActivityIndicator} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
+import {ActivityIndicator} from 'react-native';
 import {useTheme} from '@shopify/restyle';
 import * as Yup from 'yup';
 
-import {Message, TextField, Button, AuthLayout} from '../components';
+import {
+  // Message,
+  TextField,
+  Button,
+  AuthLayout,
+} from '../components';
 
-import {RootState} from '../store/reducers';
-import {sendResetPasswordMail} from '../store/reducers/auth';
+// import {RootState} from '../store/reducers';
+// import {sendResetPasswordMail} from '../store/reducers/auth';
 
 import {Theme} from '../theme';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -19,17 +23,17 @@ const forgotPasswordSchema = Yup.object().shape({
 
 interface ForgotPasswordProps {}
 
-const ForgotPassword = (props: ForgotPasswordProps) => {
-  const dispatch = useDispatch();
+const ForgotPassword = () => {
+  // const dispatch = useDispatch();
   const {fontSizes, colors} = useTheme<Theme>();
 
-  const {loading, error, message} = useSelector(
-    (state: RootState) => state.auth,
-  );
+  // const {loading, error, message} = useSelector(
+  //   (state: RootState) => state.auth,
+  // );
 
-  const onSubmit = (email: string) => {
-    dispatch(sendResetPasswordMail(email));
-  };
+  // const onSubmit = (email: string) => {
+  //   dispatch(sendResetPasswordMail(email));
+  // };
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
@@ -40,7 +44,7 @@ const ForgotPassword = (props: ForgotPasswordProps) => {
         <Formik
           initialValues={{email: ''}}
           validationSchema={forgotPasswordSchema}
-          onSubmit={(values) => onSubmit(values.email)}>
+          onSubmit={values => console.log(values.email)}>
           {({
             handleChange,
             handleBlur,
@@ -51,12 +55,12 @@ const ForgotPassword = (props: ForgotPasswordProps) => {
           }) => {
             return (
               <>
-                {!loading ? (
+                {!true ? (
                   <>
-                    {error && <Message variant="negative" message={error} />}
+                    {/* {error && <Message variant="negative" message={error} />}
                     {message && (
                       <Message variant="positive" message={message} />
-                    )}
+                    )} */}
 
                     <TextField
                       autoCapitalize="none"

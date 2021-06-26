@@ -1,9 +1,9 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {createContext, useEffect, useState} from 'react';
 import {StatusBar} from 'react-native';
 import {ThemeProvider as RestyleProvider} from '@shopify/restyle';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import {themes, Theme as ThemeType} from 'theme';
+import {themes} from 'theme';
 
 export enum Theme {
   DARK = 'dark',
@@ -20,10 +20,10 @@ const ThemeProvider = ({children}: {children: React.ReactNode}) => {
 
   useEffect(() => {
     async () => {
-      const mode = await AsyncStorage.getItem('theme');
+      const themeMode = await AsyncStorage.getItem('theme');
 
-      if (mode) {
-        setMode(mode as Theme);
+      if (themeMode) {
+        setMode(themeMode as Theme);
       }
     };
   }, []);

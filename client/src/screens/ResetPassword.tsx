@@ -1,19 +1,27 @@
 import React from 'react';
-import {Formik, FormikValues} from 'formik';
+import {
+  Formik,
+  //  FormikValues
+} from 'formik';
 import {ActivityIndicator} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {useTheme} from '@shopify/restyle';
+// import {useDispatch, useSelector} from 'react-redux';
+// import {useTheme} from '@shopify/restyle';
 import {StackScreenProps} from '@react-navigation/stack';
 import * as Yup from 'yup';
 
-import {Message, TextField, Button, AuthLayout} from '../components';
+import {
+  // Message,
+  TextField,
+  Button,
+  AuthLayout,
+} from '../components';
 
-import {RootState} from '../store/reducers';
-import {resetPassword} from '../store/reducers/auth';
+// import {RootState} from '../store/reducers';
+// import {resetPassword} from '../store/reducers/auth';
 
-import {Theme} from '../theme';
+// import {Theme} from '../theme';
 
-import {AuthStackParamList} from 'src/navigation/AuthNavigator';
+import {AuthStackParamList} from 'navigation/AuthNavigator';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const resetPasswordSchema = Yup.object().shape({
@@ -28,19 +36,19 @@ interface ResetPasswordProps
 
 const ResetPassword = ({
   route: {
-    params: {email},
+    // params: {email},
   },
 }: ResetPasswordProps) => {
-  const dispatch = useDispatch();
-  const {fontSizes} = useTheme<Theme>();
+  // const dispatch = useDispatch();
+  // const {fontSizes} = useTheme<Theme>();
 
-  const {loading, error, message} = useSelector(
-    (state: RootState) => state.auth,
-  );
+  // const {loading, error, message} = useSelector(
+  //   (state: RootState) => state.auth,
+  // );
 
-  const onSubmit = (values: FormikValues) => {
-    dispatch(resetPassword(email, values.password));
-  };
+  // const onSubmit = (values: FormikValues) => {
+  //   dispatch(resetPassword(email, values.password));
+  // };
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
@@ -51,7 +59,7 @@ const ResetPassword = ({
         <Formik
           initialValues={{password: '', confirmPassword: ''}}
           validationSchema={resetPasswordSchema}
-          onSubmit={onSubmit}>
+          onSubmit={() => {}}>
           {({
             handleChange,
             handleBlur,
@@ -62,12 +70,12 @@ const ResetPassword = ({
           }) => {
             return (
               <>
-                {!loading ? (
+                {!true ? (
                   <>
-                    {error && <Message variant="negative" message={error} />}
+                    {/* {error && <Message variant="negative" message={error} />}
                     {message && (
                       <Message variant="positive" message={message} />
-                    )}
+                    )} */}
 
                     <TextField
                       autoCapitalize="none"
@@ -98,7 +106,7 @@ const ResetPassword = ({
                       label="Save new password"
                       textStyle={{
                         fontWeight: '700',
-                        fontSize: fontSizes.text,
+                        // fontSize: fontSizes.text,
                         textTransform: 'uppercase',
                       }}
                       containerStyle={{marginTop: 40, paddingVertical: 12}}
