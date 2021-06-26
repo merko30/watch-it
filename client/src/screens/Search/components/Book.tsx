@@ -5,12 +5,12 @@ import {useTheme} from '@shopify/restyle';
 
 import {BookCover, Rating} from '../../../components';
 
-import {GoodreadsBook, Author} from '../../../types/Book';
+import {GoogleBook} from '../../../types/Book';
 
 import {Box, Text, Theme} from '../../../theme';
 
 interface BookProps {
-  book: Partial<GoodreadsBook> & {author: Author};
+  book: GoogleBook;
 }
 
 const IMAGE_RATIO = 0.7;
@@ -19,7 +19,10 @@ const Book = ({book}: BookProps) => {
   const {spacing, colors, borderRadii, shadows} = useTheme<Theme>();
   const {navigate} = useNavigation();
 
-  console.log(book.average_rating);
+  const image = book.volumeInfo.imageLinks
+    ? book.volumeInfo.imageLinks.smallThumbnail
+    : undefined;
+
   return (
     <TouchableOpacity
       onPress={() => navigate('Details', {id: book.id})}
@@ -33,20 +36,20 @@ const Book = ({book}: BookProps) => {
       }}>
       <Box flexDirection="row">
         <BookCover
-          uri={book.image_url!}
+          uri={image}
           style={{borderRadius: borderRadii.m}}
           ratio={IMAGE_RATIO}
         />
         <Box marginLeft="m" flexShrink={1} width="100%">
-          {book.title! && (
+          {book.volumeInfo && book.volumeInfo.title! && (
             <Text variant="subTitle" numberOfLines={2}>
-              {book.title!}
+              {book.volumeInfo.title!}
             </Text>
           )}
-          {book.average_rating && (
+          {book.volumeInfo.averageRating && (
             <Rating
               style={{alignSelf: 'flex-end', marginTop: 'auto'}}
-              rating={book.average_rating}
+              rating={book.volumeInfo.averageRating}
             />
           )}
         </Box>

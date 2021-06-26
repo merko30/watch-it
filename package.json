@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.6",
+    "bcryptjs": "^3.0.6",
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "dotenv": "^6.2.0",
@@ -35,7 +35,7 @@
     "@types/react": "^16.9.43",
     "@types/react-native": "^0.63.2",
     "@types/react-test-renderer": "^16.9.2",
-    "nodemon": "^1.19.1",
+    "nodemon": "^2.0.7",
     "typescript": "^3.9.7"
   }
 }

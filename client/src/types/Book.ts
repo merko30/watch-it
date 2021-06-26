@@ -16,24 +16,20 @@ export interface Book {
   thumbnail: string;
 }
 
-export interface Author {
+export interface GoogleBook {
   id: string;
-  name: string;
-}
-
-export interface GoodreadsBook {
-  id: string;
-  isbn?: string;
-  image_url: string;
-  small_image_url: string;
-  publisher: string;
-  title: string;
-  authors: Author[];
-  description: string;
-  average_rating: number;
-  num_pages: number;
-  ratings_count: number;
-  similar_books: {
-    book: Partial<GoodreadsBook>[];
+  volumeInfo: {
+    industryIdentifiers: Array<{type: string; identifier: string}>;
+    imageLinks: Record<
+      'smallThumbnail' | 'thumbnail' | 'small' | 'medium' | 'large',
+      string
+    >;
+    publisher: string;
+    title: string;
+    authors: string[];
+    description: string;
+    averageRating: number;
+    pagesCount: number;
+    ratingsCount: number;
   };
 }

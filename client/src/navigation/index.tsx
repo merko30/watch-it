@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {useSelector} from 'react-redux';
 import {useTheme} from '@shopify/restyle';
 
-import {Details} from '../screens';
+import {Details, Splash} from '../screens';
 
 import TabNavigator from './TabNavigator';
 import AuthNavigator from './AuthNavigator';
@@ -17,6 +17,7 @@ import {RootState} from '../store/reducers';
 import {LEFT_ICON, BLANK_HEADER} from './headerStyles';
 
 import {Theme} from '../theme';
+import {AuthContext} from 'auth/AuthProvider';
 
 export type RootStackParamList = {
   Details: {id: string};
@@ -29,7 +30,9 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 const Navigation = () => {
   const {colors} = useTheme<Theme>();
-  const loggedIn = useSelector<RootState>((state) => state.auth.loggedIn);
+  // const loggedIn = useSelector<RootState>((state) => state.auth.loggedIn);
+
+  const {loading, loggedIn} = useContext(AuthContext);
 
   const linking = {
     config: {
@@ -45,11 +48,17 @@ const Navigation = () => {
     prefixes: ['bookerapp://'],
   };
 
+  if (loading) {
+    return <Splash />;
+  }
+
   return (
     <NavigationContainer linking={linking} ref={navigationRef}>
       <Stack.Navigator
         screenOptions={{
           ...LEFT_ICON,
+          ...BLANK_HEADER.headerStyle,
+          headerBackImage: () => <BackIcon color={colors.foreground} />,
         }}>
         {!loggedIn ? (
           <Stack.Screen
@@ -70,12 +79,12 @@ const Navigation = () => {
               name="Details"
               options={{
                 headerStyle: {
-                  ...BLANK_HEADER.headerStyle,
+                  borderBottomWidth: 0,
+                  elevation: 0,
                   backgroundColor: colors.backgroundThree,
                 },
                 headerTintColor: colors.foreground,
-                headerBackImage: () => <BackIcon color={colors.foreground} />,
-                title: 'Book details',
+                headerTitle: '',
               }}
               component={Details}
             />

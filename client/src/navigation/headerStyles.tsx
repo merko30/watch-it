@@ -7,6 +7,8 @@ export const BLANK_HEADER = {
   title: '',
   headerStyle: {
     shadowOffset: {width: 0, height: 0},
+    backgroundColor: '#fff',
+    borderBottomWidth: 0,
   },
 };
 

@@ -30,9 +30,9 @@ const BookCover = ({uri, style, ratio, onPress}: BookCoverProps) => {
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <Image
-        source={{uri}}
+        source={uri ? {uri} : paper}
         style={[{height, width}, style]}
-        loadingIndicatorSource={paper}
+        // loadingIndicatorSource={paper}
       />
     </TouchableWithoutFeedback>
   );

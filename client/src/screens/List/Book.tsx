@@ -1,26 +1,18 @@
 import React from 'react';
 import {StyleSheet, Dimensions} from 'react-native';
-import {PanGestureHandler, State} from 'react-native-gesture-handler';
 import {
-  usePanGestureHandler,
-  useValue,
-  timing,
-  useClock,
-  snapPoint,
-  spring,
-} from 'react-native-redash';
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
+import {snapPoint} from 'react-native-redash';
 import Animated, {
-  useCode,
-  cond,
-  eq,
-  set,
-  add,
-  min,
-  call,
-  not,
-  clockRunning,
-  abs,
   divide,
+  useAnimatedGestureHandler,
+  useSharedValue,
+  withTiming,
+  withSpring,
+  useDerivedValue,
+  useAnimatedStyle,
 } from 'react-native-reanimated';
 
 import {Book as BookI} from '../../types';
@@ -51,49 +43,53 @@ interface BookProps {
 const Book = ({book, last, onSwipe}: BookProps) => {
   const navigation = useNavigation();
   const HEIGHT = 60;
-  const {state, translation, velocity, gestureHandler} = usePanGestureHandler();
-  const translateX = useValue(0);
-  const offsetX = useValue(0);
-  const height = useValue(HEIGHT);
-  const width = useValue(0);
-  const right = useValue(-200);
-  const shouldRemove = useValue<0 | 1>(0);
-  const clock = useClock();
-  const to = snapPoint(translateX, velocity.x, SNAP_POINTS);
+  const translateX = useSharedValue(0);
+  const width = useSharedValue(0);
+  const right = useSharedValue(-200);
+  const shouldRemove = useSharedValue<0 | 1>(0);
 
-  useCode(
-    () => [
-      cond(eq(state, State.ACTIVE), [
-        set(translateX, add(offsetX, min(translation.x, 0))),
-        set(width, abs(translateX)),
-        set(right, translateX),
-      ]),
-      cond(eq(state, State.END), [
-        set(translateX, timing({clock, to, from: translateX})),
-        set(offsetX, translateX),
-        cond(eq(to, -wWidth), set(shouldRemove, 1)),
-        cond(eq(to, -200), set(width, spring({to: 210, from: width}))),
-        cond(eq(to, -200), set(right, -200)),
-        cond(eq(to, 0), [set(width, timing({to: 0, from: width}))]),
-      ]),
+  const gestureHandler = useAnimatedGestureHandler<
+    PanGestureHandlerGestureEvent,
+    {offsetX: number}
+  >({
+    onActive: (e, ctx) => {
+      (translateX.value = ctx.offsetX + Math.min(e.translationX, 0)),
+        (width.value = Math.abs(translateX.value));
+      right.value = translateX.value;
+    },
+    onEnd: (e, ctx) => {
+      const to = snapPoint(translateX.value, e.velocityX, SNAP_POINTS);
+      translateX.value = withTiming(to, {
+        duration: 500,
+      });
+      ctx.offsetX = translateX.value;
+      if (to === -wWidth) {
+        shouldRemove.value = 1;
+      } else if (to === -200) {
+        width.value = withSpring(210);
+        right.value = -200;
+      } else if (to === 0) {
+        width.value = withTiming(0);
+      }
+    },
+  });
 
-      cond(shouldRemove, [
-        set(height, timing({from: HEIGHT, to: 0})),
-        cond(not(clockRunning(clock)), call([], onSwipe)),
-      ]),
-    ],
-    [],
+  const height = useDerivedValue(() =>
+    shouldRemove.value === 1 ? withTiming(0, {duration: 300}) : HEIGHT,
   );
+
+  const style = useAnimatedStyle(() => ({
+    transform: [{translateX: translateX.value}],
+    height: height.value,
+  }));
+
+  const iconStyle = useAnimatedStyle(() => ({
+    right: right.value,
+  }));
 
   return (
     <PanGestureHandler {...gestureHandler} hitSlop={{right: 300}}>
-      <Animated.View
-        style={[
-          {
-            height,
-            transform: [{translateX}],
-          },
-        ]}>
+      <Animated.View style={[style]}>
         <Box
           height="100%"
           backgroundColor="background"
@@ -105,16 +101,16 @@ const Book = ({book, last, onSwipe}: BookProps) => {
           <Text color="foreground" variant="body">
             {book.title}
           </Text>
-          <Animated.View style={[styles.iconsContainer, {right}]}>
+          <Animated.View style={[styles.iconsContainer, iconStyle]}>
             <BookSlideIcon
               backgroundColor="gray"
-              style={{width: divide(width, 2)}}
+              style={{width: divide(width.value, 2)}}
               onPress={() => navigation.navigate('Details', {id: book.id})}
               icon="information-circle-outline"
             />
             <BookSlideIcon
-              style={{width: divide(width, 2)}}
-              onPress={() => shouldRemove.setValue(1)}
+              style={{width: divide(width.value, 2)}}
+              onPress={() => (shouldRemove.value = 1)}
               icon="trash"
               backgroundColor="negative"
             />

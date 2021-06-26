@@ -4,24 +4,15 @@ import {
   View,
   TextInput,
   TextInputProps,
-  NativeSyntheticEvent,
-  TextInputFocusEventData,
   StyleProp,
   ViewStyle,
   Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {useTiming} from 'react-native-redash';
 import Animated, {
-  useValue,
-  useCode,
-  cond,
-  eq,
-  set,
   useSharedValue,
   useDerivedValue,
   useAnimatedStyle,
-  withSpring,
   withTiming,
 } from 'react-native-reanimated';
 import {useTheme} from '@shopify/restyle';

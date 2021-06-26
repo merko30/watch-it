@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
-import {Book, BookStatus, GoodreadsBook, Loading} from '../../types';
+import {Book, BookStatus, GoogleBook, Loading} from '../../types';
 
 import {
   GetBooksParams,
@@ -18,11 +18,11 @@ import errorHandler from '../../utils/errorHandler';
 
 export interface State {
   books: Book[];
-  searchResults: Partial<GoodreadsBook>[];
+  searchResults: GoogleBook[];
   loadings: Record<Loading, boolean>;
   error: string | null;
   bookStatus: null | BookStatus;
-  book: GoodreadsBook | null;
+  book: GoogleBook | null;
 }
 
 const initialState: State = {
@@ -78,11 +78,11 @@ const books = createSlice({
       state.books = state.books.filter((b) => b.id !== action.payload);
       state.loadings[Loading.DELETE] = false;
     },
-    searchSuccess: (state, action: PayloadAction<GoodreadsBook[]>) => {
+    searchSuccess: (state, action: PayloadAction<GoogleBook[]>) => {
       state.searchResults = action.payload;
       state.loadings[Loading.STATUS] = false;
     },
-    getBookSuccess: (state, action: PayloadAction<GoodreadsBook>) => {
+    getBookSuccess: (state, action: PayloadAction<GoogleBook>) => {
       state.book = action.payload;
       state.loadings[Loading.COMMON] = false;
     },
@@ -153,11 +153,12 @@ export const deleteBook = (id: string): AppThunk => async (dispatch) => {
   }
 };
 
-export const getBook = (isbn: string): AppThunk => async (dispatch) => {
+export const getBook = (id: string): AppThunk => async (dispatch) => {
   dispatch(startLoading({}));
   try {
-    const {data} = await getSingleBook(isbn);
-    dispatch(getBookSuccess(data));
+    const {data} = await getSingleBook(id);
+
+    dispatch(getBookSuccess(data.volume));
   } catch (err) {
     dispatch(error({error: errorHandler(err)}));
   }
@@ -167,7 +168,7 @@ export const search = (term: string): AppThunk => async (dispatch) => {
   dispatch(startLoading({key: Loading.STATUS}));
   try {
     const {data} = await searchBooksByTerm(term);
-    dispatch(searchSuccess(data));
+    dispatch(searchSuccess(data.volumes.items));
   } catch (err) {
     dispatch(error({error: errorHandler(err), loadingKey: Loading.STATUS}));
   }

@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Splash = ({}) => {
+const Splash = () => {
   return (
     <View style={styles.background}>
       <Text style={styles.title}>Booker</Text>

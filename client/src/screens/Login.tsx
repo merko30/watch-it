@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import {StackScreenProps} from '@react-navigation/stack';
 
 import {Formik, FormikValues} from 'formik';
@@ -9,13 +8,11 @@ import {useTheme} from '@shopify/restyle';
 
 import {TextField, Message, Button, AuthLayout} from '../components';
 
-import {login} from '../store/reducers/auth';
-import {RootState} from '../store/reducers';
-
 import {Theme} from '../theme';
 
 import {LoginData} from '../types';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {AuthContext, IAuthContext} from 'auth/AuthProvider';
 
 const loginSchema = Yup.object().shape({
   password: Yup.string().required('Password is required field'),
@@ -23,15 +20,12 @@ const loginSchema = Yup.object().shape({
 });
 
 const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
-  const dispatch = useDispatch();
   const {colors, fontSizes} = useTheme<Theme>();
 
-  const {loading, error, message} = useSelector(
-    (state: RootState) => state.auth,
-  );
+  const {login, error, loading} = useContext(AuthContext) as IAuthContext;
 
   const onSubmit = (data: FormikValues) => {
-    dispatch(login(data as LoginData));
+    login(data as LoginData);
   };
 
   return (
@@ -51,8 +45,8 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
           }) => {
             return (
               <>
-                {error && <Message variant="negative" message={error} />}
-                {message && <Message variant="positive" message={message} />}
+                {error && <Message variant="negative" message={error!} />}
+                {/* {message && <Message variant="positive" message={message} />} */}
 
                 <TextField
                   autoCapitalize="none"

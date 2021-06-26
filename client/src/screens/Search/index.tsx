@@ -22,6 +22,8 @@ const Search = () => {
     dispatch(search(term));
   };
 
+  console.log({books});
+
   return (
     <SafeAreaView
       style={{

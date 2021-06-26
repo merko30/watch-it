@@ -1,5 +1,4 @@
 const fetch = require("node-fetch");
-const xml2js = require("xml2js");
 
 const Book = require("../models/book");
 
@@ -58,31 +57,13 @@ const remove = async (req, res, next) => {
 const getSingleBook = async (req, res, next) => {
   try {
     const response = await fetch(
-      `${process.env.GOODREADS_API_BASE_URL}/book/show/${req.params.id}?key=${process.env.GOODREADS_API_KEY}`,
+      `${process.env.GOOGLE_BOOKS_API_BASE_URL}/${req.params.id}?key=${process.env.GOOGLE_BOOKS_API_KEY}`,
       { method: "GET", mode: "no-cors" }
     );
 
-    const xml = await response.text();
+    const volume = await response.json();
 
-    xml2js.parseString(
-      xml,
-      { trim: true, explicitArray: false, ignoreAttrs: true },
-      (err, data) => {
-        if (err) {
-          throw new Error("Something went wrong");
-        }
-
-        const response = data.GoodreadsResponse.book;
-        Object.entries(response.authors).map((t) => {
-          if (Array.isArray(t[1])) {
-            response.authors = [...t[1]];
-          } else {
-            response.authors = [t[1]];
-          }
-        });
-        res.json(response);
-      }
-    );
+    res.json({ volume });
   } catch (error) {
     next(error);
   }
@@ -91,29 +72,13 @@ const getSingleBook = async (req, res, next) => {
 const search = async (req, res, next) => {
   try {
     const response = await fetch(
-      `${process.env.GOODREADS_API_BASE_URL}/search/index.xml?&q=${req.params.term}&key=${process.env.GOODREADS_API_KEY}`,
+      `${process.env.GOOGLE_BOOKS_API_BASE_URL}?q=${req.params.term}&key=${process.env.GOOGLE_BOOKS_API_KEY}`,
       { method: "GET", mode: "no-cors" }
     );
 
-    const xml = await response.text();
+    const volumes = await response.json();
 
-    xml2js.parseString(
-      xml,
-      { explicitArray: false, normalize: true, ignoreAttrs: true },
-      (err, data) => {
-        if (err) {
-          throw new Error("Something went wrong");
-        }
-        const response = data.GoodreadsResponse.search.results.work.map(
-          ({ best_book, ...rest }) => ({
-            ...rest,
-            ...best_book,
-          })
-        );
-
-        res.json(response);
-      }
-    );
+    res.json({ volumes });
   } catch (error) {
     next(error);
   }

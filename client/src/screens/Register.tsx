@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useTheme} from '@shopify/restyle';
 import {Formik, FormikValues} from 'formik';
@@ -13,6 +12,7 @@ import {RootState} from '../store/reducers';
 
 import {Theme} from '../theme';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {AuthContext, IAuthContext} from 'auth/AuthProvider';
 
 const registerSchema = Yup.object().shape({
   password: Yup.string()
@@ -27,13 +27,12 @@ const registerSchema = Yup.object().shape({
 });
 
 const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
-  const dispatch = useDispatch();
   const {colors, fontSizes} = useTheme<Theme>();
 
-  const {loading, error} = useSelector((state: RootState) => state.auth);
+  const {loading, error} = useContext(AuthContext) as IAuthContext;
 
   const onSubmit = (data: FormikValues) => {
-    dispatch(register(data));
+    register(data);
   };
 
   return (
