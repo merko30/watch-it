@@ -7,7 +7,7 @@ export const axios = Axios.create({
 });
 
 axios.interceptors.request.use(
-  async (config) => {
+  async config => {
     const token = await AsyncStorage.getItem('token');
 
     config.headers['Content-type'] = 'application/json';
@@ -15,7 +15,7 @@ axios.interceptors.request.use(
 
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   },
 );

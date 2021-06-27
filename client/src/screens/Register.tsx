@@ -34,6 +34,8 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
     register(data);
   };
 
+  console.log('in register');
+
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
       <AuthLayout back title="Join today" text="Track your bookshelves">

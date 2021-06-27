@@ -146,7 +146,7 @@ const Details = ({
             {book.volumeInfo.title}
           </Text>
           {book.volumeInfo.authors &&
-            book.volumeInfo.authors.map((author) => {
+            book.volumeInfo.authors.map(author => {
               return (
                 <Text variant="subTitle" color="foregroundTwo" key={author}>
                   {author}

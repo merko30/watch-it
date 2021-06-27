@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
   StyleSheet,
   View,
@@ -9,16 +9,16 @@ import {
   Platform,
   TouchableWithoutFeedback,
 } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useDerivedValue,
-  useAnimatedStyle,
-  withTiming,
-} from 'react-native-reanimated';
+// import Animated, {
+// useSharedValue,
+// useDerivedValue,
+// useAnimatedStyle,
+// withTiming,
+// } from 'react-native-reanimated';
 import {useTheme} from '@shopify/restyle';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import theme, {Theme, Box, Text} from '../theme';
+import theme, {Theme, Box, Text} from '../../theme';
 
 const LINE_HEIGHT = 16;
 const PADDING_VERTICAL = 8;
@@ -49,7 +49,8 @@ const styles = StyleSheet.create({
   },
 });
 
-interface TextFieldProps extends TextInputProps {
+export interface TextFieldProps extends TextInputProps {
+  name: string;
   label?: string;
   error?: string;
   touched?: boolean;
@@ -65,32 +66,34 @@ const TextField = ({
   containerStyle,
   labelStyle,
   numberOfLines = 1,
-  animateLabel = true,
+  // animateLabel = true,
   ...props
 }: TextFieldProps) => {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const {colors} = useTheme<Theme>();
   const ref = useRef<TextInput>(null);
-  const TRANSLATE = MARGIN_VERTICAL + PADDING_VERTICAL + LINE_HEIGHT;
-  const focused = useSharedValue(0);
+  // const TRANSLATE = MARGIN_VERTICAL + PADDING_VERTICAL + LINE_HEIGHT;
+  // const focused = useSharedValue(0);
   const isTextArea = props.multiline;
   // const color = mixColor(focused, 'rgb(0,0,0)', 'rgb(0,0,0)', 'rgb');
 
   // const fontWeight = mix(focused, 400, 600);
 
-  const translateY = useDerivedValue(() => {
-    return focused.value === 1 ? 0 : TRANSLATE;
-  });
+  // const translateY = useDerivedValue(() => {
+  //   return focused.value === 1 ? 0 : TRANSLATE;
+  // });
 
-  useEffect(() => {
-    if (props.value) {
-      if (props.value.length) {
-        focused.value = 1;
-      } else {
-        focused.value = 0;
-      }
-    }
-  }, [props.value]);
+  // useEffect(() => {
+  //   if (props.value) {
+  //     if (props.value.length) {
+  //       focused.value = 1;
+  //     } else {
+  //       focused.value = 0;
+  //     }
+  //     // TODO: fix exhaustive deps rule
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [props.value]);
 
   const minHeight =
     Platform.OS === 'ios' && numberOfLines
@@ -102,15 +105,22 @@ const TextField = ({
     : null;
   const hidePassword = props.secureTextEntry && !passwordVisible;
 
-  const style = useAnimatedStyle(() => ({
-    transform: [{translateY: withTiming(translateY.value, {duration: 300})}],
-  }));
+  // const style = useAnimatedStyle(() => ({
+  //   transform: [{translateY: withTiming(translateY.value, {duration: 300})}],
+  // }));
+
   return (
     <View style={containerStyle}>
       {label && (
-        <Animated.Text style={[styles.labelStyle, style, labelStyle]}>
+        <Text
+          // Animated.Text
+          style={[
+            styles.labelStyle,
+            // style,
+            labelStyle,
+          ]}>
           {label}
-        </Animated.Text>
+        </Text>
       )}
       <Box
         flexDirection="row"
@@ -118,7 +128,6 @@ const TextField = ({
         borderBottomWidth={1}
         alignItems="center">
         <TextInput
-          {...props}
           numberOfLines={Platform.OS === 'ios' ? undefined : numberOfLines}
           ref={ref}
           placeholderTextColor={colors.foreground}
@@ -131,14 +140,15 @@ const TextField = ({
               minHeight,
             },
           ]}
-          onFocus={() => {
-            focused.value = 1;
-          }}
-          onBlur={() => {
-            if (!props.value) {
-              focused.value = 0;
-            }
-          }}
+          {...props}
+          // onFocus={() => {
+          //   focused.value = 1;
+          // }}
+          // onBlur={() => {
+          //   if (!props.value) {
+          //     focused.value = 0;
+          //   }
+          // }}
           secureTextEntry={hidePassword}
         />
         {props.secureTextEntry && (

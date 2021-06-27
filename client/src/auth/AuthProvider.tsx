@@ -24,14 +24,13 @@ export const AuthContext = createContext({
 });
 
 const AuthProvider = ({children}: {children: React.ReactNode}) => {
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     async () => {
       const token = await AsyncStorage.getItem('token');
-      console.log({token});
       if (token) {
         setLoggedIn(true);
       }
