@@ -3,6 +3,7 @@ import {View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useTheme} from '@shopify/restyle';
 import {FormikProvider, FormikValues, useFormik} from 'formik';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 import Button from 'components/Button';
 import Message from 'components/Message';
@@ -10,7 +11,7 @@ import AuthLayout from 'components/AuthLayout';
 import FormikField from 'components/TextField/FormikField';
 
 import {Theme} from '../../theme';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+
 import {AuthContext, IAuthContext} from 'auth/AuthProvider';
 
 import validationSchema from './validationSchema';
