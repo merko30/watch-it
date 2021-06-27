@@ -1,6 +1,5 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, View, ScrollView, SafeAreaView} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import {
   TapGestureHandler,
   TapGestureHandlerGestureEvent,
@@ -13,16 +12,12 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import {ReText} from 'react-native-redash';
-import useDeepCompareEffect from 'use-deep-compare-effect';
-import {useFocusEffect} from '@react-navigation/native';
 import {useTheme} from '@shopify/restyle';
-
-import {getBooks} from '../../store/reducers/books';
-import {RootState} from 'src/store/reducers';
 
 import Bookshelf from './components/Bookshelf';
 
 import theme, {Theme, Text, Box} from '../../theme';
+import {Book} from 'types';
 
 const styles = StyleSheet.create({
   container: {
@@ -70,17 +65,14 @@ const SHELVES = [
 const Home = () => {
   const [shelves] = useState(SHELVES);
   const {colors} = useTheme<Theme>();
-  const dispatch = useDispatch();
+  const books: Book[] = [];
 
-  const {books} = useSelector((state: RootState) => state.books);
-
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(getBooks({}));
-    }, []),
-  );
-
-  useDeepCompareEffect(() => {}, [books]);
+  // TODO: fetch books
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     dispatch(getBooks({}));
+  //   }, []),
+  // );
 
   const y = useSharedValue(0);
   const showAll = useSharedValue(0);
@@ -89,16 +81,15 @@ const Home = () => {
     return showAll.value === 1 ? 0 : -20;
   });
 
-  const gestureHandler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>(
-    {
-      onStart: (e, ctx) => {
+  const gestureHandler =
+    useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
+      onStart: () => {
         showAll.value = showAll.value ? 0 : 1;
       },
-    },
-  );
+    });
 
   const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (e) => {
+    onScroll: e => {
       y.value = e.contentOffset.y;
     },
   });
@@ -143,7 +134,7 @@ const Home = () => {
                 showAll={showAll}
                 last={last}
                 y={y}
-                books={books.filter((b) => b.status == shelf.name)}
+                books={books.filter(b => b.status == shelf.name)}
                 {...shelf}
                 key={shelf.name}
               />

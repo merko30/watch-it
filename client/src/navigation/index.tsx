@@ -1,14 +1,15 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 // import {useTheme} from '@shopify/restyle';
 
 // import {Details, Splash} from '../screens';
 
-// import TabNavigator from './TabNavigator';
+import TabNavigator from './TabNavigator';
 import AuthNavigator from './AuthNavigator';
 import {navigationRef} from '../utils/navigation';
 import {Splash} from 'screens';
+import {AuthContext, IAuthContext} from 'auth/AuthProvider';
 
 // import {BackIcon} from '../components';
 
@@ -30,7 +31,7 @@ const Navigation = () => {
   // const {colors} = useTheme<Theme>();
   // // const loggedIn = useSelector<RootState>((state) => state.auth.loggedIn);
 
-  // const {loading, loggedIn} = useContext(AuthContext);
+  const {loading, loggedIn} = useContext(AuthContext) as IAuthContext;
 
   // const linking = {
   //   config: {
@@ -46,9 +47,9 @@ const Navigation = () => {
   //   prefixes: ['bookerapp://'],
   // };
 
-  // if (loading) {
-  //   return <Splash />;
-  // }
+  if (loading) {
+    return <Splash />;
+  }
 
   return (
     // TODO: add linking
@@ -58,13 +59,14 @@ const Navigation = () => {
           ...LEFT_ICON,
           ...BLANK_HEADER.headerStyle,
           headerBackImage: () => <BackIcon color={colors.foreground} />
-        !loggedIn ? ( */}
-        <Stack.Screen
-          options={{headerShown: false}}
-          component={AuthNavigator}
-          name="Auth"
-        />
-        {/* ) : (
+        */}
+        {!loggedIn ? (
+          <Stack.Screen
+            options={{headerShown: false}}
+            component={AuthNavigator}
+            name="Auth"
+          />
+        ) : (
           <>
             <Stack.Screen
               options={{
@@ -73,7 +75,7 @@ const Navigation = () => {
               name="Home"
               component={TabNavigator}
             />
-            <Stack.Screen
+            {/* <Stack.Screen
               name="Details"
               options={{
                 headerStyle: {
@@ -85,10 +87,9 @@ const Navigation = () => {
                 headerTitle: '',
               }}
               component={Details}
-            />
+            /> */}
           </>
         )}
-      */}
       </Stack.Navigator>
     </NavigationContainer>
   );

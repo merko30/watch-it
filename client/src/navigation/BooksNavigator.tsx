@@ -1,18 +1,21 @@
 import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
-import {useTheme} from '@shopify/restyle';
+// import {useTheme} from '@shopify/restyle';
 
-import {Home, List} from '../screens';
-import {BLANK_HEADER} from './headerStyles';
+import {
+  Home,
+  //  List
+} from '../screens';
+// import {BLANK_HEADER} from './headerStyles';
 
-import {Theme} from '../theme';
+// import {Theme} from '../theme';
 
-import {BackIcon} from '../components';
+// import {BackIcon} from '../components';
 
 const BooksNavigator = createStackNavigator();
 
 const Books = () => {
-  const {colors} = useTheme<Theme>();
+  // const {colors} = useTheme<Theme>();
   return (
     <BooksNavigator.Navigator>
       <BooksNavigator.Screen
@@ -20,7 +23,7 @@ const Books = () => {
         component={Home}
         options={{headerShown: false}}
       />
-      <BooksNavigator.Screen
+      {/* <BooksNavigator.Screen
         name="List"
         component={List}
         options={{
@@ -32,7 +35,7 @@ const Books = () => {
             backgroundColor: colors.background,
           },
         }}
-      />
+      /> */}
     </BooksNavigator.Navigator>
   );
 };

@@ -45,6 +45,7 @@ const AuthProvider = ({children}: {children: React.ReactNode}) => {
       const {
         data: {token},
       } = await loginUser(data);
+      console.log('here', token);
       await AsyncStorage.setItem('token', `Bearer ${token}`);
       setLoading(false);
       setLoggedIn(true);

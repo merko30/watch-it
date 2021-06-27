@@ -2,10 +2,10 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useTheme} from '@shopify/restyle';
 
-import ProfileNavigator from './ProfileNavigator';
+// import ProfileNavigator from './ProfileNavigator';
 import Books from './BooksNavigator';
 
-import {Search} from '../screens';
+// import {Search} from '../screens';
 
 import TabIcon from './components/TabIcon';
 
@@ -28,27 +28,25 @@ const TabNavigator = () => {
       }}>
       <Tab.Screen
         options={{
-          tabBarIcon: (props) => (
-            <TabIcon name="library" {...props} size={24} />
-          ),
+          tabBarIcon: props => <TabIcon name="library" {...props} size={24} />,
         }}
         name="Your books"
         component={Books}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         options={{
-          tabBarIcon: (props) => <TabIcon name="person" {...props} size={24} />,
+          tabBarIcon: props => <TabIcon name="person" {...props} size={24} />,
         }}
         name="Profile"
         component={ProfileNavigator}
-      />
-      <Tab.Screen
+      /> */}
+      {/* <Tab.Screen
         options={{
-          tabBarIcon: (props) => <TabIcon name="search" {...props} size={24} />,
+          tabBarIcon: props => <TabIcon name="search" {...props} size={24} />,
         }}
         name="Search"
         component={Search}
-      />
+      /> */}
     </Tab.Navigator>
   );
 };

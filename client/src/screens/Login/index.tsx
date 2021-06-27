@@ -21,7 +21,7 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
   const {colors, fontSizes} = useTheme<Theme>();
 
   const formik = useFormik({
-    initialValues: {emailOrUsername: '', password: ''},
+    initialValues: {emailOrUsername: 'joe7@gmail.com', password: 'password'},
     validationSchema,
     onSubmit: values => login(values as LoginData),
   });

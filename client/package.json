@@ -30,6 +30,7 @@
     "react-native-screens": "^3.4.0",
     "react-native-vector-icons": "^8.1.0",
     "react-query": "^3.17.3",
+    "use-deep-compare-effect": "^1.6.1",
     "yup": "^0.32.9"
   },
   "devDependencies": {
