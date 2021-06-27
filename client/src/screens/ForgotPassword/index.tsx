@@ -14,8 +14,6 @@ import {AuthContext, IAuthContext} from 'auth/AuthProvider';
 
 import validationSchema from './validationSchema';
 
-interface ForgotPasswordProps {}
-
 const ForgotPassword = () => {
   const {fontSizes} = useTheme<Theme>();
 
@@ -48,6 +46,7 @@ const ForgotPassword = () => {
             color="primary"
             onPress={handleSubmit}
             label="Reset password"
+            // TODO: add variant
             textStyle={{
               fontWeight: '700',
               fontSize: fontSizes.text,
