@@ -9,7 +9,7 @@ import TabNavigator from './TabNavigator';
 import AuthNavigator from './AuthNavigator';
 import {navigationRef} from '../utils/navigation';
 import {Splash} from 'screens';
-import {AuthContext, IAuthContext} from 'auth/AuthProvider';
+import {AuthContext, IAuthContext} from 'providers/AuthProvider';
 
 // import {BackIcon} from '../components';
 

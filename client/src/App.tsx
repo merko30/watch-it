@@ -4,7 +4,7 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import Navigation from './navigation';
 
 import ThemeProvider from 'theme/ThemeProvider';
-import AuthProvider from 'auth/AuthProvider';
+import AuthProvider from 'providers/AuthProvider';
 
 function App() {
   const queryClient = new QueryClient();

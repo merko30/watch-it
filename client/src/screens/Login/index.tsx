@@ -1,8 +1,10 @@
-import React, {useContext} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {StackScreenProps} from '@react-navigation/stack';
 import {FormikProvider, useFormik} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useTheme} from '@shopify/restyle';
+import {useMutation} from 'react-query';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import Message from 'components/Message';
 import Button from 'components/Button';
@@ -11,32 +13,46 @@ import FormikField from 'components/TextField/FormikField';
 
 import {Box, Theme} from '../../theme';
 
-import {AuthContext, IAuthContext} from 'auth/AuthProvider';
-
 import {LoginData} from '../../types';
 
 import validationSchema from './validationSchema';
+import {loginUser} from 'api/users';
+
+import {AuthContext, IAuthContext} from 'providers/AuthProvider';
 
 const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
   const {colors, fontSizes} = useTheme<Theme>();
 
+  const {setLoggedIn} = useContext(AuthContext) as IAuthContext;
+
+  const {mutate, error, isLoading, data} = useMutation((input: LoginData) =>
+    loginUser(input),
+  );
+
   const formik = useFormik({
     initialValues: {emailOrUsername: 'joe7@gmail.com', password: 'password'},
     validationSchema,
-    onSubmit: values => login(values as LoginData),
+    onSubmit: values => mutate(values),
   });
 
   const {handleSubmit} = formik;
 
-  const {login, error, loading} = useContext(AuthContext) as IAuthContext;
-
-  // console.log('in login');
+  useEffect(() => {
+    (async () => {
+      if (data) {
+        if (data.data.token) {
+          await AsyncStorage.setItem('token', data.data.token);
+          setLoggedIn!(true);
+        }
+      }
+    })();
+  }, [data, setLoggedIn]);
 
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
       <AuthLayout title="Welcome back" text="We're happy to see you again.">
         <FormikProvider value={formik}>
-          {error && <Message variant="negative" message={error!} />}
+          {error && <Message variant="negative" message={error! as string} />}
           {/* {message && <Message variant="positive" message={message} />} */}
 
           <FormikField
@@ -63,7 +79,7 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
             }}
             containerStyle={{marginTop: 40, paddingVertical: 12}}
             label={'Sign in'}
-            // loading={loading}
+            loading={isLoading}
           />
           <Box
             justifyContent="space-between"
@@ -77,7 +93,6 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
               color="transparent"
               onPress={() => navigation.navigate('Register')}
               label="Create account"
-              loading={loading}
             />
             <Button
               link

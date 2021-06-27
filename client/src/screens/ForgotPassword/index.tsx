@@ -10,7 +10,7 @@ import FormikField from 'components/TextField/FormikField';
 
 import {Theme} from '../../theme';
 
-import {AuthContext, IAuthContext} from 'auth/AuthProvider';
+import {AuthContext, IAuthContext} from 'providers/AuthProvider';
 
 import validationSchema from './validationSchema';
 

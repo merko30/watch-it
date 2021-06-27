@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useEffect} from 'react';
 import {View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 import {useTheme} from '@shopify/restyle';
@@ -9,19 +9,26 @@ import Button from 'components/Button';
 import Message from 'components/Message';
 import AuthLayout from 'components/AuthLayout';
 import FormikField from 'components/TextField/FormikField';
+import {useMutation} from 'react-query';
 
 import {Theme} from '../../theme';
 
-import {AuthContext, IAuthContext} from 'auth/AuthProvider';
+import {createUser} from 'api/users';
+
+import {User} from 'types';
 
 import validationSchema from './validationSchema';
+
+import {navigate} from 'utils/navigation';
 
 const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
   const {colors, fontSizes} = useTheme<Theme>();
 
-  const {register} = useContext(AuthContext) as IAuthContext;
+  const {mutate, error, isLoading, data} = useMutation((input: Partial<User>) =>
+    createUser(input),
+  );
 
-  const onSubmit = (data: FormikValues) => register(data);
+  const onSubmit = (data: FormikValues) => mutate(data);
 
   const formik = useFormik({
     initialValues: {
@@ -33,7 +40,11 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
     validationSchema,
   });
 
-  const {loading, error} = useContext(AuthContext) as IAuthContext;
+  useEffect(() => {
+    if (data) {
+      navigate('Login');
+    }
+  }, [data]);
 
   const {handleSubmit} = formik;
 
@@ -42,7 +53,7 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
       <AuthLayout back title="Join today" text="Track your bookshelves">
         <FormikProvider value={formik}>
           <View style={{flex: 2}}>
-            {error && <Message variant="negative" message={error} />}
+            {error && <Message variant="negative" message={error as string} />}
 
             <FormikField
               name="username"
@@ -69,7 +80,7 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
               color="primary"
               onPress={handleSubmit}
               label="Sign up"
-              loading={loading}
+              loading={isLoading}
             />
             <Button
               textStyle={{
