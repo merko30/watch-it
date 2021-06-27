@@ -5,11 +5,11 @@ import {StackScreenProps} from '@react-navigation/stack';
 
 import Button from 'components/Button';
 import AuthLayout from 'components/AuthLayout';
+import FormikField from 'components/TextField/FormikField';
 
 import {AuthStackParamList} from 'navigation/AuthNavigator';
 
 import validationSchema from './validationSchema';
-import FormikField from 'components/TextField/FormikField';
 
 interface ResetPasswordProps
   extends StackScreenProps<AuthStackParamList, 'ResetPassword'> {}
