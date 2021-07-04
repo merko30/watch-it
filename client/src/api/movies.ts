@@ -16,9 +16,6 @@ export const getAll = async () => {
   //     url.searchParams.append(key, value),
   //   );
   // }
-
-  console.log('here');
-
   return await axios.get(url.href);
 };
 

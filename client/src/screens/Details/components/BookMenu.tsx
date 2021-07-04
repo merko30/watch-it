@@ -1,21 +1,20 @@
-import React, {useState, useEffect} from 'react';
+import React, {
+  useState,
+  // useEffect
+} from 'react';
 import {
   StyleSheet,
-  TouchableOpacity,
+  // TouchableOpacity,
   View,
-  Text,
-  ActivityIndicator,
+  // Text,
+  // ActivityIndicator,
   Dimensions,
   StyleProp,
   ViewStyle,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import {useSelector, useDispatch} from 'react-redux';
 
-import {checkBook} from '../../../store/reducers/books';
-import {RootState} from '../../../store/reducers';
-
-import {BookStatus} from '../../../types/Book';
+import {MovieStatus} from 'types/Movie';
 
 import {RoundedIcon} from '../../../components';
 
@@ -53,19 +52,20 @@ const styles = StyleSheet.create({
 
 interface Status {
   label: string;
-  value: BookStatus | 'info' | 'delete';
+  value: MovieStatus | 'info' | 'delete';
 }
 
-const STATUSES: Status[] = [
-  {value: 'wishlist', label: 'Wishlist'},
-  {value: 'reading', label: 'Reading'},
-  {value: 'read', label: 'Read'},
-  {value: 'delete', label: 'Delete'},
-];
+// const STATUSES: Status[] = [
+//   {value: 'wishlist', label: 'Wishlist'},
+//   {value: 'watching', label: 'Watching'},
+//   {value: 'watched', label: 'Watched'},
+//   {value: 'watch-again', label: 'Watch again'},
+//   {value: 'delete', label: 'Delete'},
+// ];
 
 type BookMenuProps = {
   bookId: string;
-  onPress: (key: BookStatus | 'info' | 'delete') => void;
+  onPress: (key: MovieStatus | 'info' | 'delete') => void;
   showInfoItem?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   modalStyle?: StyleProp<ViewStyle>;
@@ -75,9 +75,9 @@ type BookMenuProps = {
 );
 
 const BookMenu = ({
-  bookId,
-  onPress,
-  showInfoItem,
+  // bookId,
+  // onPress,
+  // showInfoItem,
   containerStyle,
   modalStyle,
   visible,
@@ -85,10 +85,7 @@ const BookMenu = ({
 }: BookMenuProps) => {
   // const {colors} = useTheme<Theme>();
   const [isVisible, setIsVisible] = useState(false);
-  const [statuses, setStatuses] = useState<Status[]>([]);
-
-  const dispatch = useDispatch();
-  const {bookStatus, loadings} = useSelector((state: RootState) => state.books);
+  // const [statuses,setStatuses] = useState<Status[]>([]);
 
   const toggleIsVisible = () => {
     return setIsVisible(!isVisible);
@@ -98,22 +95,22 @@ const BookMenu = ({
   const toggleModal =
     visible && toggleVisible ? toggleVisible : toggleIsVisible;
 
-  useEffect(() => {
-    if (bookId) {
-      dispatch(checkBook(bookId));
-    }
-  }, [bookId, showModal]);
+  // useEffect(() => {
+  //   if (bookId) {
+  //     dispatch(checkBook(bookId));
+  //   }
+  // }, [bookId, showModal]);
 
-  useEffect(() => {
-    if (bookStatus) {
-      setStatuses(STATUSES.filter((status) => status.value !== bookStatus));
-    } else {
-      setStatuses(STATUSES.filter((status) => status.value !== 'delete'));
-    }
-    if (showInfoItem) {
-      setStatuses((prev) => [{value: 'info', label: 'Info'}, ...prev]);
-    }
-  }, [bookStatus]);
+  // useEffect(() => {
+  //   if (MovieStatus) {
+  //     setStatuses(STATUSES.filter(status => status.value !== MovieStatus));
+  //   } else {
+  //     setStatuses(STATUSES.filter(status => status.value !== 'delete'));
+  //   }
+  //   if (showInfoItem) {
+  //     setStatuses(prev => [{value: 'info', label: 'Info'}, ...prev]);
+  //   }
+  // }, [MovieStatus]);
 
   return (
     <View style={[styles.container, containerStyle]}>
@@ -129,11 +126,11 @@ const BookMenu = ({
         style={[
           styles.modal,
           modalStyle,
-          {paddingVertical: loadings.status ? 20 : 0},
+          // {paddingVertical: loadings.status ? 20 : 0},
         ]}
         isVisible={showModal}
         onBackdropPress={() => toggleModal()}>
-        {loadings.status ? (
+        {/* {loadings.status ? (
           <ActivityIndicator />
         ) : (
           statuses.map((status, i) => {
@@ -155,7 +152,8 @@ const BookMenu = ({
               </TouchableOpacity>
             );
           })
-        )}
+        )} */}
+        hello
       </Modal>
     </View>
   );

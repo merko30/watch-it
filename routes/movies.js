@@ -6,9 +6,9 @@ const {
   getAll,
   createOrUpdate,
   remove,
-  checkBook,
+  checkMovie,
   search,
-  getSingleBook,
+  getSingleMovie,
 } = require("../controllers/movies");
 
 router.get("/", passport.authenticate("jwt", { session: false }), getAll);
@@ -22,13 +22,13 @@ router.put(
 router.get(
   "/exists/:id",
   passport.authenticate("jwt", { session: false }),
-  checkBook
+  checkMovie
 );
 
 router.get(
   "/:id",
   passport.authenticate("jwt", { session: false }),
-  getSingleBook
+  getSingleMovie
 );
 
 router.get(

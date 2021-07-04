@@ -3,25 +3,29 @@ import {TouchableOpacity} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {useTheme} from '@shopify/restyle';
 
-import {BookCover, Rating} from '../../../components';
+// import {BookCover, Rating} from '../../../components';
 
-import {GoogleBook} from '../../../types/Book';
+import {TMDBMovie} from '../../../types/Movie';
 
-import {Box, Text, Theme} from '../../../theme';
+import {
+  Box,
+  //  Text,
+  Theme,
+} from '../../../theme';
 
 interface BookProps {
-  book: GoogleBook;
+  book: TMDBMovie;
 }
 
-const IMAGE_RATIO = 0.7;
+// const IMAGE_RATIO = 0.7;
 
 const Book = ({book}: BookProps) => {
   const {spacing, colors, borderRadii, shadows} = useTheme<Theme>();
   const {navigate} = useNavigation();
 
-  const image = book.volumeInfo.imageLinks
-    ? book.volumeInfo.imageLinks.smallThumbnail
-    : undefined;
+  // const image = book.volumeInfo.imageLinks
+  //   ? book.volumeInfo.imageLinks.smallThumbnail
+  //   : undefined;
 
   return (
     <TouchableOpacity
@@ -35,7 +39,7 @@ const Book = ({book}: BookProps) => {
         shadowColor: colors.gray,
       }}>
       <Box flexDirection="row">
-        <BookCover
+        {/* <BookCover
           uri={image}
           style={{borderRadius: borderRadii.m}}
           ratio={IMAGE_RATIO}
@@ -52,7 +56,7 @@ const Book = ({book}: BookProps) => {
               rating={book.volumeInfo.averageRating}
             />
           )}
-        </Box>
+        </Box> */}
       </Box>
     </TouchableOpacity>
   );

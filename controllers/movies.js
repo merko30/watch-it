@@ -9,8 +9,8 @@ const getAll = async (req, res, next) => {
   query = { ...query, ...req.query };
 
   try {
-    const books = await Movie.find(query);
-    res.json({ books });
+    const movies = await Movie.find(query);
+    res.json({ movies });
   } catch (error) {
     next(error);
   }

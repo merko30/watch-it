@@ -1,22 +1,26 @@
 import React from 'react';
-import {FlatList} from 'react-native';
+import {
+  // FlatList,
+  View,
+} from 'react-native';
 
-import Book from './Book';
-import {GoogleBook} from '../../../types/Book';
+// import Book from './Book';
+import {TMDBMovie} from 'types/Movie';
 
-interface BookListProps {
-  books: GoogleBook[];
+interface MovieList {
+  books: TMDBMovie[];
 }
 
-const BookList = ({books}: BookListProps) => {
+const MovieList = (_: MovieList) => {
   return (
-    <FlatList
-      style={{paddingHorizontal: 10}}
-      data={books}
-      renderItem={({item}) => <Book book={item} />}
-      keyExtractor={(book) => book.id}
-    />
+    <View></View>
+    // <FlatList
+    //   style={{paddingHorizontal: 10}}
+    //   data={books}
+    //   renderItem={({item}) => <Book book={item} />}
+    //   keyExtractor={book => book.id}
+    // />
   );
 };
 
-export default BookList;
+export default MovieList;

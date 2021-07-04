@@ -21,6 +21,7 @@ import theme, {Theme, Text, Box} from '../../theme';
 
 import {getAll} from 'api/movies';
 import {AxiosError, AxiosResponse} from 'axios';
+import {Movie} from 'types';
 
 const styles = StyleSheet.create({
   container: {
@@ -70,22 +71,13 @@ const Home = () => {
   const {colors} = useTheme<Theme>();
 
   const {data} = useQuery<
-    AxiosResponse<{movies: string[]}>,
+    AxiosResponse<{movies: Movie[]}>,
     AxiosError,
-    AxiosResponse<{movies: string[]}>,
-    'movies'
+    AxiosResponse<{movies: Movie[]}>
   >('movies', getAll);
 
-  console.log(data?.data);
-
   const {movies = []} = data?.data || {};
-
-  // TODO: fetch books
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     dispatch(getBooks({}));
-  //   }, []),
-  // );
+  console.log({movies});
 
   const y = useSharedValue(0);
   const showAll = useSharedValue(0);
