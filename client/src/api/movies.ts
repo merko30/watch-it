@@ -8,12 +8,14 @@ export interface GetBooksParams {
 
 const API_URL = '/movies';
 
-export const getAll = async (params: GetBooksParams) => {
+export const getAll = async () => {
   let url = new URL(API_URL);
 
-  Object.entries(params).forEach(([key, value]) =>
-    url.searchParams.append(key, value),
-  );
+  // if (params) {
+  //   Object.entries(params).forEach(([key, value]) =>
+  //     url.searchParams.append(key, value),
+  //   );
+  // }
 
   return await axios.get(url.href);
 };
@@ -31,7 +33,7 @@ export const remove = async (id: string) => {
   return await axios.delete(`${API_URL}/${id}`);
 };
 
-export const searchBooksByTerm = async (term: string) => {
+export const searchMovies = async (term: string) => {
   return await axios.get(`${API_URL}/search/${term}`);
 };
 

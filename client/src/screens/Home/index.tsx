@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, View, ScrollView, SafeAreaView} from 'react-native';
 import {
   TapGestureHandler,
@@ -13,11 +13,14 @@ import Animated, {
 } from 'react-native-reanimated';
 import {ReText} from 'react-native-redash';
 import {useTheme} from '@shopify/restyle';
+import {useQuery} from 'react-query';
 
-import Bookshelf from './components/Bookshelf';
+// import Bookshelf from './components/Bookshelf';
 
 import theme, {Theme, Text, Box} from '../../theme';
-import {Book} from 'types';
+
+import {getAll} from 'api/movies';
+import {AxiosError, AxiosResponse} from 'axios';
 
 const styles = StyleSheet.create({
   container: {
@@ -44,28 +47,36 @@ const styles = StyleSheet.create({
   },
 });
 
-const SHELVES = [
-  {
-    name: 'wishlist',
-    title: 'Wishlist',
-    backgroundColor: 'orange',
-  },
-  {
-    name: 'reading',
-    title: 'Reading',
-    backgroundColor: 'chocolate',
-  },
-  {
-    name: 'read',
-    title: 'Read',
-    backgroundColor: 'brown',
-  },
-];
+// const SHELVES = [
+//   {
+//     name: 'wishlist',
+//     title: 'Wishlist',
+//     backgroundColor: 'orange',
+//   },
+//   {
+//     name: 'reading',
+//     title: 'Reading',
+//     backgroundColor: 'chocolate',
+//   },
+//   {
+//     name: 'read',
+//     title: 'Read',
+//     backgroundColor: 'brown',
+//   },
+// ];
 
 const Home = () => {
-  const [shelves] = useState(SHELVES);
+  // const [shelves] = useState(SHELVES);
   const {colors} = useTheme<Theme>();
-  const books: Book[] = [];
+
+  const {data} = useQuery<
+    AxiosResponse<{movies: string[]}>,
+    AxiosError,
+    AxiosResponse<{movies: string[]}>,
+    'movies'
+  >('movies', getAll);
+
+  const {movies = []} = data?.data || {};
 
   // TODO: fetch books
   // useFocusEffect(
@@ -126,20 +137,22 @@ const Home = () => {
           style={style}
           scrollEventThrottle={16}
           {...scrollHandler}>
-          {shelves.map((shelf, i) => {
-            const last = i === shelves.length - 1;
-            return (
-              <Bookshelf
-                index={i}
-                showAll={showAll}
-                last={last}
-                y={y}
-                books={books.filter(b => b.status == shelf.name)}
-                {...shelf}
-                key={shelf.name}
-              />
-            );
-          })}
+          {/* {shelves.map((shelf, i) => { 
+            // const last = i === shelves.length - 1;
+            // return (
+            //   <Bookshelf
+            //     index={i}
+            //     showAll={showAll}
+            //     last={last}
+            //     y={y}
+            //     books={movies.filter(b => b.status == shelf.name)}
+            //     {...shelf}
+            //     key={shelf.name}
+            //   />
+
+            // );
+            */}
+          {JSON.stringify(movies)}
         </Animated.ScrollView>
       </ScrollView>
     </SafeAreaView>

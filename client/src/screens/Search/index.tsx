@@ -1,28 +1,28 @@
 import React from 'react';
 import {SafeAreaView, ActivityIndicator} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from '@shopify/restyle';
+// import {AxiosError, AxiosResponse} from 'axios';
+import {useMutation} from 'react-query';
 
-import BookList from './components/BookList';
+import {searchMovies} from 'api/movies';
+
+// import BookList from './components/BookList';
 import SearchBar from './components/SearchBar';
-
-import {search} from '../../store/reducers/books';
-import {RootState} from '../../store/reducers';
 
 import {Theme, Box} from '../../theme';
 
 const Search = () => {
   const {colors} = useTheme<Theme>();
-  const dispatch = useDispatch();
-  const {searchResults: books, loadings} = useSelector(
-    (state: RootState) => state.books,
+
+  const {mutate, error, isLoading, data} = useMutation((input: string) =>
+    searchMovies(input),
   );
 
-  const onSearch = (term: string) => {
-    dispatch(search(term));
-  };
+  console.log(error);
 
-  console.log({books});
+  console.log(data);
+
+  const onSearch = (term: string) => mutate(term);
 
   return (
     <SafeAreaView
@@ -32,10 +32,10 @@ const Search = () => {
       }}>
       <SearchBar onSearch={onSearch} />
       <Box flex={1} justifyContent="center">
-        {loadings.status && (
+        {isLoading && (
           <ActivityIndicator size="large" color={colors.foreground} />
         )}
-        {books && !loadings.status && <BookList books={books} />}
+        {/* {books && !isLoading && <BookList books={books} />} */}
       </Box>
     </SafeAreaView>
   );

@@ -19,15 +19,18 @@ import validationSchema from './validationSchema';
 import {loginUser} from 'api/users';
 
 import {AuthContext, IAuthContext} from 'providers/AuthProvider';
+import {AxiosError, AxiosResponse} from 'axios';
 
 const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
   const {colors, fontSizes} = useTheme<Theme>();
 
   const {setLoggedIn} = useContext(AuthContext) as IAuthContext;
 
-  const {mutate, error, isLoading, data} = useMutation((input: LoginData) =>
-    loginUser(input),
-  );
+  const {mutate, error, isLoading, data} = useMutation<
+    AxiosResponse<any>,
+    AxiosError<{message: string}>,
+    LoginData
+  >((input: LoginData) => loginUser(input));
 
   const formik = useFormik({
     initialValues: {emailOrUsername: 'joe7@gmail.com', password: 'password'},
@@ -48,11 +51,12 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
     })();
   }, [data, setLoggedIn]);
 
+  const errorMessage = error?.response?.data.message || 'Something went wrong';
   return (
     <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
       <AuthLayout title="Welcome back" text="We're happy to see you again.">
         <FormikProvider value={formik}>
-          {error && <Message variant="negative" message={error! as string} />}
+          {error && <Message variant="negative" message={errorMessage} />}
           {/* {message && <Message variant="positive" message={message} />} */}
 
           <FormikField
