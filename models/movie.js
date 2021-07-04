@@ -1,19 +1,18 @@
 const mongoose = require("mongoose");
 var schema = mongoose.Schema;
 
-var bookSchema = new schema({
+var movieSchema = new schema({
   title: { type: String, required: true },
-  authors: { type: [String], required: true },
+  poster_path: { type: String, required: true },
   status: {
     required: true,
     type: String,
-    enum: ["wishlist", "reading", "read"],
+    enum: ["wishlist", "watching", "watched", "watch-again"],
   },
-  // ===== GOODREADS ID =====
+  // ===== TMDB MOVIE/SHOW ID =====
   id: { required: true, type: String },
-  // ===== GOODREADS ID =====
+  // ===== TMDB MOVIE/SHOW ID =====
   user: { type: schema.Types.ObjectId, ref: "User" },
-  thumbnail: String,
 });
 
-module.exports = mongoose.model("Book", bookSchema);
+module.exports = mongoose.model("Movie", movieSchema);

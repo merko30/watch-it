@@ -1,7 +1,7 @@
 import {axios} from '../config/axios';
 // import {Movie} from '../types/Movie';
 
-export interface GetBooksParams {
+export interface GetMoviesParams {
   page?: number;
   status?: string;
 }
@@ -16,6 +16,8 @@ export const getAll = async () => {
   //     url.searchParams.append(key, value),
   //   );
   // }
+
+  console.log('here');
 
   return await axios.get(url.href);
 };

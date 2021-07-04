@@ -3,7 +3,7 @@ const passport = require("passport");
 const router = express.Router();
 
 const {
-  getAllBooks,
+  getAll,
   createOrUpdate,
   remove,
   checkBook,
@@ -11,7 +11,7 @@ const {
   getSingleBook,
 } = require("../controllers/movies");
 
-router.get("/", passport.authenticate("jwt", { session: false }), getAllBooks);
+router.get("/", passport.authenticate("jwt", { session: false }), getAll);
 
 router.put(
   "/",

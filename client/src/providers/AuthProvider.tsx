@@ -14,10 +14,10 @@ export const AuthContext = createContext<IAuthContext>({
 
 const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async () => {
+    (async () => {
       // await AsyncStorage.removeItem('token');
       const token = await AsyncStorage.getItem('token');
       console.log(token);
@@ -27,7 +27,7 @@ const AuthProvider = ({children}: {children: React.ReactNode}) => {
       }
 
       setLoading(false);
-    };
+    })();
   }, []);
 
   return (

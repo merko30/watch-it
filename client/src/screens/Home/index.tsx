@@ -76,6 +76,8 @@ const Home = () => {
     'movies'
   >('movies', getAll);
 
+  console.log(data?.data);
+
   const {movies = []} = data?.data || {};
 
   // TODO: fetch books

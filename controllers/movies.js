@@ -1,14 +1,15 @@
 const fetch = require("node-fetch");
 
-const Book = require("../models/book");
+const Movie = require("../models/movie");
 
-const getAllBooks = async (req, res, next) => {
+const getAll = async (req, res, next) => {
+  console.log("in controller");
   let query = { user: req.user._id };
 
   query = { ...query, ...req.query };
 
   try {
-    const books = await Book.find(query);
+    const books = await Movie.find(query);
     res.json({ books });
   } catch (error) {
     next(error);
@@ -18,27 +19,27 @@ const getAllBooks = async (req, res, next) => {
 const createOrUpdate = async (req, res, next) => {
   console.log(req.body);
   try {
-    const book = await Book.findOneAndUpdate(
+    const movie = await Movie.findOneAndUpdate(
       { id: req.body.id },
       { ...req.body, user: req.user._id },
       { upsert: true, new: true }
     );
-    res.json({ book });
+    res.json({ movie });
   } catch (error) {
     next(error);
   }
 };
 
-const checkBook = async (req, res, next) => {
+const checkMovie = async (req, res, next) => {
   try {
-    const book = await Book.findOne({
+    const movie = await Movie.findOne({
       id: req.params.id,
       user: req.user._id,
     });
-    if (book) {
-      res.json({ bookStatus: book.status });
+    if (movie) {
+      res.json({ movieStatus: movie.status });
     } else {
-      res.json({ bookStatus: null });
+      res.json({ movieStatus: null });
     }
   } catch (error) {
     next(error);
@@ -47,14 +48,14 @@ const checkBook = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    await Book.findOneAndDelete({ id: req.params.id });
+    await Movie.findOneAndDelete({ id: req.params.id });
     res.json({ ok: true });
   } catch (error) {
     next(error);
   }
 };
 
-const getSingleBook = async (req, res, next) => {
+const getSingleMovie = async (req, res, next) => {
   try {
     const response = await fetch(
       `${process.env.TMDB_API_BASE_URL}/${req.params.id}?key=${process.env.TMDB_API_KEY}`,
@@ -87,10 +88,10 @@ const search = async (req, res, next) => {
 };
 
 module.exports = {
-  getAllBooks,
+  getAll,
   createOrUpdate,
-  checkBook,
+  checkMovie,
   remove,
   search,
-  getSingleBook,
+  getSingleMovie,
 };
