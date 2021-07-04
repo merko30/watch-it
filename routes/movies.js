@@ -9,7 +9,7 @@ const {
   checkBook,
   search,
   getSingleBook,
-} = require("../controllers/books");
+} = require("../controllers/movies");
 
 router.get("/", passport.authenticate("jwt", { session: false }), getAllBooks);
 

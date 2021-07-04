@@ -44,6 +44,8 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
     (async () => {
       if (data) {
         if (data.data.token) {
+          console.log(data.data.token);
+
           await AsyncStorage.setItem('token', data.data.token);
           setLoggedIn!(true);
         }

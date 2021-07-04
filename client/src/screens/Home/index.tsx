@@ -152,7 +152,7 @@ const Home = () => {
 
             // );
             */}
-          {JSON.stringify(movies)}
+          {/* {JSON.stringify(movies)} */}
         </Animated.ScrollView>
       </ScrollView>
     </SafeAreaView>

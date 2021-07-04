@@ -2,9 +2,9 @@ var express = require("express");
 var router = express.Router();
 
 var users = require("./users");
-var book = require("./books");
+var movies = require("./movies");
 
 router.use("/auth", users);
-router.use("/books", book);
+router.use("/movies", movies);
 
 module.exports = router;
