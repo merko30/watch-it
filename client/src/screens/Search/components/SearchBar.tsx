@@ -62,7 +62,8 @@ const SearchBar = ({onSearch}: SearchBarProps) => {
     <Box
       backgroundColor="white"
       alignItems="center"
-      margin="m"
+      mx="m"
+      marginTop="xl"
       padding="s"
       borderRadius="m"
       style={[errorStyle, {...shadows.medium}]}>

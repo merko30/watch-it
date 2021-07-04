@@ -3,24 +3,27 @@ import {SafeAreaView, ActivityIndicator} from 'react-native';
 import {useTheme} from '@shopify/restyle';
 // import {AxiosError, AxiosResponse} from 'axios';
 import {useMutation} from 'react-query';
+import {AxiosError, AxiosResponse} from 'axios';
 
 import {searchMovies} from 'api/movies';
 
-// import BookList from './components/BookList';
+import MovieList from './components/MovieList';
 import SearchBar from './components/SearchBar';
 
-import {Theme, Box} from '../../theme';
+import {Theme, Box} from 'theme';
+
+import {TMDBMovie} from 'types';
 
 const Search = () => {
   const {colors} = useTheme<Theme>();
 
-  const {mutate, error, isLoading, data} = useMutation((input: string) =>
-    searchMovies(input),
-  );
+  const {data, mutate, isLoading} = useMutation<
+    AxiosResponse<{data: {results: TMDBMovie[]}}>,
+    AxiosError<{error: string}>,
+    string
+  >((term: string) => searchMovies(term));
 
-  console.log(error);
-
-  console.log(data);
+  const {data: {results: movies = []} = {}} = data?.data || {};
 
   const onSearch = (term: string) => mutate(term);
 
@@ -35,7 +38,7 @@ const Search = () => {
         {isLoading && (
           <ActivityIndicator size="large" color={colors.foreground} />
         )}
-        {/* {books && !isLoading && <BookList books={books} />} */}
+        {movies && !isLoading && <MovieList movies={movies} />}
       </Box>
     </SafeAreaView>
   );

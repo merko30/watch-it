@@ -7,19 +7,15 @@ import {useTheme} from '@shopify/restyle';
 
 import {TMDBMovie} from '../../../types/Movie';
 
-import {
-  Box,
-  //  Text,
-  Theme,
-} from '../../../theme';
+import {Box, Text, Theme} from '../../../theme';
 
-interface BookProps {
-  book: TMDBMovie;
+interface MovieProps {
+  movie: TMDBMovie;
 }
 
 // const IMAGE_RATIO = 0.7;
 
-const Book = ({book}: BookProps) => {
+const Movie = ({movie}: MovieProps) => {
   const {spacing, colors, borderRadii, shadows} = useTheme<Theme>();
   const {navigate} = useNavigation();
 
@@ -29,7 +25,7 @@ const Book = ({book}: BookProps) => {
 
   return (
     <TouchableOpacity
-      onPress={() => navigate('Details', {id: book.id})}
+      onPress={() => navigate('Details', {id: movie.id})}
       style={{
         marginVertical: spacing.m,
         padding: spacing.m,
@@ -39,6 +35,7 @@ const Book = ({book}: BookProps) => {
         shadowColor: colors.gray,
       }}>
       <Box flexDirection="row">
+        <Text>{movie.title}</Text>
         {/* <BookCover
           uri={image}
           style={{borderRadius: borderRadii.m}}
@@ -62,4 +59,4 @@ const Book = ({book}: BookProps) => {
   );
 };
 
-export default Book;
+export default Movie;

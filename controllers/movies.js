@@ -3,7 +3,6 @@ const fetch = require("node-fetch");
 const Movie = require("../models/movie");
 
 const getAll = async (req, res, next) => {
-  console.log("in controller");
   let query = { user: req.user._id };
 
   query = { ...query, ...req.query };
@@ -17,7 +16,6 @@ const getAll = async (req, res, next) => {
 };
 
 const createOrUpdate = async (req, res, next) => {
-  console.log(req.body);
   try {
     const movie = await Movie.findOneAndUpdate(
       { id: req.body.id },
@@ -78,8 +76,6 @@ const search = async (req, res, next) => {
     );
 
     const data = await response.json();
-
-    console.log(data);
 
     res.json({ data });
   } catch (error) {
