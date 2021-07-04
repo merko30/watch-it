@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, StyleSheet, ViewStyle, StyleProp} from 'react-native';
+import { View, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaskedView from '@react-native-community/masked-view';
 
@@ -7,38 +7,56 @@ interface RatingProps {
   rating: number;
   size?: number;
   style?: StyleProp<ViewStyle>;
+  maxVote?: number;
 }
 
-const Rating = ({rating, size = 18, style}: RatingProps) => {
+const styles = StyleSheet.create({
+  container: { marginVertical: 8 },
+  row: { flexDirection: 'row' },
+  inactiveStars: {
+    backgroundColor: 'gray',
+  },
+  activeStars: {
+    backgroundColor: 'orange',
+  },
+});
+
+const Rating = ({ rating, size = 18, maxVote = 5, style }: RatingProps) => {
   return (
-    <View style={[{flexDirection: 'row', marginVertical: 8}, style]}>
+    <View style={[styles.container, style]}>
       <MaskedView
         maskElement={
-          <View style={{flexDirection: 'row'}}>
-            <Icon name="star" size={size} color="gray" />
-            <Icon name="star" size={size} color="gray" />
-            <Icon name="star" size={size} color="gray" />
-            <Icon name="star" size={size} color="gray" />
-            <Icon name="star" size={size} color="gray" />
+          <View style={styles.row}>
+            {Array(maxVote)
+              .fill(0)
+              .map((_, i) => (
+                <Icon key={i} name="star" size={size} color="gray" />
+              ))}
           </View>
         }>
         <View
-          style={{
-            height: size,
-            width: size * 5,
-            backgroundColor: 'gray',
-          }}>
+          style={[
+            styles.inactiveStars,
+            {
+              height: size,
+              width: size * maxVote,
+            },
+          ]}>
           <View
             style={[
               StyleSheet.absoluteFillObject,
+              styles.activeStars,
               {
-                width: size * rating,
+                width: size * (rating / 2),
                 height: size,
-                backgroundColor: 'orange',
               },
-            ]}></View>
+            ]}
+          />
         </View>
       </MaskedView>
+      {/* <Text>
+        {rating} out of {maxVote}
+      </Text> */}
     </View>
   );
 };

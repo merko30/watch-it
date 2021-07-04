@@ -9,7 +9,7 @@ export {default as RoundedIcon} from './RoundedIcon';
 export {default as Avatar} from './Avatar';
 export {default as Layout} from './Layout';
 export {default as BackIcon} from './BackIcon';
-export {default as BookCover} from './BookCover';
+export {default as MoviePoster} from './MoviePoster';
 export {default as LoadingContent} from './LoadingContent';
 export {default as Rating} from './Rating';
 export {default as AuthLayout} from './AuthLayout';

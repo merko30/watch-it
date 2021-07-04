@@ -1,7 +1,7 @@
 import React from 'react';
-import {FlatList} from 'react-native';
+import { FlatList } from 'react-native';
 
-import {TMDBMovie} from 'types/Movie';
+import { TMDBMovie } from 'types/Movie';
 
 import Movie from './Movie';
 
@@ -9,12 +9,12 @@ interface MovieListProps {
   movies: TMDBMovie[];
 }
 
-const MovieList = ({movies}: MovieListProps) => {
+const MovieList = ({ movies }: MovieListProps) => {
   return (
     <FlatList
-      style={{paddingHorizontal: 10}}
+      style={{ paddingHorizontal: 10 }}
       data={movies}
-      renderItem={({item}) => <Movie movie={item} />}
+      renderItem={({ item }) => <Movie movie={item} />}
       keyExtractor={movie => movie.id.toString()}
     />
   );

@@ -1,7 +1,5 @@
-import {createTheme, createBox, createText} from '@shopify/restyle';
-import {Platform} from 'react-native';
-
-import {Theme as ThemeEnum} from '../store/reducers/ui';
+import { createTheme, createBox, createText } from '@shopify/restyle';
+import { Platform } from 'react-native';
 
 const palette = {
   light: '#F3F0E9',
@@ -160,7 +158,7 @@ const darkTheme: Theme = {
   },
 };
 
-export const themes: Record<ThemeEnum, Theme> = {
+export const themes: Record<'light' | 'dark', Theme> = {
   light: theme,
   dark: darkTheme,
 };

@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
 } from 'react-native';
 
-import theme, {Theme} from '../theme';
-import {useTheme} from '@shopify/restyle';
+import theme, { Theme } from '../theme';
+import { useTheme } from '@shopify/restyle';
 
 const styles = StyleSheet.create({
   button: {
@@ -42,14 +42,14 @@ const Button = ({
   loading,
   link,
 }: ButtonProps) => {
-  const {colors} = useTheme<Theme>();
+  const { colors } = useTheme<Theme>();
   const paddingHorizontal = link ? 0 : 10;
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[
         styles.button,
-        {backgroundColor: colors[backgroundColor], paddingHorizontal},
+        { backgroundColor: colors[backgroundColor], paddingHorizontal },
         containerStyle,
       ]}>
       {loading ? (
