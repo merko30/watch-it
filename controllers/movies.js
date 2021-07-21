@@ -56,7 +56,7 @@ const remove = async (req, res, next) => {
 const getSingleMovie = async (req, res, next) => {
   try {
     const response = await fetch(
-      `${process.env.TMDB_API_BASE_URL}/${req.params.id}?key=${process.env.TMDB_API_KEY}`,
+      `${process.env.TMDB_API_BASE_URL}/${req.params.type}/${req.params.id}?api_key=${process.env.TMDB_API_KEY}`,
       { method: "GET", mode: "no-cors" }
     );
 
@@ -77,7 +77,9 @@ const search = async (req, res, next) => {
 
     const data = await response.json();
 
-    res.json({ data });
+    const { results } = data;
+
+    res.json({ results });
   } catch (error) {
     next(error);
   }

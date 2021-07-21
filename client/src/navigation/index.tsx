@@ -1,15 +1,17 @@
-import React, {useContext} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import React, { useContext } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 // import {useTheme} from '@shopify/restyle';
 
 // import {Details, Splash} from '../screens';
 
+import Details from 'screens/Details';
+
 import TabNavigator from './TabNavigator';
 import AuthNavigator from './AuthNavigator';
-import {navigationRef} from '../utils/navigation';
-import {Splash} from 'screens';
-import {AuthContext, IAuthContext} from 'providers/AuthProvider';
+import { navigationRef } from '../utils/navigation';
+import { Splash } from 'screens';
+import { AuthContext, IAuthContext } from 'providers/AuthProvider';
 
 // import {BackIcon} from '../components';
 
@@ -19,9 +21,9 @@ import {AuthContext, IAuthContext} from 'providers/AuthProvider';
 // import {AuthContext} from 'auth/AuthProvider';
 
 export type RootStackParamList = {
-  Details: {id: string};
+  Details: { id: string; type: 'movie' | 'tv' };
   Home: undefined;
-  List: {shelf: string};
+  List: { shelf: string };
   Auth: undefined;
 };
 
@@ -31,7 +33,7 @@ const Navigation = () => {
   // const {colors} = useTheme<Theme>();
   // // const loggedIn = useSelector<RootState>((state) => state.auth.loggedIn);
 
-  const {loading, loggedIn} = useContext(AuthContext) as IAuthContext;
+  const { loading, loggedIn } = useContext(AuthContext) as IAuthContext;
 
   // const linking = {
   //   config: {
@@ -62,7 +64,7 @@ const Navigation = () => {
         */}
         {!loggedIn ? (
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             component={AuthNavigator}
             name="Auth"
           />
@@ -75,19 +77,7 @@ const Navigation = () => {
               name="Home"
               component={TabNavigator}
             />
-            {/* <Stack.Screen
-              name="Details"
-              options={{
-                headerStyle: {
-                  borderBottomWidth: 0,
-                  elevation: 0,
-                  backgroundColor: colors.backgroundThree,
-                },
-                headerTintColor: colors.foreground,
-                headerTitle: '',
-              }}
-              component={Details}
-            /> */}
+            <Stack.Screen name="Details" component={Details} />
           </>
         )}
       </Stack.Navigator>

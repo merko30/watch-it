@@ -1,11 +1,9 @@
 import React from 'react';
 // {useEffect, useState}
-import // ScrollView, ActivityIndicator,
-// StyleSheet,
-'react-native';
+import { ActivityIndicator } from 'react-native';
 
-import {RouteProp} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
+import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 // import {useTheme} from '@shopify/restyle';
 // import Icon from 'react-native-vector-icons/Ionicons';
 // import LinearGradient from 'react-native-linear-gradient';
@@ -15,14 +13,19 @@ import {StackNavigationProp} from '@react-navigation/stack';
 
 // import {MovieStatus} from 'types/Movie';
 
-import {RootStackParamList} from '../../navigation';
+import { RootStackParamList } from '../../navigation';
 
 import {
   // theme,
   // Theme,
-  Box,
+  // Box,
+  Text,
   // Text
 } from '../../theme';
+import { useQuery } from 'react-query';
+import { getSingleMovie } from 'api/movies';
+import { AxiosResponse } from 'axios';
+import { TMDBMovie } from 'types';
 // import {BookCover} from '../../components';
 
 // const styles = StyleSheet.create({
@@ -37,27 +40,33 @@ import {
 //   },
 // });
 
-type ProfileScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
+type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
 
-type ProfileScreenNavigationProp = StackNavigationProp<
+type DetailsScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
   'Details'
 >;
 
 type DetailsProps = {
-  route: ProfileScreenRouteProp;
-  navigation: ProfileScreenNavigationProp;
+  route: DetailsScreenRouteProp;
+  navigation: DetailsScreenNavigationProp;
 };
 
-const Details = ({}: // navigation,
-// route: {
-//   params: {id},
-// },
-DetailsProps) => {
+const Details = ({
+  route: {
+    params: { id, type },
+  },
+}: DetailsProps) => {
   // const [showMenu, setShowMenu] = useState(false);
 
   // const {spacing, colors, borderRadii} = useTheme<Theme>();
   // // const { } = useQuery({})
+
+  const { data, isLoading, error } = useQuery<
+    AxiosResponse<{ movie: TMDBMovie }>
+  >(['movie', { id, type }], () => getSingleMovie({ type, id }));
+
+  const { data: { movie = null } = {} } = data || {};
 
   // useEffect(() => {
   //   navigation.setOptions({
@@ -101,7 +110,17 @@ DetailsProps) => {
   //     book.volumeInfo.imageLinks &&
   //     book.volumeInfo.imageLinks.thumbnail) ??
   //   '';
-  return <Box></Box>;
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error || !movie) {
+    return <Text>error</Text>;
+  }
+
+  return <Text>{movie.title}</Text>;
+
   // book ? (
   //   <Box backgroundColor="backgroundTwo" flex={1}>
   //     <LinearGradient

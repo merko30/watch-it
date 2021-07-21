@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View, ScrollView, SafeAreaView} from 'react-native';
+import { StyleSheet, View, ScrollView, SafeAreaView } from 'react-native';
 import {
   TapGestureHandler,
   TapGestureHandlerGestureEvent,
@@ -11,17 +11,17 @@ import Animated, {
   useDerivedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import {ReText} from 'react-native-redash';
-import {useTheme} from '@shopify/restyle';
-import {useQuery} from 'react-query';
+import { ReText } from 'react-native-redash';
+import { useTheme } from '@shopify/restyle';
+import { useQuery } from 'react-query';
 
 // import Bookshelf from './components/Bookshelf';
 
-import theme, {Theme, Text, Box} from '../../theme';
+import theme, { Theme, Text, Box } from '../../theme';
 
-import {getAll} from 'api/movies';
-import {AxiosError, AxiosResponse} from 'axios';
-import {Movie} from 'types';
+import { getAll } from 'api/movies';
+import { AxiosError, AxiosResponse } from 'axios';
+import { Movie } from 'types';
 
 const styles = StyleSheet.create({
   container: {
@@ -68,16 +68,15 @@ const styles = StyleSheet.create({
 
 const Home = () => {
   // const [shelves] = useState(SHELVES);
-  const {colors} = useTheme<Theme>();
+  const { colors } = useTheme<Theme>();
 
-  const {data} = useQuery<
-    AxiosResponse<{movies: Movie[]}>,
+  const { data } = useQuery<
+    AxiosResponse<{ movies: Movie[] }>,
     AxiosError,
-    AxiosResponse<{movies: Movie[]}>
+    AxiosResponse<{ movies: Movie[] }>
   >('movies', getAll);
 
-  const {movies = []} = data?.data || {};
-  console.log({movies});
+  const { movies = [] } = data?.data || {};
 
   const y = useSharedValue(0);
   const showAll = useSharedValue(0);
@@ -108,10 +107,10 @@ const Home = () => {
   }));
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView
         style={styles.container}
-        contentContainerStyle={{flex: 1}}
+        contentContainerStyle={{ flex: 1 }}
         showsVerticalScrollIndicator={false}
         bounces={false}>
         <View style={styles.row}>
@@ -121,7 +120,10 @@ const Home = () => {
           <TapGestureHandler onHandlerStateChange={gestureHandler}>
             <Animated.View>
               <Box backgroundColor="lightGray" p="xs" borderRadius="s">
-                <ReText text={text} style={{color: colors.gray, padding: 0}} />
+                <ReText
+                  text={text}
+                  style={{ color: colors.gray, padding: 0 }}
+                />
               </Box>
             </Animated.View>
           </TapGestureHandler>

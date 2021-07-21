@@ -33,7 +33,9 @@ const Movie = ({ movie }: MovieProps) => {
       bg="lightGray"
       style={shadows.medium}
       borderRadius="m"
-      onPress={() => navigate('Details', { id: movie.id })}>
+      onPress={() =>
+        navigate('Details', { type: movie.media_type, id: movie.id })
+      }>
       <Box flexDirection="row" p="s">
         <MoviePoster uri={movie.poster_path} ratio={IMAGE_RATIO} />
         <Box marginLeft="m" flexShrink={1} width="100%">

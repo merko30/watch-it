@@ -1,4 +1,4 @@
-import {axios} from '../config/axios';
+import { axios } from '../config/axios';
 // import {Movie} from '../types/Movie';
 
 export interface GetMoviesParams {
@@ -36,6 +36,12 @@ export const searchMovies = async (term: string) => {
   return await axios.get(`${API_URL}/search/${term}`);
 };
 
-export const getSingleMovie = async (id: string) => {
-  return await axios.get(`${API_URL}/${id}`);
+export const getSingleMovie = async ({
+  id,
+  type,
+}: {
+  id: string;
+  type: string;
+}) => {
+  return await axios.get(`${API_URL}/${type}/${id}`);
 };

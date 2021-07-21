@@ -2,6 +2,7 @@ import React from 'react';
 import { View, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaskedView from '@react-native-community/masked-view';
+import { Text } from 'theme';
 
 interface RatingProps {
   rating: number;
@@ -54,9 +55,9 @@ const Rating = ({ rating, size = 18, maxVote = 5, style }: RatingProps) => {
           />
         </View>
       </MaskedView>
-      {/* <Text>
-        {rating} out of {maxVote}
-      </Text> */}
+      <Text>
+        {rating / 2} out of {maxVote}
+      </Text>
     </View>
   );
 };

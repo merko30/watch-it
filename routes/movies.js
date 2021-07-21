@@ -26,13 +26,13 @@ router.get(
 );
 
 router.get(
-  "/:id",
+  "/:type/:id",
   passport.authenticate("jwt", { session: false }),
   getSingleMovie
 );
 
 router.get(
-  `/search/:term`,
+  `/test/:term`,
   passport.authenticate("jwt", { session: false }),
   search
 );

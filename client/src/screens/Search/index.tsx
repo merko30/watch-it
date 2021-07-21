@@ -17,17 +17,17 @@ import { TMDBMovie } from 'types';
 const Search = () => {
   const { colors } = useTheme<Theme>();
 
-  const { data, mutate, isLoading } = useMutation<
-    AxiosResponse<{ data: { results: TMDBMovie[] } }>,
+  const { data, mutate, error, isLoading } = useMutation<
+    AxiosResponse<{ results: TMDBMovie[] }>,
     AxiosError<{ error: string }>,
     string
   >((term: string) => searchMovies(term));
 
-  const { data: { results: movies = [] } = {} } = data?.data || {};
+  const { results } = data?.data || {};
+
+  console.log(results);
 
   const onSearch = (term: string) => mutate(term);
-
-  console.log(movies);
 
   return (
     <SafeAreaView
@@ -40,7 +40,7 @@ const Search = () => {
         {isLoading && (
           <ActivityIndicator size="large" color={colors.foreground} />
         )}
-        {movies && !isLoading && <MovieList movies={movies} />}
+        {results && !isLoading && <MovieList movies={results} />}
       </Box>
     </SafeAreaView>
   );

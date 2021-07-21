@@ -16,7 +16,7 @@ console.log(ip.address());
 
 app.use("/api", routes);
 
-app.use((err, req, res, next) => {
+app.use((err, _, res, __) => {
   console.log(err);
   const message = err.message || "Something went wrong";
   res.status(err.status || 500).json({ message });

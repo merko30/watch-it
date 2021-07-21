@@ -10,7 +10,6 @@ const {
   login,
   getUser,
   changeAvatar,
-  socialLogin,
   sendResetPasswordMail,
   resetPassword,
   verifyResetCode,
@@ -56,8 +55,6 @@ router.put(
   passport.authenticate("jwt", { session: false }),
   updatePassword
 );
-
-// router.post("/social-login", socialLogin);
 
 router.get("/user", passport.authenticate("jwt", { session: false }), getUser);
 
