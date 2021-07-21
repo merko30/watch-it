@@ -12,11 +12,18 @@ interface MoviePosterProps {
   ratio?: number;
   style?: StyleProp<ImageStyle>;
   onPress?: () => void;
+  pathSize?: 'w500' | 'w342' | 'w185';
 }
 
-const IMAGE_PATH = 'https://image.tmdb.org/t/p/w500';
+const IMAGE_PATH = 'https://image.tmdb.org/t/p/';
 
-const MoviePoster = ({ uri, style, ratio, onPress }: MoviePosterProps) => {
+const MoviePoster = ({
+  uri,
+  style,
+  ratio,
+  pathSize = 'w500',
+  onPress,
+}: MoviePosterProps) => {
   const [width, setWidth] = useState(80);
   const [height, setHeight] = useState(120);
 
@@ -32,7 +39,7 @@ const MoviePoster = ({ uri, style, ratio, onPress }: MoviePosterProps) => {
   return (
     <TouchableWithoutFeedback onPress={onPress}>
       <Image
-        source={uri ? { uri: `${IMAGE_PATH}/${uri}` } : paper}
+        source={uri ? { uri: `${IMAGE_PATH}${pathSize ?? ''}/${uri}` } : paper}
         style={[{ height, width }, style]}
       />
     </TouchableWithoutFeedback>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
+import { createStackNavigator } from '@react-navigation/stack';
 // import {useTheme} from '@shopify/restyle';
 
 import {
@@ -21,7 +21,7 @@ const Books = () => {
       <BooksNavigator.Screen
         name="Home"
         component={Home}
-        options={{headerShown: false}}
+        options={{ headerShown: false }}
       />
       {/* <BooksNavigator.Screen
         name="List"
