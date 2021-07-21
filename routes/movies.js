@@ -11,6 +11,8 @@ const {
   getSingleMovie,
 } = require("../controllers/movies");
 
+router.get("/search/:term", search);
+
 router.get("/", passport.authenticate("jwt", { session: false }), getAll);
 
 router.put(
@@ -29,12 +31,6 @@ router.get(
   "/:type/:id",
   passport.authenticate("jwt", { session: false }),
   getSingleMovie
-);
-
-router.get(
-  `/test/:term`,
-  passport.authenticate("jwt", { session: false }),
-  search
 );
 
 router.delete("/:id", passport.authenticate("jwt", { session: false }), remove);
