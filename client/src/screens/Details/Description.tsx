@@ -14,14 +14,18 @@ const Description = ({ description }: DescriptionProps) => {
   const [loadingDescription, setLoadingDescription] = useState(true);
 
   return (
-    <Box marginVertical="m" flex={1} minHeight={250}>
+    <Box
+      backgroundColor="transparent"
+      marginVertical="m"
+      flex={1}
+      minHeight={250}>
       <Text color="foreground" variant="subTitle" mb="s">
         Overview
       </Text>
 
       <AutoHeightWebView
         source={{
-          html: `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{background-color: ${colors.background};color:${colors.foreground};font-size:18;font-family:sans-serif;}</style></head><body>${description}</body></html>`,
+          html: `<html><head><meta name="viewport" content="width=device-width, initial-scale=1.0"><style>body{background-color: transparent;color:${colors.foreground};font-size:18;font-family:sans-serif;}</style></head><body>${description}</body></html>`,
         }}
         style={{ width: '100%' }}
         scalesPageToFit

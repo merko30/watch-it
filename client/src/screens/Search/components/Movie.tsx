@@ -10,14 +10,13 @@ import { TMDBMovie } from 'types/Movie';
 import { Theme, Box, Text } from 'theme';
 import Button from 'theme/Button';
 import { useTheme } from '@shopify/restyle';
-
-const IMAGE_RATIO = 0.2;
 interface MovieProps {
   movie: TMDBMovie;
 }
 
 const styles = StyleSheet.create({
   rating: { alignSelf: 'flex-end', alignItems: 'flex-end', marginTop: 'auto' },
+  poster: { aspectRatio: 6 / 9, height: 120 },
 });
 
 const Movie = ({ movie }: MovieProps) => {
@@ -37,7 +36,7 @@ const Movie = ({ movie }: MovieProps) => {
         navigate('Details', { type: movie.media_type, id: movie.id })
       }>
       <Box flexDirection="row" p="s">
-        <MoviePoster uri={movie.poster_path} ratio={IMAGE_RATIO} />
+        <MoviePoster style={styles.poster} uri={movie.poster_path} />
         <Box marginLeft="m" flexShrink={1} width="100%">
           <Text variant="subTitle" numberOfLines={2}>
             {movie[titleKey]}

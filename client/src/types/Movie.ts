@@ -9,6 +9,11 @@ export interface Movie {
   status: MovieStatus;
 }
 
+export interface Genre {
+  id: string;
+  name: string;
+}
+
 export interface TMDBMovie {
   adult: boolean;
   backdrop_path: string;
@@ -26,4 +31,6 @@ export interface TMDBMovie {
   vote_average: number;
   vote_count: number;
   name?: string;
+  genres: Genre[];
+  runtime?: number;
 }

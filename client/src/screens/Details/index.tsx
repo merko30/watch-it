@@ -3,7 +3,6 @@ import {
   ActivityIndicator,
   ScrollView,
   StyleSheet,
-  ImageBackground,
   useWindowDimensions,
 } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
@@ -27,11 +26,11 @@ import { TMDBMovie } from 'types';
 
 import Description from './Description';
 import Info from './Info';
+import Chip from 'components/Chip';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
-  backdrop: { ...StyleSheet.absoluteFillObject, marginTop: 30 },
-  poster: { width: 140, height: 200 },
-  content: { marginTop: 180, paddingTop: 100 },
+  poster: { aspectRatio: 6 / 9 },
 });
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
@@ -54,8 +53,8 @@ const Details = ({
 }: DetailsProps) => {
   const [showMenu, setShowMenu] = useState(false);
 
-  const { width, height } = useWindowDimensions();
-  const { colors, borderRadii, spacing, shadows } = useTheme<Theme>();
+  const { width } = useWindowDimensions();
+  const { colors, borderRadii, spacing } = useTheme<Theme>();
 
   const { data, isLoading, error } = useQuery<
     AxiosResponse<{ volume: TMDBMovie }>,
@@ -107,67 +106,72 @@ const Details = ({
     return <Text>{error?.message}</Text>;
   }
 
-  return (
-    <Box backgroundColor="backgroundTwo" flex={1}>
-      <ImageBackground
-        style={{ width, height }}
-        resizeMode="cover"
-        source={{
-          uri: `https://image.tmdb.org/t/p/w780/${movie.backdrop_path}`,
-        }}>
-        <Box
-          height={height}
-          justifyContent="flex-start"
-          alignItems="center"
-          zIndex={5}
-          style={styles.backdrop}>
-          <MoviePoster
-            style={[styles.poster, shadows.medium]}
-            ratio={2}
-            uri={movie.poster_path}
-          />
-        </Box>
-        <Box
-          // backgroundColor="backgroundThree"
-          flex={16}
-          padding="l"
-          borderTopRightRadius="xxl"
-          borderTopLeftRadius="xxl"
-          style={styles.content}>
-          <ScrollView
-            contentContainerStyle={{
-              borderRadius: borderRadii.m,
-              backgroundColor: colors.background,
-            }}
-            showsVerticalScrollIndicator={false}>
-            <Text
-              variant="title"
-              color="foreground"
-              ellipsizeMode="tail"
-              numberOfLines={2}>
-              {movie.title}
-            </Text>
+  const formatDuration = (durationInMinutes: number) =>
+    `${Math.round(durationInMinutes / 60)}h ${Math.round(
+      durationInMinutes % 60,
+    )}m`;
 
-            <Box
-              backgroundColor="background"
-              borderRadius="m"
-              marginTop="m"
-              flexDirection="row"
-              justifyContent="space-around">
-              {movie.vote_average && (
-                <Info
-                  icon="star"
-                  iconColor="gold"
-                  label="Rating"
-                  text={movie.vote_average}
-                />
-              )}
-            </Box>
-            {movie.overview && <Description description={movie.overview} />}
-          </ScrollView>
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <Box backgroundColor="backgroundTwo" flex={1}>
+        <Box flexDirection="row" m="s" width={width}>
+          <Box flex={0.6} justifyContent="center">
+            <MoviePoster style={styles.poster} uri={movie.poster_path} />
+          </Box>
+          <Box
+            flex={0.4}
+            px="l"
+            alignItems="center"
+            justifyContent="space-between">
+            {movie.vote_average && (
+              <Info
+                icon="star"
+                iconColor="gold"
+                label="Rating"
+                text={movie.vote_average}
+              />
+            )}
+            {movie.runtime && (
+              <Info
+                icon="time"
+                label="Duration"
+                text={formatDuration(movie.runtime)}
+              />
+            )}
+            {movie.release_date && (
+              <Info
+                icon="calendar"
+                label="Released"
+                text={movie.release_date}
+              />
+            )}
+          </Box>
         </Box>
-      </ImageBackground>
-    </Box>
+        <ScrollView
+          contentContainerStyle={{
+            borderRadius: borderRadii.m,
+          }}
+          showsVerticalScrollIndicator={false}>
+          <Text
+            variant="title"
+            color="foreground"
+            ellipsizeMode="tail"
+            numberOfLines={2}>
+            {movie.title}
+          </Text>
+
+          <Box my="s" flexDirection="row">
+            {movie.genres.map(genre => (
+              <Chip key={genre.id}>
+                <Text>{genre.name}</Text>
+              </Chip>
+            ))}
+          </Box>
+
+          {movie.overview && <Description description={movie.overview} />}
+        </ScrollView>
+      </Box>
+    </SafeAreaView>
   );
 };
 
