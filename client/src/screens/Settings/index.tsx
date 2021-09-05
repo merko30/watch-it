@@ -1,30 +1,26 @@
-import React, {useState} from 'react';
-import {ScrollView} from 'react-native';
-import {StackScreenProps} from '@react-navigation/stack';
-import {useTheme} from '@shopify/restyle';
+import React, { useState } from 'react';
+import { ScrollView } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
+import { useTheme } from '@shopify/restyle';
 import * as Yup from 'yup';
 
 import Section from './components/Section';
 
-import {ProfileNavigatorParamList} from '../../navigation/ProfileNavigator';
+import { ProfileNavigatorParamList } from '../../navigation/ProfileNavigator';
 
-import {Theme} from '../../theme';
+import { Theme } from '../../theme';
 
-import {TextField, Button, Message} from '../../components';
+import { TextField, Button, Message } from '../../components';
 
-import {useFormik, FormikValues} from 'formik';
-import {useDispatch, useSelector} from 'react-redux';
-import {setPassword, updateUser} from '../../store/reducers/auth';
-import {RootState} from '../../store/reducers';
-<<<<<<< HEAD
+import { useFormik, FormikValues } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { setPassword, updateUser } from '../../store/reducers/auth';
+import { RootState } from '../../store/reducers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-=======
-import AsyncStorage from '@react-native-community/async-storage';
->>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 
 import Setting from './components/Setting';
 
-import {Theme as ThemeEnum, toggleTheme} from '../../store/reducers/ui';
+import { Theme as ThemeEnum, toggleTheme } from '../../store/reducers/ui';
 
 const validationSchema = Yup.object().shape({
   email: Yup.string().required('Email is required').email('Invalid email'),
@@ -62,18 +58,14 @@ const validate = (
         callback();
       }
     })
-<<<<<<< HEAD
     .catch(err => handleYupErrors(err, errorCallback));
-=======
-    .catch((err) => handleYupErrors(err, errorCallback));
->>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 };
 
 const handleYupErrors = (
   err: Yup.ValidationError,
   callback: (path: string, message: string) => void,
 ) => {
-  err.inner.map(({path, message}: {path: string; message: string}) => {
+  err.inner.map(({ path, message }: { path: string; message: string }) => {
     callback(path, message);
   });
 };
@@ -82,9 +74,9 @@ interface SettingsProps
   extends StackScreenProps<ProfileNavigatorParamList, 'Settings'> {}
 
 const Settings = (props: SettingsProps) => {
-  const {colors, spacing} = useTheme<Theme>();
+  const { colors, spacing } = useTheme<Theme>();
   const dispatch = useDispatch();
-  const {message, error, theme} = useSelector(({auth, ui}: RootState) => ({
+  const { message, error, theme } = useSelector(({ auth, ui }: RootState) => ({
     ...ui,
     ...auth,
   }));
@@ -127,8 +119,8 @@ const Settings = (props: SettingsProps) => {
   };
 
   const updatePassword = async () => {
-    const {oldPassword, password, confirmPassword} = values;
-    let vals = {oldPassword, password, confirmPassword};
+    const { oldPassword, password, confirmPassword } = values;
+    let vals = { oldPassword, password, confirmPassword };
 
     validate(
       vals,
@@ -139,12 +131,12 @@ const Settings = (props: SettingsProps) => {
   };
 
   const updateEmail = () => {
-    const {email} = values;
+    const { email } = values;
 
     validate(
-      {email},
+      { email },
       emailSchema,
-      () => dispatch(updateUser({email})),
+      () => dispatch(updateUser({ email })),
       errorHandler,
     );
   };
@@ -169,9 +161,9 @@ const Settings = (props: SettingsProps) => {
         {error && <Message variant="negative" message={error} />}
         <Section
           title="Change your email"
-          containerStyle={{paddingHorizontal: 0}}>
+          containerStyle={{ paddingHorizontal: 0 }}>
           <TextField
-            containerStyle={{marginBottom: 10}}
+            containerStyle={{ marginBottom: 10 }}
             autoCapitalize="none"
             onChangeText={handleChange('email')}
             onBlur={handleBlur('email')}
@@ -186,17 +178,17 @@ const Settings = (props: SettingsProps) => {
           <Button
             onPress={() => updateEmail()}
             color="gray"
-            textStyle={{textTransform: 'uppercase', fontWeight: '700'}}
-            containerStyle={{marginBottom: spacing.m, width: 100}}
+            textStyle={{ textTransform: 'uppercase', fontWeight: '700' }}
+            containerStyle={{ marginBottom: spacing.m, width: 100 }}
             label="Save"
           />
         </Section>
 
         <Section
           title="Change your password"
-          containerStyle={{paddingHorizontal: 0}}>
+          containerStyle={{ paddingHorizontal: 0 }}>
           <TextField
-            containerStyle={{marginBottom: 10, marginTop: 10}}
+            containerStyle={{ marginBottom: 10, marginTop: 10 }}
             autoCapitalize="none"
             onChangeText={handleChange('oldPassword')}
             onBlur={handleBlur('oldPassword')}
@@ -207,7 +199,7 @@ const Settings = (props: SettingsProps) => {
             secureTextEntry
           />
           <TextField
-            containerStyle={{marginBottom: 10}}
+            containerStyle={{ marginBottom: 10 }}
             autoCapitalize="none"
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
@@ -218,7 +210,7 @@ const Settings = (props: SettingsProps) => {
             secureTextEntry
           />
           <TextField
-            containerStyle={{marginBottom: 10}}
+            containerStyle={{ marginBottom: 10 }}
             autoCapitalize="none"
             onChangeText={handleChange('confirmPassword')}
             onBlur={handleBlur('confirmPassword')}
@@ -231,8 +223,8 @@ const Settings = (props: SettingsProps) => {
           <Button
             onPress={() => updatePassword()}
             color="gray"
-            textStyle={{textTransform: 'uppercase', fontWeight: '700'}}
-            containerStyle={{marginVertical: spacing.m, width: 100}}
+            textStyle={{ textTransform: 'uppercase', fontWeight: '700' }}
+            containerStyle={{ marginVertical: spacing.m, width: 100 }}
             label="Save"
           />
         </Section>

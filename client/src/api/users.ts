@@ -1,10 +1,6 @@
-import {User, LoginData, VerifyResetCodeParams} from '../types';
-import {axios} from '../config/axios';
-<<<<<<< HEAD
+import { User, LoginData, VerifyResetCodeParams } from '../types';
+import { axios } from '../config/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-=======
-import AsyncStorage from '@react-native-community/async-storage';
->>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 import Axios from 'axios';
 
 const API_URL = '/auth';
@@ -38,15 +34,15 @@ export const updateAvatar = async (formData: FormData) => {
 };
 
 export const sendResetMail = async (email: string) => {
-  return await axios.post(`${API_URL}/forgot`, {email});
+  return await axios.post(`${API_URL}/forgot`, { email });
 };
 
 export const updatePassword = async (email: string, password: string) => {
-  return await axios.put(`${API_URL}/reset`, {email, password});
+  return await axios.put(`${API_URL}/reset`, { email, password });
 };
 
-export const verifyCode = async ({code, email}: VerifyResetCodeParams) => {
-  return await axios.put(`${API_URL}/verify/${code}`, {email});
+export const verifyCode = async ({ code, email }: VerifyResetCodeParams) => {
+  return await axios.put(`${API_URL}/verify/${code}`, { email });
 };
 
 export const updateUserRequest = async (data: Partial<User>) => {
@@ -54,12 +50,12 @@ export const updateUserRequest = async (data: Partial<User>) => {
 };
 
 export const updateEmailRequest = async (email: string) => {
-  return await axios.put(`${API_URL}/email`, {email});
+  return await axios.put(`${API_URL}/email`, { email });
 };
 
 export const updatePasswordRequest = async (
   password: string,
   newPassword: string,
 ) => {
-  return await axios.put(`${API_URL}/password`, {password, newPassword});
+  return await axios.put(`${API_URL}/password`, { password, newPassword });
 };

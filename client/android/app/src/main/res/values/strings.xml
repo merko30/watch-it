@@ -1,7 +1,3 @@
 <resources>
-<<<<<<< HEAD
-    <string name="app_name">booker</string>
-=======
-    <string name="app_name">client</string>
->>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
+    <string name="app_name">m</string>
 </resources>

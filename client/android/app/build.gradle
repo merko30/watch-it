@@ -1,10 +1,5 @@
 apply plugin: "com.android.application"
-<<<<<<< HEAD
 
-=======
-apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
- 
->>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 import com.android.build.OutputFile
 
 /**
@@ -130,18 +125,8 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-<<<<<<< HEAD
     defaultConfig {
         applicationId "com.booker"
-=======
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    defaultConfig {
-        applicationId "com.client"
->>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -225,11 +210,7 @@ dependencies {
 // Run this once to be able to run the application with BUCK
 // puts all compile dependencies into folder libs for BUCK to use
 task copyDownloadableDepsToLibs(type: Copy) {
-<<<<<<< HEAD
     from configurations.implementation
-=======
-    from configurations.compile
->>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
     into 'libs'
 }
 

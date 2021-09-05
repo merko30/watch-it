@@ -1,48 +1,44 @@
-import React, {useEffect, useContext} from 'react';
-import {StackScreenProps} from '@react-navigation/stack';
-import {FormikProvider, useFormik} from 'formik';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {useTheme} from '@shopify/restyle';
-import {useMutation} from 'react-query';
-<<<<<<< HEAD
+import React, { useEffect, useContext } from 'react';
+import { StackScreenProps } from '@react-navigation/stack';
+import { FormikProvider, useFormik } from 'formik';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useTheme } from '@shopify/restyle';
+import { useMutation } from 'react-query';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-=======
-import AsyncStorage from '@react-native-community/async-storage';
->>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 
 import Message from 'components/Message';
 import Button from 'components/Button';
 import AuthLayout from 'components/AuthLayout';
 import FormikField from 'components/TextField/FormikField';
 
-import {Box, Theme} from '../../theme';
+import { Box, Theme } from '../../theme';
 
-import {LoginData} from '../../types';
+import { LoginData } from '../../types';
 
 import validationSchema from './validationSchema';
-import {loginUser} from 'api/users';
+import { loginUser } from 'api/users';
 
-import {AuthContext, IAuthContext} from 'providers/AuthProvider';
-import {AxiosError, AxiosResponse} from 'axios';
+import { AuthContext, IAuthContext } from 'providers/AuthProvider';
+import { AxiosError, AxiosResponse } from 'axios';
 
-const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
-  const {colors, fontSizes} = useTheme<Theme>();
+const LoginScreen = ({ navigation }: StackScreenProps<any, 'Login'>) => {
+  const { colors, fontSizes } = useTheme<Theme>();
 
-  const {setLoggedIn} = useContext(AuthContext) as IAuthContext;
+  const { setLoggedIn } = useContext(AuthContext) as IAuthContext;
 
-  const {mutate, error, isLoading, data} = useMutation<
+  const { mutate, error, isLoading, data } = useMutation<
     AxiosResponse<any>,
-    AxiosError<{message: string}>,
+    AxiosError<{ message: string }>,
     LoginData
   >((input: LoginData) => loginUser(input));
 
   const formik = useFormik({
-    initialValues: {emailOrUsername: 'joe7@gmail.com', password: 'password'},
+    initialValues: { emailOrUsername: 'joe7@gmail.com', password: 'password' },
     validationSchema,
     onSubmit: values => mutate(values),
   });
 
-  const {handleSubmit} = formik;
+  const { handleSubmit } = formik;
 
   useEffect(() => {
     (async () => {
@@ -59,7 +55,7 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
 
   const errorMessage = error?.response?.data.message || 'Something went wrong';
   return (
-    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
+    <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
       <AuthLayout title="Welcome back" text="We're happy to see you again.">
         <FormikProvider value={formik}>
           {error && <Message variant="negative" message={errorMessage} />}
@@ -87,7 +83,7 @@ const LoginScreen = ({navigation}: StackScreenProps<any, 'Login'>) => {
               textTransform: 'uppercase',
               fontWeight: '700',
             }}
-            containerStyle={{marginTop: 40, paddingVertical: 12}}
+            containerStyle={{ marginTop: 40, paddingVertical: 12 }}
             label={'Sign in'}
             loading={isLoading}
           />
