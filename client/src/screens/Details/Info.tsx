@@ -19,9 +19,9 @@ const Info = ({ icon, label, text, iconColor = 'foreground' }: InfoProps) => {
       alignItems="center"
       borderColor="gray"
       borderWidth={1}
-      m="s"
-      py="s"
-      width="100%">
+      mx="s"
+      py="m"
+      width={120}>
       {icon && <Icon name={icon} size={24} color={colors[iconColor]} />}
       <Text color="gray" fontWeight="700" fontSize={16}>
         {label}

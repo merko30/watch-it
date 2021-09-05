@@ -24,9 +24,11 @@ import { getSingleMovie } from 'api/movies';
 
 import { TMDBMovie } from 'types';
 
+import Chip from 'components/Chip';
+import Divider from 'components/Divider';
+
 import Description from './Description';
 import Info from './Info';
-import Chip from 'components/Chip';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
@@ -113,23 +115,18 @@ const Details = ({
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Box backgroundColor="backgroundTwo" flex={1}>
-        <Box flexDirection="row" m="s" width={width}>
-          <Box flex={0.6} justifyContent="center">
+      <Box m="s" flex={1}>
+        <Box flexDirection="row" width={width}>
+          <Box flex={0.6}>
             <MoviePoster style={styles.poster} uri={movie.poster_path} />
           </Box>
           <Box
             flex={0.4}
-            px="l"
+            px="xs"
             alignItems="center"
             justifyContent="space-between">
             {movie.vote_average && (
-              <Info
-                icon="star"
-                iconColor="gold"
-                label="Rating"
-                text={movie.vote_average}
-              />
+              <Info icon="star" label="Rating" text={movie.vote_average} />
             )}
             {movie.runtime && (
               <Info
@@ -147,26 +144,27 @@ const Details = ({
             )}
           </Box>
         </Box>
+        <Text
+          variant="title"
+          color="foreground"
+          ellipsizeMode="tail"
+          numberOfLines={2}
+          mt="l">
+          {movie.title}
+        </Text>
+        <Divider />
         <ScrollView
           contentContainerStyle={{
             borderRadius: borderRadii.m,
           }}
           showsVerticalScrollIndicator={false}>
-          <Text
-            variant="title"
-            color="foreground"
-            ellipsizeMode="tail"
-            numberOfLines={2}>
-            {movie.title}
-          </Text>
-
-          <Box my="s" flexDirection="row">
+          <ScrollView horizontal>
             {movie.genres.map(genre => (
               <Chip key={genre.id}>
                 <Text>{genre.name}</Text>
               </Chip>
             ))}
-          </Box>
+          </ScrollView>
 
           {movie.overview && <Description description={movie.overview} />}
         </ScrollView>
