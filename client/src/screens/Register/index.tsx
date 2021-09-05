@@ -1,17 +1,17 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { useTheme } from '@shopify/restyle';
 import { FormikProvider, FormikValues, useFormik } from 'formik';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useMutation } from 'react-query';
 
 import Button from 'components/Button';
 import Message from 'components/Message';
 import AuthLayout from 'components/AuthLayout';
 import FormikField from 'components/TextField/FormikField';
-import { useMutation } from 'react-query';
 
-import { Theme } from '../../theme';
+import { Theme } from 'theme';
 
 import { createUser } from 'api/users';
 
@@ -24,27 +24,24 @@ import { navigate } from 'utils/navigation';
 const Register = ({ navigation }: StackScreenProps<any, 'Register'>) => {
   const { colors, fontSizes } = useTheme<Theme>();
 
-  const { mutate, error, isLoading, data } = useMutation(
+  const { mutate, error, isLoading } = useMutation(
     (input: Partial<User>) => createUser(input),
+    {
+      onSuccess: () => navigate('Login'),
+    },
   );
 
   const onSubmit = (data: FormikValues) => mutate(data);
 
   const formik = useFormik({
     initialValues: {
-      username: '',
-      email: '',
-      password: '',
+      username: 'johnnyjon123',
+      email: 'ohnny@gmail.com',
+      password: 'password22',
     },
     onSubmit,
     validationSchema,
   });
-
-  useEffect(() => {
-    if (data) {
-      navigate('Login');
-    }
-  }, [data]);
 
   const { handleSubmit } = formik;
 
@@ -53,19 +50,19 @@ const Register = ({ navigation }: StackScreenProps<any, 'Register'>) => {
       <AuthLayout back title="Join today" text="Track your bookshelves">
         <FormikProvider value={formik}>
           <View style={{ flex: 2 }}>
-            {error && <Message variant="negative" message={error as string} />}
+            {error && <Message variant="negative" message={error.message} />}
 
             <FormikField
               name="username"
-              label="Username"
+              placeholder="Username"
               autoCapitalize="none"
             />
 
-            <FormikField name="email" label="Email" />
+            <FormikField name="email" placeholder="Email" />
 
             <FormikField
               name="password"
-              label="Password"
+              placeholder="Password"
               secureTextEntry
               passwordRules={null}
             />

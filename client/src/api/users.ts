@@ -10,7 +10,7 @@ export const createUser = (data: Partial<User>) => {
 };
 
 export const loginUser = async (data: LoginData) => {
-  return await axios.post(`${API_URL}/login`, JSON.stringify(data));
+  return await axios.post(`${API_URL}/login`, data);
 };
 
 export const fetchUser = async () => {

@@ -1,6 +1,6 @@
 import React from 'react';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useTheme} from '@shopify/restyle';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useTheme } from '@shopify/restyle';
 
 // import ProfileNavigator from './ProfileNavigator';
 import Books from './BooksNavigator';
@@ -9,22 +9,22 @@ import Search from '../screens/Search';
 
 import TabIcon from './components/TabIcon';
 
-import {Theme} from '../theme';
+import { Theme } from '../theme';
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
-  const {colors} = useTheme<Theme>();
+  const { colors } = useTheme<Theme>();
   return (
     <Tab.Navigator
-      tabBarOptions={{
-        showLabel: false,
-        style: {
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarStyle: {
           backgroundColor: colors.background,
           borderTopWidth: 0,
         },
-        activeTintColor: colors.secondary,
-        inactiveTintColor: colors.primary,
+        tabBarActiveTintColor: colors.secondary,
+        tabBarInactiveTintColor: colors.primary,
       }}>
       <Tab.Screen
         options={{

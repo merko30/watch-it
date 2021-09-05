@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 const Movie = require("../models/movie");
 
 const getAll = async (req, res, next) => {
@@ -53,12 +55,12 @@ const remove = async (req, res, next) => {
 
 const getSingleMovie = async (req, res, next) => {
   try {
-    const response = await fetch(
+    const response = await axios.get(
       `${process.env.TMDB_API_BASE_URL}/${req.params.type}/${req.params.id}?api_key=${process.env.TMDB_API_KEY}`,
-      { method: "GET", mode: "no-cors" }
+      
     );
 
-    const volume = await response.json();
+    const volume = await response.data
 
     res.json({ volume });
   } catch (error) {
@@ -68,14 +70,12 @@ const getSingleMovie = async (req, res, next) => {
 
 const search = async (req, res, next) => {
   try {
-    const response = await fetch(
+    const response = await axios.get(
       `${process.env.TMDB_API_BASE_URL}/search/multi?query=${req.params.term}&api_key=${process.env.TMDB_API_KEY}`,
-      { method: "GET", mode: "no-cors" }
+      
     );
 
-    const data = await response.json();
-
-    const { results } = data;
+    const { results } = response.data;
 
     res.json({ results });
   } catch (error) {
