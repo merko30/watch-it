@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  ScrollView,
-  StyleSheet,
-  useWindowDimensions,
-} from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme } from '@shopify/restyle';
@@ -25,14 +20,13 @@ import { getSingleMovie } from 'api/movies';
 import { TMDBMovie } from 'types';
 
 import Chip from 'components/Chip';
-import Divider from 'components/Divider';
 
 import Description from './Description';
 import Info from './Info';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
-  poster: { aspectRatio: 6 / 9 },
+  poster: { aspectRatio: 6 / 9, height: 300 },
+  genres: { justifyContent: 'center', flex: 1, marginTop: 10 },
 });
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
@@ -55,7 +49,6 @@ const Details = ({
 }: DetailsProps) => {
   const [showMenu, setShowMenu] = useState(false);
 
-  const { width } = useWindowDimensions();
   const { colors, borderRadii, spacing } = useTheme<Theme>();
 
   const { data, isLoading, error } = useQuery<
@@ -99,6 +92,10 @@ const Details = ({
   //     }
   //   }
   // };
+  const formatDuration = (durationInMinutes: number) =>
+    `${Math.round(durationInMinutes / 60)}h ${Math.round(
+      durationInMinutes % 60,
+    )}m`;
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -107,70 +104,51 @@ const Details = ({
   if (error || !movie) {
     return <Text>{error?.message}</Text>;
   }
-
-  const formatDuration = (durationInMinutes: number) =>
-    `${Math.round(durationInMinutes / 60)}h ${Math.round(
-      durationInMinutes % 60,
-    )}m`;
-
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <Box m="s" flex={1}>
-        <Box flexDirection="row" width={width}>
-          <Box flex={0.6}>
-            <MoviePoster style={styles.poster} uri={movie.poster_path} />
-          </Box>
-          <Box
-            flex={0.4}
-            px="xs"
-            alignItems="center"
-            justifyContent="space-between">
+  if (movie) {
+    return (
+      <Box flex={1} mt="m">
+        <Box alignItems="center">
+          <MoviePoster style={styles.poster} uri={movie.poster_path} />
+          <Text
+            variant="title"
+            color="foreground"
+            fontWeight="700"
+            ellipsizeMode="tail"
+            numberOfLines={2}
+            mt="l">
+            {movie.title}
+          </Text>
+          <Box flexDirection="row" my="m" justifyContent="space-between">
+            {movie.release_date && (
+              <Info text={movie.release_date.slice(0, 4)} />
+            )}
             {movie.vote_average && (
-              <Info icon="star" label="Rating" text={movie.vote_average} />
+              <Info icon="star" text={movie.vote_average} />
             )}
             {movie.runtime && (
-              <Info
-                icon="time"
-                label="Duration"
-                text={formatDuration(movie.runtime)}
-              />
-            )}
-            {movie.release_date && (
-              <Info
-                icon="calendar"
-                label="Released"
-                text={movie.release_date}
-              />
+              <Info last text={formatDuration(movie.runtime)} />
             )}
           </Box>
+          <ScrollView horizontal contentContainerStyle={styles.genres}>
+            {movie.genres.map(genre => (
+              <Chip color="lightgray" key={genre.id}>
+                <Text>{genre.name}</Text>
+              </Chip>
+            ))}
+          </ScrollView>
         </Box>
-        <Text
-          variant="title"
-          color="foreground"
-          ellipsizeMode="tail"
-          numberOfLines={2}
-          mt="l">
-          {movie.title}
-        </Text>
-        <Divider />
         <ScrollView
           contentContainerStyle={{
             borderRadius: borderRadii.m,
           }}
           showsVerticalScrollIndicator={false}>
-          <ScrollView horizontal>
-            {movie.genres.map(genre => (
-              <Chip key={genre.id}>
-                <Text>{genre.name}</Text>
-              </Chip>
-            ))}
-          </ScrollView>
-
           {movie.overview && <Description description={movie.overview} />}
         </ScrollView>
       </Box>
-    </SafeAreaView>
-  );
+    );
+  }
+
+  return null;
 };
 
 export default Details;

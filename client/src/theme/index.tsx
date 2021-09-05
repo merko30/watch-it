@@ -122,6 +122,7 @@ const theme = createTheme({
     transparent: 'transparent',
   },
   spacing: {
+    0: 0,
     xs: 8,
     s: 10,
     m: 16,
@@ -135,6 +136,7 @@ const theme = createTheme({
     lg: 15,
     xl: 25,
     xxl: 36,
+    full: 9999,
   },
   breakpoints: {
     phone: 0,

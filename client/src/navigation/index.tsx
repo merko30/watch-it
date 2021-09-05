@@ -77,13 +77,7 @@ const Navigation = () => {
               name="Home"
               component={TabNavigator}
             />
-            <Stack.Screen
-              name="Details"
-              component={Details}
-              options={{
-                headerShown: false,
-              }}
-            />
+            <Stack.Screen name="Details" component={Details} />
           </>
         )}
       </Stack.Navigator>

@@ -1,35 +1,34 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Box, Theme, Text } from '../../theme';
-import { useTheme } from '@shopify/restyle';
+import { Box, Text } from '../../theme';
 
 interface InfoProps {
-  label: string;
   text: string | number;
+  last?: boolean;
   icon?: string;
-  iconColor?: keyof Theme['colors'];
 }
 
-const Info = ({ icon, label, text, iconColor = 'foreground' }: InfoProps) => {
-  const { colors } = useTheme<Theme>();
+const Info = ({ text, last = false, icon }: InfoProps) => {
   return (
-    <Box
-      borderRadius="m"
-      alignItems="center"
-      borderColor="gray"
-      borderWidth={1}
-      mx="s"
-      py="m"
-      width={120}>
-      {icon && <Icon name={icon} size={24} color={colors[iconColor]} />}
-      <Text color="gray" fontWeight="700" fontSize={16}>
-        {label}
-      </Text>
-      <Text color="dark" fontWeight="700" fontSize={18}>
-        {text}
-      </Text>
-    </Box>
+    <>
+      <Box flexDirection="row" mr="m" alignItems="center">
+        {icon && <Icon name={icon} size={18} />}
+        <Text color="dark" ml={icon ? 's' : 0} fontWeight="700" fontSize={18}>
+          {text}
+        </Text>
+      </Box>
+      {!last && (
+        <Box
+          alignSelf="center"
+          borderRadius="full"
+          mr="m"
+          width={10}
+          height={10}
+          bg="dark"
+        />
+      )}
+    </>
   );
 };
 

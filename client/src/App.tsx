@@ -8,7 +8,11 @@ import Navigation from './navigation';
 import ThemeProvider from 'theme/ThemeProvider';
 import AuthProvider from 'providers/AuthProvider';
 
-LogBox.ignoreLogs(['Setting a timer for a long period of time']);
+LogBox.ignoreLogs([
+  'Setting a timer for a long period of time',
+  'new NativeEventEmitter',
+  'EventEmitter.',
+]);
 
 function App() {
   const queryClient = new QueryClient();

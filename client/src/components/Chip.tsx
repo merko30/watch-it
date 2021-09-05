@@ -30,7 +30,7 @@ const Chip = ({ children, color = 'red' }: ChipProps) => {
       justifyContent="center"
       alignItems="center"
       mr="s"
-      px="l"
+      px="s"
       style={[
         styles.chip,
         {
