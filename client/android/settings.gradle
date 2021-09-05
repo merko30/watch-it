@@ -1,3 +1,7 @@
+<<<<<<< HEAD
 rootProject.name = 'booker'
+=======
+rootProject.name = 'client'
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 apply from: file("../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesSettingsGradle(settings)
 include ':app'

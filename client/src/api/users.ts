@@ -1,6 +1,10 @@
 import {User, LoginData, VerifyResetCodeParams} from '../types';
 import {axios} from '../config/axios';
+<<<<<<< HEAD
 import AsyncStorage from '@react-native-async-storage/async-storage';
+=======
+import AsyncStorage from '@react-native-community/async-storage';
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 import Axios from 'axios';
 
 const API_URL = '/auth';

@@ -1,5 +1,9 @@
 import React, {createContext, SetStateAction, useEffect, useState} from 'react';
+<<<<<<< HEAD
 import AsyncStorage from '@react-native-async-storage/async-storage';
+=======
+import AsyncStorage from '@react-native-community/async-storage';
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 
 export interface IAuthContext {
   loggedIn: boolean;

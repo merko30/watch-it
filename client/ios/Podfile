@@ -1,9 +1,15 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
+<<<<<<< HEAD
 platform :ios, '11.0'
 
 target 'booker' do
+=======
+platform :ios, '10.0'
+
+target 'client' do
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
   config = use_native_modules!
 
   use_react_native!(
@@ -12,7 +18,11 @@ target 'booker' do
     :hermes_enabled => false
   )
 
+<<<<<<< HEAD
   target 'bookerTests' do
+=======
+  target 'clientTests' do
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
     inherit! :complete
     # Pods for testing
   end

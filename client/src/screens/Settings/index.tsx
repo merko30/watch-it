@@ -16,7 +16,11 @@ import {useFormik, FormikValues} from 'formik';
 import {useDispatch, useSelector} from 'react-redux';
 import {setPassword, updateUser} from '../../store/reducers/auth';
 import {RootState} from '../../store/reducers';
+<<<<<<< HEAD
 import AsyncStorage from '@react-native-async-storage/async-storage';
+=======
+import AsyncStorage from '@react-native-community/async-storage';
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 
 import Setting from './components/Setting';
 
@@ -58,7 +62,11 @@ const validate = (
         callback();
       }
     })
+<<<<<<< HEAD
     .catch(err => handleYupErrors(err, errorCallback));
+=======
+    .catch((err) => handleYupErrors(err, errorCallback));
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 };
 
 const handleYupErrors = (

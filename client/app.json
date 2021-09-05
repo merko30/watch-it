@@ -1,4 +1,9 @@
 {
+<<<<<<< HEAD
   "name": "booker",
   "displayName": "booker"
+=======
+  "name": "client",
+  "displayName": "client"
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 }

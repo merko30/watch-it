@@ -4,7 +4,11 @@ import {FormikProvider, useFormik} from 'formik';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useTheme} from '@shopify/restyle';
 import {useMutation} from 'react-query';
+<<<<<<< HEAD
 import AsyncStorage from '@react-native-async-storage/async-storage';
+=======
+import AsyncStorage from '@react-native-community/async-storage';
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 
 import Message from 'components/Message';
 import Button from 'components/Button';

@@ -1,5 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<<<<<<< HEAD
   package="com.booker">
+=======
+  package="com.client">
+>>>>>>> 8cca030ac362e63a3fa51c3a9f2b84c3cd6abd96
 
     <uses-permission android:name="android.permission.INTERNET" />
 
