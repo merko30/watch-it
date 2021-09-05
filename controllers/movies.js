@@ -1,5 +1,3 @@
-const fetch = require("node-fetch");
-
 const Movie = require("../models/movie");
 
 const getAll = async (req, res, next) => {
