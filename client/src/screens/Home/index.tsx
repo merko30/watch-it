@@ -1,17 +1,17 @@
 import React from 'react';
 import { StyleSheet, View, ScrollView, SafeAreaView } from 'react-native';
-import {
-  TapGestureHandler,
-  TapGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedGestureHandler,
-  useAnimatedScrollHandler,
-  useSharedValue,
-  useDerivedValue,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
-import { ReText } from 'react-native-redash';
+// import {
+//   TapGestureHandler,
+//   TapGestureHandlerGestureEvent,
+// } from 'react-native-gesture-handler';
+// import Animated, {
+//   useAnimatedGestureHandler,
+//   useAnimatedScrollHandler,
+//   useSharedValue,
+//   useDerivedValue,
+//   useAnimatedStyle,
+// } from 'react-native-reanimated';
+// import { ReText } from 'react-native-redash';
 import { useTheme } from '@shopify/restyle';
 import { useQuery } from 'react-query';
 
@@ -78,33 +78,33 @@ const Home = () => {
 
   const { movies = [] } = data?.data || {};
 
-  const y = useSharedValue(0);
-  const showAll = useSharedValue(0);
+  // const y = useSharedValue(0);
+  // const showAll = useSharedValue(0);
 
-  const marginTop = useDerivedValue(() => {
-    return showAll.value === 1 ? 0 : -20;
-  });
+  // const marginTop = useDerivedValue(() => {
+  //   return showAll.value === 1 ? 0 : -20;
+  // });
 
-  const gestureHandler =
-    useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
-      onStart: () => {
-        showAll.value = showAll.value ? 0 : 1;
-      },
-    });
+  // const gestureHandler =
+  //   useAnimatedGestureHandler<TapGestureHandlerGestureEvent>({
+  //     onStart: () => {
+  //       showAll.value = showAll.value ? 0 : 1;
+  //     },
+  //   });
 
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: e => {
-      y.value = e.contentOffset.y;
-    },
-  });
+  // const scrollHandler = useAnimatedScrollHandler({
+  //   onScroll: e => {
+  //     y.value = e.contentOffset.y;
+  //   },
+  // });
 
-  const text = useDerivedValue(() => {
-    return showAll.value === 1 ? 'See less' : 'See more';
-  }, [showAll]);
+  // const text = useDerivedValue(() => {
+  //   return showAll.value === 1 ? 'See less' : 'See more';
+  // }, [showAll]);
 
-  const style = useAnimatedStyle(() => ({
-    marginTop: marginTop.value,
-  }));
+  // const style = useAnimatedStyle(() => ({
+  //   marginTop: marginTop.value,
+  // }));
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
@@ -117,22 +117,23 @@ const Home = () => {
           <Text color="foreground" variant="body" style={styles.title}>
             Your bookshelves
           </Text>
-          <TapGestureHandler onHandlerStateChange={gestureHandler}>
-            <Animated.View>
-              <Box backgroundColor="lightGray" p="xs" borderRadius="s">
-                <ReText
-                  text={text}
-                  style={{ color: colors.gray, padding: 0 }}
-                />
-              </Box>
-            </Animated.View>
-          </TapGestureHandler>
+          {/* <TapGestureHandler onHandlerStateChange={gestureHandler}> */}
+          <View>
+            <Box backgroundColor="lightGray" p="xs" borderRadius="s">
+              {/* <ReText */}
+              {/* // text={text} */}
+              {/* style={{ color: colors.gray, padding: 0 }}
+                /> */}
+            </Box>
+          </View>
+          {/* </TapGestureHandler> */}
         </View>
-        <Animated.ScrollView
+        <ScrollView
           showsVerticalScrollIndicator={false}
-          style={style}
+          // style={style}
           scrollEventThrottle={16}
-          {...scrollHandler}>
+          // {...scrollHandler}
+        >
           {/* {shelves.map((shelf, i) => { 
             // const last = i === shelves.length - 1;
             // return (
@@ -149,7 +150,7 @@ const Home = () => {
             // );
             */}
           {/* {JSON.stringify(movies)} */}
-        </Animated.ScrollView>
+        </ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
