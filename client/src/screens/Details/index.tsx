@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
+import {
+  ActivityIndicator,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { useHeaderHeight } from '@react-navigation/elements';
-import { Header, StackNavigationProp } from '@react-navigation/stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme } from '@shopify/restyle';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 // import {MovieStatus} from 'types/Movie';
 
@@ -16,13 +21,14 @@ import { RootStackParamList } from '../../navigation';
 
 import { Theme, Box, Text } from '../../theme';
 
-import { getSingleMovie } from 'api/movies';
+import { getSingleMovie, addOrUpdateMovie, remove } from 'api/movies';
 
-import { TMDBMovie } from 'types';
+import { MovieStatus, TMDBMovie } from 'types';
 
 import Chip from 'components/Chip';
 
 import Info from './Info';
+import StatusMenu from './StatusMenu';
 
 const styles = StyleSheet.create({
   poster: { aspectRatio: 6 / 9, height: 300 },
@@ -63,42 +69,49 @@ const Details = ({
   >(['movie', { id, type }], () => getSingleMovie({ type, id }));
   const { data: { volume: movie = null } = {} } = data || {};
 
-  useEffect(() => {
-    navigation.setOptions({
-      headerTransparent: true,
-      headerRight: () => (
-        <Icon
-          name="add-circle-outline"
-          style={{ marginRight: spacing.m }}
-          size={32}
-          color={colors.foreground}
-          onPress={() => setShowMenu(!showMenu)}
-        />
-      ),
-    });
-  }, [colors.foreground, spacing.m, navigation, showMenu]);
+  const { mutate } = useMutation({
+    mutationFn: addOrUpdateMovie,
+  });
 
-  // const onMenuItemPress = (status: MovieStatus | 'delete' | 'info') => {
-  //   if (book) {
-  //     if (status === 'delete') {
-  //       dispatch(deleteBook(book.id));
-  //     } else if (status == 'info') {
-  //       navigation.navigate('Details', {id: book.id});
-  //     } else {
-  //       dispatch(
-  //         addOrUpdateBook({
-  //           title: movie.title,
-  //           thumbnail: movie.imageLinks
-  //             ? movie.imageLinks.smallThumbnail
-  //             : undefined,
-  //           authors: movie.authors,
-  //           id: book.id,
-  //           status,
-  //         }),
-  //       );
-  //     }
-  //   }
-  // };
+  const { mutate: deleteMovie } = useMutation({
+    mutationFn: remove,
+  });
+
+  const onMenuItemPress = (status: MovieStatus | 'delete' | 'info') => {
+    if (movie) {
+      if (status === 'delete') {
+        deleteMovie(movie.id);
+      } else if (status === 'info') {
+        navigation.navigate('Details', {
+          id: movie.id.toString(),
+          type: movie.media_type as 'movie' | 'tv',
+        });
+      } else {
+        mutate({
+          title: movie.title,
+          poster_path: movie.poster_path,
+          id: movie.id,
+          status,
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (movie) {
+      navigation.setOptions({
+        headerRight: () => (
+          <Icon
+            name="add-circle-outline"
+            style={{ marginRight: spacing.m }}
+            size={32}
+            color={colors.foreground}
+            onPress={() => setShowMenu(!showMenu)}
+          />
+        ),
+      });
+    }
+  }, [movie, colors.foreground, spacing.m, navigation, showMenu]);
 
   const height = useHeaderHeight();
 
@@ -125,6 +138,12 @@ const Details = ({
             paddingHorizontal: spacing.l,
           },
         ]}>
+        <StatusMenu
+          visible={showMenu}
+          toggleVisible={() => setShowMenu(!showMenu)}
+          movieId={movie.id}
+          onPress={onMenuItemPress}
+        />
         <Box alignItems="center">
           <MoviePoster style={styles.poster} uri={movie.poster_path} />
           <Text

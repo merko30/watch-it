@@ -77,7 +77,14 @@ const Navigation = () => {
               name="Home"
               component={TabNavigator}
             />
-            <Stack.Screen name="Details" component={Details} />
+            <Stack.Screen
+              name="Details"
+              options={{
+                headerTransparent: true,
+                headerMode: 'float',
+              }}
+              component={Details}
+            />
           </>
         )}
       </Stack.Navigator>

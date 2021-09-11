@@ -25,7 +25,7 @@ const Search = () => {
 
   const { results } = data?.data || {};
 
-  console.log(results);
+  // console.log(results);
 
   const onSearch = (term: string) => mutate(term);
 

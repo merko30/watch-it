@@ -1,5 +1,5 @@
+import { Movie } from 'types';
 import { axios } from '../config/axios';
-// import {Movie} from '../types/Movie';
 
 export interface GetMoviesParams {
   page?: number;
@@ -19,16 +19,16 @@ export const getAll = async () => {
   return await axios.get(url.href);
 };
 
-export const put = async () => {
+export const addOrUpdateMovie = async (data: Partial<Movie>) => {
   // TODO: add book
-  return await axios.put(API_URL);
+  return await axios.put(API_URL, data);
 };
 
-export const checkStatus = async (id: string) => {
-  return await axios.get(`${API_URL}/status/${id}`);
+export const checkStatus = async (id: number) => {
+  return await axios.get(`${API_URL}/exists/${id}`);
 };
 
-export const remove = async (id: string) => {
+export const remove = async (id: number) => {
   return await axios.delete(`${API_URL}/${id}`);
 };
 

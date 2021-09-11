@@ -1,26 +1,25 @@
-import React, {
-  useState,
-  // useEffect
-} from 'react';
+import { checkStatus } from 'api/movies';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
-  // TouchableOpacity,
+  TouchableOpacity,
   View,
-  // Text,
-  // ActivityIndicator,
+  Text,
+  ActivityIndicator,
   Dimensions,
   StyleProp,
   ViewStyle,
 } from 'react-native';
 import Modal from 'react-native-modal';
+import { useMutation } from 'react-query';
 
-import {MovieStatus} from 'types/Movie';
+import { MovieStatus } from 'types/Movie';
 
-import {RoundedIcon} from '../../../components';
+import RoundedIcon from 'components/RoundedIcon';
 
-import theme from '../../../theme';
+import theme from 'theme';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   modal: {
@@ -33,6 +32,7 @@ const styles = StyleSheet.create({
   },
   container: {
     position: 'relative',
+    marginRight: 10,
   },
   button: {
     backgroundColor: theme.colors.white,
@@ -55,29 +55,29 @@ interface Status {
   value: MovieStatus | 'info' | 'delete';
 }
 
-// const STATUSES: Status[] = [
-//   {value: 'wishlist', label: 'Wishlist'},
-//   {value: 'watching', label: 'Watching'},
-//   {value: 'watched', label: 'Watched'},
-//   {value: 'watch-again', label: 'Watch again'},
-//   {value: 'delete', label: 'Delete'},
-// ];
+const STATUSES: Status[] = [
+  { value: 'wishlist', label: 'Wishlist' },
+  { value: 'watching', label: 'Watching' },
+  { value: 'watched', label: 'Watched' },
+  { value: 'watch-again', label: 'Watch again' },
+  { value: 'delete', label: 'Delete' },
+];
 
 type BookMenuProps = {
-  bookId: string;
+  movieId: number;
   onPress: (key: MovieStatus | 'info' | 'delete') => void;
   showInfoItem?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   modalStyle?: StyleProp<ViewStyle>;
 } & (
-  | {visible: boolean; toggleVisible: () => void}
-  | {visible?: never; toggleVisible?: never}
+  | { visible: boolean; toggleVisible: () => void }
+  | { visible?: never; toggleVisible?: never }
 );
 
 const BookMenu = ({
-  // bookId,
-  // onPress,
-  // showInfoItem,
+  movieId,
+  onPress,
+  showInfoItem,
   containerStyle,
   modalStyle,
   visible,
@@ -85,33 +85,48 @@ const BookMenu = ({
 }: BookMenuProps) => {
   // const {colors} = useTheme<Theme>();
   const [isVisible, setIsVisible] = useState(false);
-  // const [statuses,setStatuses] = useState<Status[]>([]);
+  const [statuses, setStatuses] = useState<Status[]>([]);
 
   const toggleIsVisible = () => {
     return setIsVisible(!isVisible);
   };
 
+  const {
+    mutate: checkMovie,
+    data,
+    isLoading,
+  } = useMutation({
+    mutationFn: checkStatus,
+  });
+
+  const { data: { movieStatus = null } = {} } = data || {};
+
+  // let movieStatus = null;
+
+  console.log(data);
+
   const showModal = visible ? visible : isVisible;
   const toggleModal =
     visible && toggleVisible ? toggleVisible : toggleIsVisible;
 
-  // useEffect(() => {
-  //   if (bookId) {
-  //     dispatch(checkBook(bookId));
-  //   }
-  // }, [bookId, showModal]);
+  useEffect(() => {
+    if (movieId) {
+      checkMovie(movieId);
+    }
+  }, [movieId, showModal, checkMovie]);
 
-  // useEffect(() => {
-  //   if (MovieStatus) {
-  //     setStatuses(STATUSES.filter(status => status.value !== MovieStatus));
-  //   } else {
-  //     setStatuses(STATUSES.filter(status => status.value !== 'delete'));
-  //   }
-  //   if (showInfoItem) {
-  //     setStatuses(prev => [{value: 'info', label: 'Info'}, ...prev]);
-  //   }
-  // }, [MovieStatus]);
+  useEffect(() => {
+    if (movieStatus) {
+      setStatuses(STATUSES.filter(status => status.value !== movieStatus));
+    } else {
+      setStatuses(STATUSES.filter(status => status.value !== 'delete'));
+    }
+    if (showInfoItem) {
+      setStatuses(prev => [{ value: 'info', label: 'Info' }, ...prev]);
+    }
+  }, [movieStatus, showInfoItem]);
 
+  const paddingVertical = isLoading ? 20 : 0;
   return (
     <View style={[styles.container, containerStyle]}>
       {!visible && !toggleVisible && (
@@ -119,28 +134,25 @@ const BookMenu = ({
           color="secondary"
           onPress={() => toggleModal()}
           icon="ellipsis-vertical"
-          size={48}
+          size={36}
         />
       )}
       <Modal
-        style={[
-          styles.modal,
-          modalStyle,
-          // {paddingVertical: loadings.status ? 20 : 0},
-        ]}
+        style={[styles.modal, modalStyle, { paddingVertical }]}
         isVisible={showModal}
         onBackdropPress={() => toggleModal()}>
-        {/* {loadings.status ? (
+        {isLoading ? (
           <ActivityIndicator />
         ) : (
-          statuses.map((status, i) => {
-            const last = statuses.length - 1 === i;
+          statuses.map((status, i, arr) => {
+            const isLast = arr.length - 1 === i;
+            const borderBottomWidth = isLast ? 0 : 1;
             return (
               <TouchableOpacity
                 style={[
                   styles.label,
                   {
-                    borderBottomWidth: last ? 0 : 1,
+                    borderBottomWidth,
                   },
                 ]}
                 key={status.value}
@@ -152,8 +164,7 @@ const BookMenu = ({
               </TouchableOpacity>
             );
           })
-        )} */}
-        hello
+        )}
       </Modal>
     </View>
   );
