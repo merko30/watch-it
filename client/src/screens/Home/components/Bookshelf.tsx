@@ -26,7 +26,7 @@ import Animated from 'react-native-reanimated';
 // } from 'react-native-gesture-handler';
 // import {useNavigation} from '@react-navigation/native';
 
-import {Movie} from 'types/Movie';
+// import {Movie} from 'types/Movie';
 
 // // import MoviePose from '../../../components/MoviePoster';
 
@@ -38,7 +38,7 @@ export const TITLE_HEIGHT = 35;
 // const styles =
 
 interface BookshelfProps {
-  movies: Movie[];
+  movies: any[];
   title: string;
   backgroundColor: ColorValue;
   name: string;

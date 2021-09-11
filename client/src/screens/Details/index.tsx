@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { Header, StackNavigationProp } from '@react-navigation/stack';
 import { useTheme } from '@shopify/restyle';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useQuery } from 'react-query';
@@ -21,12 +22,17 @@ import { TMDBMovie } from 'types';
 
 import Chip from 'components/Chip';
 
-import Description from './Description';
 import Info from './Info';
 
 const styles = StyleSheet.create({
   poster: { aspectRatio: 6 / 9, height: 300 },
   genres: { justifyContent: 'center', flex: 1, marginTop: 10 },
+  overview: {
+    justifyContent: 'center',
+  },
+  container: {
+    flexGrow: 1,
+  },
 });
 
 type DetailsScreenRouteProp = RouteProp<RootStackParamList, 'Details'>;
@@ -49,7 +55,7 @@ const Details = ({
 }: DetailsProps) => {
   const [showMenu, setShowMenu] = useState(false);
 
-  const { colors, borderRadii, spacing } = useTheme<Theme>();
+  const { colors, spacing } = useTheme<Theme>();
 
   const { data, isLoading, error } = useQuery<
     AxiosResponse<{ volume: TMDBMovie }>,
@@ -59,6 +65,7 @@ const Details = ({
 
   useEffect(() => {
     navigation.setOptions({
+      headerTransparent: true,
       headerRight: () => (
         <Icon
           name="add-circle-outline"
@@ -92,6 +99,9 @@ const Details = ({
   //     }
   //   }
   // };
+
+  const height = useHeaderHeight();
+
   const formatDuration = (durationInMinutes: number) =>
     `${Math.round(durationInMinutes / 60)}h ${Math.round(
       durationInMinutes % 60,
@@ -106,7 +116,15 @@ const Details = ({
   }
   if (movie) {
     return (
-      <Box flex={1} mt="m">
+      <ScrollView
+        contentContainerStyle={[
+          styles.container,
+          {
+            paddingTop: height,
+            marginTop: spacing.m,
+            paddingHorizontal: spacing.l,
+          },
+        ]}>
         <Box alignItems="center">
           <MoviePoster style={styles.poster} uri={movie.poster_path} />
           <Text
@@ -131,20 +149,18 @@ const Details = ({
           </Box>
           <ScrollView horizontal contentContainerStyle={styles.genres}>
             {movie.genres.map(genre => (
-              <Chip color="lightgray" key={genre.id}>
+              <Chip color="secondary" key={genre.id}>
                 <Text>{genre.name}</Text>
               </Chip>
             ))}
           </ScrollView>
         </Box>
-        <ScrollView
-          contentContainerStyle={{
-            borderRadius: borderRadii.m,
-          }}
-          showsVerticalScrollIndicator={false}>
-          {movie.overview && <Description description={movie.overview} />}
-        </ScrollView>
-      </Box>
+        {movie.overview && (
+          <Text py="l" textAlign="center" fontSize={16}>
+            {movie.overview}
+          </Text>
+        )}
+      </ScrollView>
     );
   }
 

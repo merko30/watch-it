@@ -1,11 +1,12 @@
+import { useTheme } from '@shopify/restyle';
 import React, { useState } from 'react';
 import { ColorValue, LayoutChangeEvent, StyleSheet } from 'react-native';
 
-import { Box } from '../theme';
+import { Box, Theme } from '../theme';
 
 interface ChipProps {
   children: React.ReactNode;
-  color?: ColorValue;
+  color?: ColorValue | keyof Theme['colors'];
 }
 
 const styles = StyleSheet.create({
@@ -25,6 +26,8 @@ const Chip = ({ children, color = 'red' }: ChipProps) => {
     setWidth(elementWidth);
   };
 
+  const { colors } = useTheme();
+
   return (
     <Box
       justifyContent="center"
@@ -35,7 +38,8 @@ const Chip = ({ children, color = 'red' }: ChipProps) => {
         styles.chip,
         {
           // width,
-          backgroundColor: color,
+          backgroundColor:
+            color in colors ? colors[color as keyof Theme['colors']] : color,
           borderRadius: width / 2,
         },
       ]}
