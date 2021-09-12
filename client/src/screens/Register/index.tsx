@@ -20,24 +20,26 @@ import { User } from 'types';
 import validationSchema from './validationSchema';
 
 import { navigate } from 'utils/navigation';
+import { AxiosError, AxiosResponse } from 'axios';
 
 const Register = ({ navigation }: StackScreenProps<any, 'Register'>) => {
   const { colors, fontSizes } = useTheme<Theme>();
 
-  const { mutate, error, isLoading } = useMutation(
-    (input: Partial<User>) => createUser(input),
-    {
-      onSuccess: () => navigate('Login'),
-    },
-  );
+  const { mutate, error, isLoading } = useMutation<
+    AxiosResponse<{ ok: boolean }>,
+    AxiosError<{ message: string }>,
+    Partial<User>
+  >((input: Partial<User>) => createUser(input), {
+    onSuccess: () => navigate('Login'),
+  });
 
   const onSubmit = (data: FormikValues) => mutate(data);
 
   const formik = useFormik({
     initialValues: {
-      username: 'johnnyjon123',
-      email: 'ohnny@gmail.com',
-      password: 'password22',
+      username: '',
+      email: '',
+      password: '',
     },
     onSubmit,
     validationSchema,

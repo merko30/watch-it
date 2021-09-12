@@ -33,7 +33,10 @@ const LoginScreen = ({ navigation }: StackScreenProps<any, 'Login'>) => {
   >((input: LoginData) => loginUser(input));
 
   const formik = useFormik({
-    initialValues: { emailOrUsername: 'joe7@gmail.com', password: 'password' },
+    initialValues: {
+      emailOrUsername: 'johnnyjoe@gmail.com',
+      password: 'password22',
+    },
     validationSchema,
     onSubmit: values => mutate(values),
   });
