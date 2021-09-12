@@ -1,70 +1,47 @@
 import React, { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { useTheme } from '@shopify/restyle';
 
-import theme, { Theme, Box, Text } from '../../theme';
-
-const styles = StyleSheet.create({
-  section: {
-    marginTop: theme.spacing.m,
-  },
-  row: {
-    paddingHorizontal: theme.spacing.m,
-    paddingBottom: theme.spacing.m,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  text: {
-    marginLeft: theme.spacing.s,
-    fontSize: theme.fontSizes.textLg,
-    color: theme.colors.gray,
-  },
-});
+import { Theme, Box, Text } from '../../theme';
 
 interface SectionProps {
   title: string;
   icon?: string;
   children: React.ReactNode;
-  containerStyle?: StyleProp<ViewStyle>;
+  isSubsection?: boolean;
 }
 
-const Section = ({ icon, title, children, containerStyle }: SectionProps) => {
+const Section = ({ icon, title, children, isSubsection }: SectionProps) => {
   const [expanded, setExpanded] = useState(false);
 
   const { colors } = useTheme<Theme>();
 
   return (
-    <View style={styles.section}>
+    <Box px={isSubsection ? 0 : 'm'}>
       <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
-        <View style={[styles.row, containerStyle]}>
-          <View style={styles.titleContainer}>
+        <Box flexDirection="row" py="m" justifyContent="space-between">
+          <Box flexDirection="row" alignItems="center">
             {icon && <Icon name={icon} size={24} color={colors.foreground} />}
-            <Text variant="body" marginLeft="s" color="foreground">
+            <Text
+              variant="body"
+              textTransform={!isSubsection ? 'uppercase' : 'none'}
+              marginLeft={icon ? 's' : 0}
+              fontWeight={!isSubsection ? 'bold' : 'normal'}
+              color="foreground">
               {title}
             </Text>
-          </View>
+          </Box>
           <Icon
             name={`chevron-${expanded ? 'up' : 'down'}`}
             color={colors.gray}
             size={24}
           />
-        </View>
+        </Box>
       </TouchableWithoutFeedback>
-      <Box paddingHorizontal="m">{expanded && children}</Box>
-    </View>
+      {expanded && <Box py={isSubsection ? 's' : 0}>{children}</Box>}
+    </Box>
   );
 };
 

@@ -41,6 +41,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         options={{
+          headerShown: false,
           tabBarIcon: props => <TabIcon name="person" {...props} size={24} />,
         }}
         name="Profile"
