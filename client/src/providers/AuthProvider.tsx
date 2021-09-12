@@ -10,11 +10,13 @@ export interface IAuthContext {
   loggedIn: boolean;
   loading: boolean;
   setLoggedIn?: (value: boolean) => void;
+  logOut: () => void;
 }
 
 export const AuthContext = createContext<IAuthContext>({
   loggedIn: false,
   loading: false,
+  logOut: () => {},
 });
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -23,7 +25,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     (async () => {
-      // await AsyncStorage.removeItem('token');
       const token = await AsyncStorage.getItem('token');
       console.log(token);
 
@@ -35,11 +36,17 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     })();
   }, []);
 
+  const logOut = async () => {
+    await AsyncStorage.removeItem('token');
+    setLoggedIn(false);
+  };
+
   return (
     <AuthContext.Provider
       value={{
         loggedIn,
         loading,
+        logOut,
         setLoggedIn: (value: Boolean) =>
           setLoggedIn(value as SetStateAction<boolean>),
       }}>

@@ -1,10 +1,19 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, StyleProp, ViewStyle} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '@shopify/restyle';
 
-import RoundedIcon from '../../../components/RoundedIcon';
-import theme, {Theme, Box, Text} from '../../../theme';
-import {useTheme} from '@shopify/restyle';
+import RoundedIcon from 'components/RoundedIcon';
+
+import theme, { Theme, Box, Text } from 'theme';
+
+import { ProfileNavigatorParamList } from 'navigation/ProfileNavigator';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,9 +37,16 @@ type ProfileItemProps = {
   color: keyof Theme['colors'];
   style?: StyleProp<ViewStyle>;
 } & (
-  | {name: string; params?: Record<string, any>; onPress?: never}
-  | {name?: never; params?: never; onPress: () => void}
+  | {
+      name: keyof ProfileNavigatorParamList;
+      params?: any;
+      onPress?: never;
+    }
+  | { name?: never; params?: never; onPress: () => void }
 );
+
+type ProfileScreenNavigationProp =
+  StackNavigationProp<ProfileNavigatorParamList>;
 
 const ProfileItem = ({
   title,
@@ -41,8 +57,8 @@ const ProfileItem = ({
   style,
   onPress: _onPress,
 }: ProfileItemProps) => {
-  const navigation = useNavigation();
-  const {borderRadii} = useTheme<Theme>();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const { borderRadii } = useTheme<Theme>();
 
   const onPress = () => {
     if (name) {

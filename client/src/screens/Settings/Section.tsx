@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -8,9 +8,9 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {useTheme} from '@shopify/restyle';
+import { useTheme } from '@shopify/restyle';
 
-import theme, {Theme, Box, Text} from '../../../theme';
+import theme, { Theme, Box, Text } from '../../theme';
 
 const styles = StyleSheet.create({
   section: {
@@ -41,10 +41,10 @@ interface SectionProps {
   containerStyle?: StyleProp<ViewStyle>;
 }
 
-const Section = ({icon, title, children, containerStyle}: SectionProps) => {
+const Section = ({ icon, title, children, containerStyle }: SectionProps) => {
   const [expanded, setExpanded] = useState(false);
 
-  const {colors} = useTheme<Theme>();
+  const { colors } = useTheme<Theme>();
 
   return (
     <View style={styles.section}>

@@ -10,7 +10,7 @@ export enum Theme {
   LIGHT = 'light',
 }
 
-const ThemeContext = createContext({
+export const ThemeContext = createContext({
   mode: 'light' as Theme,
   toggleTheme: () => {},
 });

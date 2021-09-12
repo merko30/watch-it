@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import Modal from 'react-native-modal';
 
-import { Box, Text } from '../../../theme';
+import { Box, Text } from '../../theme';
 
-import Checkbox, { Size } from '../../../components/Checkbox';
+import Checkbox, { Size } from '../../components/Checkbox';
 import { TouchableOpacity } from 'react-native';
-import { FontSize } from 'src/store/reducers/ui';
 
 export interface SettingItem {
   label: string;
@@ -58,7 +57,7 @@ const Setting = ({
           <>
             <TouchableOpacity onPress={() => setVisible(!visible)}>
               <Text color="foreground" variant="body">
-                {items.find(k => k.key === (value as FontSize))?.label}
+                {items.find(k => k.key === value)}
               </Text>
             </TouchableOpacity>
             <Modal
