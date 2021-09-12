@@ -42,6 +42,7 @@ const TabNavigator = () => {
       /> */}
       <Tab.Screen
         options={{
+          headerShown: false,
           tabBarIcon: props => <TabIcon name="search" {...props} size={24} />,
         }}
         name="Search"
