@@ -12,7 +12,6 @@ interface MovieListProps {
 const MovieList = ({ movies }: MovieListProps) => {
   return (
     <FlatList
-      style={{ paddingHorizontal: 10 }}
       data={movies}
       renderItem={({ item }) => <Movie movie={item} />}
       keyExtractor={movie => movie.id.toString()}

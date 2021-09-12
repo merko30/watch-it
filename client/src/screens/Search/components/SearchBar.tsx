@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Keyboard, TextInput} from 'react-native';
-import {useTheme} from '@shopify/restyle';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Keyboard, TextInput } from 'react-native';
+import { useTheme } from '@shopify/restyle';
 
-import theme, {Theme, Box} from '../../../theme';
-import {RoundedIcon} from '../../../components';
+import theme, { Theme, Box } from '../../../theme';
+import { RoundedIcon } from '../../../components';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,8 +32,8 @@ interface SearchBarProps {
   onSearch: (term: string) => void;
 }
 
-const SearchBar = ({onSearch}: SearchBarProps) => {
-  const {colors, shadows} = useTheme<Theme>();
+const SearchBar = ({ onSearch }: SearchBarProps) => {
+  const { colors, shadows } = useTheme<Theme>();
   const [term, setTerm] = useState('');
   const [error, setError] = useState<boolean>(false);
 
@@ -56,7 +56,7 @@ const SearchBar = ({onSearch}: SearchBarProps) => {
     }
   }, [error]);
 
-  const errorStyle = error && {borderColor: colors.negative, borderWidth: 1};
+  const errorStyle = error && { borderColor: colors.negative, borderWidth: 1 };
 
   return (
     <Box
@@ -65,8 +65,9 @@ const SearchBar = ({onSearch}: SearchBarProps) => {
       mx="m"
       marginTop="xl"
       padding="s"
+      mb="m"
       borderRadius="m"
-      style={[errorStyle, {...shadows.medium}]}>
+      style={[errorStyle, { ...shadows.medium }]}>
       <Box
         flexDirection="row"
         alignItems="center"
