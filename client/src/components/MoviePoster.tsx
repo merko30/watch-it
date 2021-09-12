@@ -29,7 +29,7 @@ const MoviePoster = ({
     <TouchableWithoutFeedback onPress={onPress}>
       <Image
         style={[{ borderRadius: borderRadii.m }, style]}
-        source={uri ? { uri: `${IMAGE_PATH}${pathSize ?? ''}/${uri}` } : paper}
+        source={uri ? { uri: `${IMAGE_PATH}${pathSize}/${uri}` } : paper}
       />
     </TouchableWithoutFeedback>
   );

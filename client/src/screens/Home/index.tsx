@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View, ScrollView, SafeAreaView } from 'react-native';
 // import {
 //   TapGestureHandler,
@@ -15,7 +15,7 @@ import { StyleSheet, View, ScrollView, SafeAreaView } from 'react-native';
 import { useTheme } from '@shopify/restyle';
 import { useQuery } from 'react-query';
 
-// import Bookshelf from './components/Bookshelf';
+import MovieList from './MovieList';
 
 import theme, { Theme, Text, Box } from '../../theme';
 
@@ -48,26 +48,31 @@ const styles = StyleSheet.create({
   },
 });
 
-// const SHELVES = [
-//   {
-//     name: 'wishlist',
-//     title: 'Wishlist',
-//     backgroundColor: 'orange',
-//   },
-//   {
-//     name: 'reading',
-//     title: 'Reading',
-//     backgroundColor: 'chocolate',
-//   },
-//   {
-//     name: 'read',
-//     title: 'Read',
-//     backgroundColor: 'brown',
-//   },
-// ];
+const MOVIE_LSITS = [
+  {
+    name: 'wishlist',
+    title: 'Wishlist',
+    backgroundColor: 'orange',
+  },
+  {
+    name: 'watching',
+    title: 'Watching',
+    backgroundColor: 'chocolate',
+  },
+  {
+    name: 'watched',
+    title: 'Watched',
+    backgroundColor: 'brown',
+  },
+  {
+    name: 'watch-again',
+    title: 'Watch again',
+    backgroundColor: 'brown',
+  },
+];
 
 const Home = () => {
-  // const [shelves] = useState(SHELVES);
+  const [movieLists] = useState(MOVIE_LSITS);
   const { colors } = useTheme<Theme>();
 
   const { data } = useQuery<
@@ -115,7 +120,7 @@ const Home = () => {
         bounces={false}>
         <View style={styles.row}>
           <Text color="foreground" variant="body" style={styles.title}>
-            Your bookshelves
+            Your lists
           </Text>
           {/* <TapGestureHandler onHandlerStateChange={gestureHandler}> */}
           <View>
@@ -134,21 +139,22 @@ const Home = () => {
           scrollEventThrottle={16}
           // {...scrollHandler}
         >
-          {/* {shelves.map((shelf, i) => { 
-            // const last = i === shelves.length - 1;
-            // return (
-            //   <Bookshelf
-            //     index={i}
-            //     showAll={showAll}
-            //     last={last}
-            //     y={y}
-            //     books={movies.filter(b => b.status == shelf.name)}
-            //     {...shelf}
-            //     key={shelf.name}
-            //   />
-
-            // );
-            */}
+          {movieLists.map(list => {
+            // const last = i === movieLists.length - 1;
+            return (
+              <MovieList
+                // index={i}
+                // showAll={showAll}
+                // last={last}
+                // y={y}
+                movies={movies.filter(b => b.status === list.name)}
+                {...list}
+                name={list.name}
+                title={list.title}
+                key={list.name}
+              />
+            );
+          })}
           {/* {JSON.stringify(movies)} */}
         </ScrollView>
       </ScrollView>
