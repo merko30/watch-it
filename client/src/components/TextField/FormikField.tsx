@@ -1,13 +1,13 @@
 import React from 'react';
-import {useField} from 'formik';
+import { useField } from 'formik';
 import omit from 'lodash.omit';
 
-import TextField, {TextFieldProps} from 'components/TextField';
+import TextField, { TextFieldProps } from 'components/TextField';
 
 interface FormikFieldProps extends TextFieldProps {}
 
-const FormikField = ({name, ...props}: FormikFieldProps) => {
-  const [field, meta, helpers] = useField(name);
+const FormikField = ({ name, ...props }: FormikFieldProps) => {
+  const [field, meta, { setValue }] = useField(name);
 
   const fieldProps = omit(field, ['onChange']);
 
@@ -15,9 +15,7 @@ const FormikField = ({name, ...props}: FormikFieldProps) => {
     <TextField
       {...fieldProps}
       {...meta}
-      {...helpers}
-      onBlur={() => helpers.setTouched(true)}
-      onChangeText={text => helpers.setValue(text)}
+      onChangeText={text => setValue(text)}
       {...props}
     />
   );

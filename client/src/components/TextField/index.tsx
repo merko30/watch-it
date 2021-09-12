@@ -64,11 +64,13 @@ const TextField = ({
   touched,
   error,
   containerStyle,
-  labelStyle,
+  placeholder,
   numberOfLines = 1,
   // animateLabel = true,
   ...props
 }: TextFieldProps) => {
+  console.log(placeholder);
+
   const [passwordVisible, setPasswordVisible] = useState(false);
   const { colors } = useTheme<Theme>();
   const ref = useRef<TextInput>(null);
@@ -111,17 +113,7 @@ const TextField = ({
 
   return (
     <View style={containerStyle}>
-      {label && (
-        <Text
-          // Animated.Text
-          style={[
-            styles.labelStyle,
-            // style,
-            labelStyle,
-          ]}>
-          {label}
-        </Text>
-      )}
+      {label && <Text>{label}</Text>}
       <Box
         flexDirection="row"
         borderBottomColor="lightGray"
@@ -130,7 +122,7 @@ const TextField = ({
         <TextInput
           numberOfLines={Platform.OS === 'ios' ? undefined : numberOfLines}
           ref={ref}
-          placeholderTextColor={colors.foreground}
+          placeholder={placeholder}
           style={[
             props.style,
             styles.input,
@@ -141,14 +133,6 @@ const TextField = ({
             },
           ]}
           {...props}
-          // onFocus={() => {
-          //   focused.value = 1;
-          // }}
-          // onBlur={() => {
-          //   if (!props.value) {
-          //     focused.value = 0;
-          //   }
-          // }}
           secureTextEntry={hidePassword}
         />
         {props.secureTextEntry && (

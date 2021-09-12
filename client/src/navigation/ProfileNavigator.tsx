@@ -32,9 +32,7 @@ const ProfileNavigator = () => {
         headerBackImage: () => <BackIcon color={colors.foreground} />,
       }}>
       <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
+        options={{ headerShown: false }}
         name="Profile"
         component={Profile}
       />
