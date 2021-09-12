@@ -1,109 +1,50 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { ScrollView } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { useTheme } from '@shopify/restyle';
-import * as Yup from 'yup';
-
-import Section from './components/Section';
-
-import { ProfileNavigatorParamList } from '../../navigation/ProfileNavigator';
-
-import { Theme } from '../../theme';
-
-import { TextField, Button, Message } from '../../components';
-
-import { useFormik, FormikValues } from 'formik';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPassword, updateUser } from '../../store/reducers/auth';
-import { RootState } from '../../store/reducers';
+import { useFormik } from 'formik';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useMutation } from 'react-query';
+import { AxiosError, AxiosResponse } from 'axios';
 
-import Setting from './components/Setting';
+import Section from './Section';
 
-import { Theme as ThemeEnum, toggleTheme } from '../../store/reducers/ui';
+import { ProfileNavigatorParamList } from 'navigation/ProfileNavigator';
 
-const validationSchema = Yup.object().shape({
-  email: Yup.string().required('Email is required').email('Invalid email'),
-  oldPassword: Yup.string().required('Please type your old password'),
-  password: Yup.string().required('Password is required field'),
-  confirmPassword: Yup.string()
-    .required('Confirm your password')
-    .oneOf([Yup.ref('password')], 'Passwords must match'),
-});
+import Button from 'components/Button';
+import TextField from 'components/TextField';
+// import Message from 'components/Message';
 
-const passwordSchema = Yup.object().shape({
-  oldPassword: Yup.string().required('Please type your old password'),
-  password: Yup.string().required('Password is required field'),
-  confirmPassword: Yup.string()
-    .required('Confirm your password')
-    .oneOf([Yup.ref('password')], 'Passwords must match'),
-});
+import { Theme, ThemeContext } from 'theme/ThemeProvider';
 
-const emailSchema = Yup.object().shape({
-  email: Yup.string().required('Email is required').email('Invalid email'),
-});
+import Setting from './Setting';
 
-const validate = (
-  values: FormikValues,
-  schema: Yup.Schema<any>,
-  callback: () => void,
-  errorCallback: (path: string, message: string) => void,
-) => {
-  schema
-    .validate(values, {
-      abortEarly: false,
-    })
-    .then(() => {
-      if (schema.isValid(values)) {
-        callback();
-      }
-    })
-    .catch(err => handleYupErrors(err, errorCallback));
-};
+import { validationSchema } from './validationSchemas';
 
-const handleYupErrors = (
-  err: Yup.ValidationError,
-  callback: (path: string, message: string) => void,
-) => {
-  err.inner.map(({ path, message }: { path: string; message: string }) => {
-    callback(path, message);
-  });
-};
+import { updateEmailRequest, updatePasswordRequest } from 'api/users';
 
 interface SettingsProps
   extends StackScreenProps<ProfileNavigatorParamList, 'Settings'> {}
 
-const Settings = (props: SettingsProps) => {
-  const { colors, spacing } = useTheme<Theme>();
-  const dispatch = useDispatch();
-  const { message, error, theme } = useSelector(({ auth, ui }: RootState) => ({
-    ...ui,
-    ...auth,
-  }));
+const Settings = () => {
+  const { colors, spacing } = useTheme();
+  const { toggleTheme, mode } = useContext(ThemeContext);
 
-  const [darkMode, setDarkMode] = useState(theme === ThemeEnum.DARK);
+  const [darkMode, setDarkMode] = useState(mode === Theme.DARK);
 
   const onChangeTheme = async (val: boolean) => {
-    const themeToSet = val ? ThemeEnum.DARK : ThemeEnum.LIGHT;
+    const themeToSet = val ? Theme.DARK : Theme.LIGHT;
     await AsyncStorage.setItem('theme', themeToSet);
 
     setDarkMode(val);
 
-    dispatch(toggleTheme());
+    toggleTheme();
   };
 
-  const {
-    values,
-    handleChange,
-    handleBlur,
-    errors,
-    touched,
-    setFieldError,
-    setFieldTouched,
-  } = useFormik({
+  const { values, handleChange, handleBlur, errors, touched } = useFormik({
     initialValues: {
-      oldPassword: '',
       password: '',
+      newPassword: '',
       confirmPassword: '',
       email: '',
     },
@@ -113,33 +54,19 @@ const Settings = (props: SettingsProps) => {
     },
   });
 
-  const errorHandler = (field: string, value: string) => {
-    setFieldError(field, value);
-    setFieldTouched(field);
-  };
+  const { password, newPassword, email } = values;
 
-  const updatePassword = async () => {
-    const { oldPassword, password, confirmPassword } = values;
-    let vals = { oldPassword, password, confirmPassword };
+  const { mutate: updatePassword } = useMutation<
+    AxiosResponse<{ message: string }>,
+    AxiosError<{ message: string }>,
+    { password: string; newPassword: string }
+  >(() => updatePasswordRequest(password, newPassword));
 
-    validate(
-      vals,
-      passwordSchema,
-      () => dispatch(setPassword(oldPassword, password)),
-      errorHandler,
-    );
-  };
+  // const { mutate: updateUser } = useMutation((data: Partial<User>) =>
+  //   updateUserRequest(data),
+  // );
 
-  const updateEmail = () => {
-    const { email } = values;
-
-    validate(
-      { email },
-      emailSchema,
-      () => dispatch(updateUser({ email })),
-      errorHandler,
-    );
-  };
+  const { mutate: updateEmail } = useMutation(() => updateEmailRequest(email));
 
   return (
     <ScrollView
@@ -157,12 +84,13 @@ const Settings = (props: SettingsProps) => {
         />
       </Section>
       <Section title="Account settings" icon="person-outline">
-        {message && <Message variant="positive" message={message} />}
-        {error && <Message variant="negative" message={error} />}
+        {/* {message && <Message variant="positive" message={message} />}
+        {error && <Message variant="negative" message={error} />} */}
         <Section
           title="Change your email"
           containerStyle={{ paddingHorizontal: 0 }}>
           <TextField
+            name="email"
             containerStyle={{ marginBottom: 10 }}
             autoCapitalize="none"
             onChangeText={handleChange('email')}
@@ -188,28 +116,31 @@ const Settings = (props: SettingsProps) => {
           title="Change your password"
           containerStyle={{ paddingHorizontal: 0 }}>
           <TextField
+            name="password"
             containerStyle={{ marginBottom: 10, marginTop: 10 }}
-            autoCapitalize="none"
-            onChangeText={handleChange('oldPassword')}
-            onBlur={handleBlur('oldPassword')}
-            error={errors['oldPassword']}
-            touched={touched['oldPassword']}
-            value={values.oldPassword}
-            label="Your old password"
-            secureTextEntry
-          />
-          <TextField
-            containerStyle={{ marginBottom: 10 }}
             autoCapitalize="none"
             onChangeText={handleChange('password')}
             onBlur={handleBlur('password')}
             error={errors['password']}
             touched={touched['password']}
             value={values.password}
+            label="Your old password"
+            secureTextEntry
+          />
+          <TextField
+            name="newPassword"
+            containerStyle={{ marginBottom: 10 }}
+            autoCapitalize="none"
+            onChangeText={handleChange('newPassword')}
+            onBlur={handleBlur('newPassword')}
+            error={errors['newPassword']}
+            touched={touched['newPassword']}
+            value={values.newPassword}
             label="New password"
             secureTextEntry
           />
           <TextField
+            name="confirmPassword"
             containerStyle={{ marginBottom: 10 }}
             autoCapitalize="none"
             onChangeText={handleChange('confirmPassword')}
@@ -221,7 +152,7 @@ const Settings = (props: SettingsProps) => {
             secureTextEntry
           />
           <Button
-            onPress={() => updatePassword()}
+            onPress={() => updatePassword}
             color="gray"
             textStyle={{ textTransform: 'uppercase', fontWeight: '700' }}
             containerStyle={{ marginVertical: spacing.m, width: 100 }}

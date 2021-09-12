@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useContext } from 'react';
 import {
   SafeAreaView,
   View,
@@ -6,18 +6,24 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {useTheme} from '@shopify/restyle';
+import { useTheme } from '@shopify/restyle';
+import { useQuery } from 'react-query';
+import { AxiosError, AxiosResponse } from 'axios';
 
-import {Avatar, LoadingContent} from '../../components';
-import ProfileItem from './components/ProfileItem';
+import Avatar from 'components/Avatar';
+import LoadingContent from 'components/LoadingContent';
 
-import {signOut, getUser} from '../../store/reducers/auth';
-import {RootState} from '../../store/reducers';
+import ProfileItem from './ProfileItem';
 
-import theme, {Theme, Text, Box} from '../../theme';
+import theme, { Theme, Text, Box } from 'theme';
 
-const {width} = Dimensions.get('window');
+import { fetchUser } from 'api/users';
+
+import { User } from 'types';
+
+import { AuthContext } from 'providers/AuthProvider';
+
+const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -71,19 +77,23 @@ const styles = StyleSheet.create({
   },
 });
 
-interface ProfileProps {}
+const Profile = () => {
+  const { colors } = useTheme<Theme>();
 
-const Profile = (props: ProfileProps) => {
-  const {colors} = useTheme<Theme>();
-  const dispatch = useDispatch();
-  const {user, loading, error} = useSelector((state: RootState) => state.auth);
+  const { logOut } = useContext(AuthContext);
 
-  useEffect(() => {
-    dispatch(getUser());
-  }, []);
+  const { data, error, isLoading } = useQuery<
+    AxiosResponse<{ user: User }>,
+    AxiosError<{ message: string }>
+  >({
+    queryFn: () => fetchUser(),
+  });
+  const {
+    data: { user },
+  } = data ?? { data: {} };
 
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: colors.primary}}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary }}>
       <View style={styles.container}>
         <View style={styles.subContainer}>
           <Box
@@ -97,7 +107,9 @@ const Profile = (props: ProfileProps) => {
             borderTopLeftRadius="xl"
             borderTopRightRadius="xl">
             {error && <Text style={styles.error}>{error}</Text>}
-            {loading && <Avatar style={styles.image} size={180} source={{}} />}
+            {isLoading && (
+              <Avatar style={styles.image} size={180} source={{}} />
+            )}
             {user && (
               <>
                 <Avatar
@@ -135,17 +147,17 @@ const Profile = (props: ProfileProps) => {
                     color="secondary"
                   />
                   <ProfileItem
-                    style={{marginTop: 30}}
+                    style={{ marginTop: 30 }}
                     title="Logout"
                     icon="exit"
-                    onPress={() => dispatch(signOut())}
+                    onPress={() => logOut()}
                     color="negative"
                   />
                 </ScrollView>
               </>
             )}
-            {loading && (
-              <View style={{marginTop: 160, flex: 1}}>
+            {isLoading && (
+              <View style={{ marginTop: 160, flex: 1 }}>
                 <LoadingContent numOfLines={3} />
               </View>
             )}
