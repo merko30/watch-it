@@ -17,6 +17,7 @@ const FormikField = ({ name, ...props }: FormikFieldProps) => {
       {...meta}
       onChangeText={text => setValue(text)}
       {...props}
+      name={name}
     />
   );
 };

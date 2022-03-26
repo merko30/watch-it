@@ -34,7 +34,7 @@ const theme = createTheme({
       fontSize: 24,
       fontfamily: 'Montserrat-SemiBold',
     },
-    subTitle: {
+    subtitle: {
       fontSize: 20,
       fontfamily: 'Montserrat-SemiBold',
     },
@@ -141,6 +141,11 @@ const theme = createTheme({
   breakpoints: {
     phone: 0,
     tablet: 768,
+  },
+  scrollBox: {
+    primary: {
+      flex: 1,
+    },
   },
 });
 

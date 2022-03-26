@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 
 import theme from '../theme';
 
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
 const Splash = () => {
   return (
     <View style={styles.background}>
-      <Text style={styles.title}>Booker</Text>
+      <Text style={styles.title}>Watch it</Text>
     </View>
   );
 };

@@ -1,9 +1,10 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useContext } from 'react';
 import { StackScreenProps } from '@react-navigation/stack';
 import { FormikProvider, useFormik } from 'formik';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useTheme } from '@shopify/restyle';
 import { useMutation } from 'react-query';
+import { AxiosError, AxiosResponse } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Message from 'components/Message';
@@ -11,50 +12,44 @@ import Button from 'components/Button';
 import AuthLayout from 'components/AuthLayout';
 import FormikField from 'components/TextField/FormikField';
 
-import { Box, Theme } from '../../theme';
+import { Box, Theme } from 'theme';
 
-import { LoginData } from '../../types';
+import { LoginData } from 'types';
 
-import validationSchema from './validationSchema';
 import { loginUser } from 'api/users';
 
 import { AuthContext, IAuthContext } from 'providers/AuthProvider';
-import { AxiosError, AxiosResponse } from 'axios';
+
+import validationSchema from './validationSchema';
 
 const LoginScreen = ({ navigation }: StackScreenProps<any, 'Login'>) => {
   const { colors, fontSizes } = useTheme<Theme>();
 
   const { setLoggedIn } = useContext(AuthContext) as IAuthContext;
 
-  const { mutate, error, isLoading, data } = useMutation<
+  const { mutate, error, isLoading } = useMutation<
     AxiosResponse<any>,
     AxiosError<{ message: string }>,
     LoginData
-  >((input: LoginData) => loginUser(input));
+  >((input: LoginData) => loginUser(input), {
+    onSuccess: async data => {
+      const { token } = data.data;
+
+      await AsyncStorage.setItem('token', token);
+      setLoggedIn!(true);
+    },
+  });
 
   const formik = useFormik({
     initialValues: {
-      emailOrUsername: 'johnnyjoe@gmail.com',
-      password: 'password22',
+      emailOrUsername: 'reece@gmail.com',
+      password: 'password',
     },
     validationSchema,
     onSubmit: values => mutate(values),
   });
 
   const { handleSubmit } = formik;
-
-  useEffect(() => {
-    (async () => {
-      if (data) {
-        if (data.data.token) {
-          console.log(data.data.token);
-
-          await AsyncStorage.setItem('token', data.data.token);
-          setLoggedIn!(true);
-        }
-      }
-    })();
-  }, [data, setLoggedIn]);
 
   const errorMessage = error?.response?.data.message || 'Something went wrong';
   return (
