@@ -53,13 +53,14 @@ const Home = () => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           scrollEventThrottle={16}>
-          {movieLists.map(list => {
+          {movieLists.map((list, index, arr) => {
             return (
               <MovieList
                 movies={movies.filter(b => b.status === list.name)}
                 name={list.name}
                 title={list.title}
                 key={list.name}
+                isLast={index === arr.length - 1}
               />
             );
           })}

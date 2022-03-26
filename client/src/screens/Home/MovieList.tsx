@@ -1,7 +1,12 @@
 import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 
 import { RootStackParamList } from 'navigation';
 
@@ -10,15 +15,17 @@ import { Box, Text, Theme } from 'theme';
 import { Movie, MovieStatus } from 'types';
 
 import MoviePoster from 'components/MoviePoster';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { useTheme } from '@shopify/restyle';
 
 export const MOVIELIST_HEIGHT = 320;
 export const TITLE_HEIGHT = 35;
 
 const MOVIELIST_MAP = {
   wishlist: 'gold',
-  watching: 'secondary',
-  watched: 'primary',
-  'watch-again': 'dark',
+  watching: 'orange',
+  watched: 'secondary',
+  'watch-again': 'primary',
 };
 
 const styles = StyleSheet.create({
@@ -29,21 +36,21 @@ const styles = StyleSheet.create({
   bookList: {
     justifyContent: 'flex-start',
   },
-  title: {
-    flex: 1,
-  },
 });
 
 interface MovieListProps {
   movies: any[];
   title: string;
   name: MovieStatus;
+  isLast: Boolean;
 }
 
-const MovieList = ({ title, movies, name }: MovieListProps) => {
+const MovieList = ({ title, movies, name, isLast }: MovieListProps) => {
   const [snapToInterval, setSnapToInterval] = useState(0);
   const [moviesArray, setMoviesArray] = useState<Movie[][]>([]);
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  const { shadows } = useTheme<Theme>();
 
   const transformMovies = useCallback((moviesArr: Movie[]) => {
     const movieArrays: Movie[][] = [];
@@ -79,38 +86,61 @@ const MovieList = ({ title, movies, name }: MovieListProps) => {
     );
   };
 
+  const expanded = useSharedValue(0);
+
+  const onExpand = () => {
+    expanded.value = expanded.value === 0 ? 1 : 0;
+  };
+
+  const animatedStyles = useAnimatedStyle(() => {
+    return {
+      marginBottom: withSpring(
+        !isLast ? (expanded.value ? 0 : -MOVIELIST_HEIGHT + 36) : 0,
+      ),
+    };
+  });
+
   return (
-    <Box
-      flex={1}
-      height={MOVIELIST_HEIGHT}
-      bg={MOVIELIST_MAP[name] as keyof Theme['colors']}>
-      <Box flexDirection="row" flex={1} justifyContent="space-between">
-        <View>
-          <Text color="foreground" variant="body" style={styles.title}>
-            {title}
-          </Text>
-        </View>
-        <TouchableOpacity onPress={() => navigate('List', { shelf: name })}>
-          <Text variant="body">Show all movies</Text>
-        </TouchableOpacity>
+    <Animated.View style={animatedStyles}>
+      <Box
+        flex={1}
+        height={MOVIELIST_HEIGHT}
+        bg={MOVIELIST_MAP[name] as keyof Theme['colors']}
+        borderRadius="m"
+        {...shadows}>
+        <Box
+          flexDirection="row"
+          flex={1}
+          justifyContent="space-between"
+          pt="xs"
+          px="s">
+          <TouchableWithoutFeedback onPress={onExpand}>
+            <Text fontWeight="600" textTransform="uppercase">
+              {title}
+            </Text>
+          </TouchableWithoutFeedback>
+          <TouchableOpacity onPress={() => navigate('List', { shelf: name })}>
+            <Text variant="body">Show all movies</Text>
+          </TouchableOpacity>
+        </Box>
+        <FlatList
+          onLayout={e => setSnapToInterval(e.nativeEvent.layout.width)}
+          data={moviesArray}
+          keyExtractor={item => item.map(i => i._id).join('')}
+          horizontal
+          snapToInterval={snapToInterval}
+          contentContainerStyle={[
+            styles.bookList,
+            {
+              width: snapToInterval * (moviesArray.length / 3),
+            },
+          ]}
+          decelerationRate="fast"
+          scrollEventThrottle={1}
+          renderItem={({ item }) => renderBook(item)}
+        />
       </Box>
-      <FlatList
-        onLayout={e => setSnapToInterval(e.nativeEvent.layout.width)}
-        data={moviesArray}
-        keyExtractor={item => item.map(i => i._id).join('')}
-        horizontal
-        snapToInterval={snapToInterval}
-        contentContainerStyle={[
-          styles.bookList,
-          {
-            width: snapToInterval * (moviesArray.length / 3),
-          },
-        ]}
-        decelerationRate="fast"
-        scrollEventThrottle={1}
-        renderItem={({ item }) => renderBook(item)}
-      />
-    </Box>
+    </Animated.View>
   );
 };
 

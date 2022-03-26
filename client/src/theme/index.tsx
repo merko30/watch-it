@@ -119,6 +119,7 @@ const theme = createTheme({
     gray: palette.gray,
     gold: palette.gold,
     dark: palette.darkestGray,
+    orange: palette.orange,
     transparent: 'transparent',
   },
   spacing: {
