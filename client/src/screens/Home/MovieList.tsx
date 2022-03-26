@@ -3,6 +3,9 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useCallback, useEffect, useState } from 'react';
 import { TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Animated, {
+  Extrapolate,
+  interpolate,
+  SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -43,9 +46,18 @@ interface MovieListProps {
   title: string;
   name: MovieStatus;
   isLast: Boolean;
+  expanded: SharedValue<boolean>;
+  index: number;
 }
 
-const MovieList = ({ title, movies, name, isLast }: MovieListProps) => {
+const MovieList = ({
+  title,
+  movies,
+  name,
+  isLast,
+  index,
+  expanded: shelfExpanded,
+}: MovieListProps) => {
   const [snapToInterval, setSnapToInterval] = useState(0);
   const [moviesArray, setMoviesArray] = useState<Movie[][]>([]);
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -60,6 +72,15 @@ const MovieList = ({ title, movies, name, isLast }: MovieListProps) => {
     }
     return movieArrays;
   }, []);
+
+  const expanded = useSharedValue(0);
+
+  const scaleInterpolation = interpolate(
+    index,
+    [0, 1, 2, 3],
+    [0.85, 0.9, 0.95, 1],
+    Extrapolate.CLAMP,
+  );
 
   useEffect(() => {
     setMoviesArray(transformMovies(movies));
@@ -86,8 +107,6 @@ const MovieList = ({ title, movies, name, isLast }: MovieListProps) => {
     );
   };
 
-  const expanded = useSharedValue(0);
-
   const onExpand = () => {
     expanded.value = expanded.value === 0 ? 1 : 0;
   };
@@ -95,8 +114,13 @@ const MovieList = ({ title, movies, name, isLast }: MovieListProps) => {
   const animatedStyles = useAnimatedStyle(() => {
     return {
       marginBottom: withSpring(
-        !isLast ? (expanded.value ? 0 : -MOVIELIST_HEIGHT + 36) : 0,
+        !isLast
+          ? expanded.value
+            ? 0
+            : -MOVIELIST_HEIGHT + (shelfExpanded.value ? 36 : 20)
+          : 0,
       ),
+      transform: [{ scale: shelfExpanded.value ? 1 : scaleInterpolation }],
     };
   });
 

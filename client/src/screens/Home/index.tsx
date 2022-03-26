@@ -3,8 +3,15 @@ import { StyleSheet, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '@shopify/restyle';
+import Animated, {
+  useAnimatedProps,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 
 import { Text, Box, Theme } from 'theme';
+import Button from 'theme/Button';
 
 import { getAll } from 'api/movies';
 
@@ -13,7 +20,6 @@ import { Movie } from 'types';
 import MovieList from './MovieList';
 
 import { MOVIE_LISTS } from './constants';
-import { useTheme } from '@shopify/restyle';
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -21,6 +27,8 @@ const styles = StyleSheet.create({
 
 const Home = () => {
   const [movieLists] = useState(MOVIE_LISTS);
+
+  const expanded = useSharedValue(false);
 
   const { spacing } = useTheme<Theme>();
 
@@ -31,6 +39,18 @@ const Home = () => {
   >('movies', getAll);
 
   const { movies = [] } = data?.data || {};
+
+  const onExpand = () => {
+    expanded.value = !expanded.value;
+  };
+
+  const animatedStyles = useAnimatedProps(() => {
+    return {
+      contentContainerStyle: {
+        marginTop: withSpring(expanded.value ? 10 : -20),
+      },
+    };
+  });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,12 +67,14 @@ const Home = () => {
           alignItems="center"
           mb="m">
           <Text variant="subtitle">Your lists</Text>
-          {/* TODO: ADD BUTTON FOR SEE ALL */}
-          <Text variant="body">See all</Text>
+          <Button onPress={onExpand}>
+            <Text variant="body">See all</Text>
+          </Button>
         </Box>
-        <ScrollView
+        <Animated.ScrollView
           showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}>
+          scrollEventThrottle={16}
+          {...animatedStyles}>
           {movieLists.map((list, index, arr) => {
             return (
               <MovieList
@@ -61,10 +83,12 @@ const Home = () => {
                 title={list.title}
                 key={list.name}
                 isLast={index === arr.length - 1}
+                expanded={expanded}
+                index={index}
               />
             );
           })}
-        </ScrollView>
+        </Animated.ScrollView>
       </ScrollView>
     </SafeAreaView>
   );
