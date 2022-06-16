@@ -22,7 +22,7 @@ app.use((err, _, res, __) => {
   res.status(err.status || 500).json({ message });
 });
 
-var port = 5000 || process.env.PORT;
+var port = 4000 || process.env.PORT;
 
 app.listen(port, () => {
   console.log(`App running on port ${port}.`);

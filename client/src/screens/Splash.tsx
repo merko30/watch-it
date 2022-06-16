@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: theme.fontSizes.titleXl,
     marginBottom: 10,
-    fontFamily: 'Calistoga-Regular',
+    fontFamily: 'Montserrat-SemiBold',
     color: theme.colors.primary,
   },
   background: {

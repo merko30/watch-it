@@ -1,6 +1,6 @@
+import React, { useCallback, useMemo, useState } from 'react';
 import { useNavigation } from '@react-navigation/core';
 import { StackNavigationProp } from '@react-navigation/stack';
-import React, { useCallback, useEffect, useState } from 'react';
 import { TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Animated, {
   Extrapolate,
@@ -59,7 +59,6 @@ const MovieList = ({
   expanded: shelfExpanded,
 }: MovieListProps) => {
   const [snapToInterval, setSnapToInterval] = useState(0);
-  const [moviesArray, setMoviesArray] = useState<Movie[][]>([]);
   const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const { shadows } = useTheme<Theme>();
@@ -82,9 +81,10 @@ const MovieList = ({
     Extrapolate.CLAMP,
   );
 
-  useEffect(() => {
-    setMoviesArray(transformMovies(movies));
-  }, [movies, transformMovies, setMoviesArray]);
+  const moviesArray = useMemo(
+    () => transformMovies(movies),
+    [movies, transformMovies],
+  );
 
   const renderBook = (item: Movie[]) => {
     return (
@@ -111,18 +111,16 @@ const MovieList = ({
     expanded.value = expanded.value === 0 ? 1 : 0;
   };
 
-  const animatedStyles = useAnimatedStyle(() => {
-    return {
-      marginBottom: withSpring(
-        !isLast
-          ? expanded.value
-            ? 0
-            : -MOVIELIST_HEIGHT + (shelfExpanded.value ? 36 : 20)
-          : 0,
-      ),
-      transform: [{ scale: shelfExpanded.value ? 1 : scaleInterpolation }],
-    };
-  });
+  const animatedStyles = useAnimatedStyle(() => ({
+    marginBottom: withSpring(
+      !isLast
+        ? expanded.value
+          ? 0
+          : -MOVIELIST_HEIGHT + (shelfExpanded.value ? 36 : 20)
+        : 0,
+    ),
+    transform: [{ scale: shelfExpanded.value ? 1 : scaleInterpolation }],
+  }));
 
   return (
     <Animated.View style={animatedStyles}>
