@@ -1,7 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { useNavigation } from '@react-navigation/core';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet } from 'react-native';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -10,26 +8,16 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import { useTheme } from '@shopify/restyle';
 
-import { RootStackParamList } from 'navigation';
-
-import { Box, Text, Theme } from 'theme';
+import { Box, Theme } from 'theme';
 
 import { Movie, MovieStatus } from 'types';
 
 import MoviePoster from 'components/MoviePoster';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { useTheme } from '@shopify/restyle';
 
-export const MOVIELIST_HEIGHT = 320;
-export const TITLE_HEIGHT = 35;
-
-const MOVIELIST_MAP = {
-  wishlist: 'gold',
-  watching: 'orange',
-  watched: 'secondary',
-  'watch-again': 'primary',
-};
+import { MOVIELIST_HEIGHT, MOVIELIST_MAP } from '../constants';
+import Header from './Header';
 
 const styles = StyleSheet.create({
   image: {
@@ -59,8 +47,7 @@ const MovieList = ({
   expanded: shelfExpanded,
 }: MovieListProps) => {
   const [snapToInterval, setSnapToInterval] = useState(0);
-  const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
-
+  const expanded = useSharedValue(0);
   const { shadows } = useTheme<Theme>();
 
   const transformMovies = useCallback((moviesArr: Movie[]) => {
@@ -72,8 +59,6 @@ const MovieList = ({
     return movieArrays;
   }, []);
 
-  const expanded = useSharedValue(0);
-
   const scaleInterpolation = interpolate(
     index,
     [0, 1, 2, 3],
@@ -81,26 +66,22 @@ const MovieList = ({
     Extrapolate.CLAMP,
   );
 
-  const moviesArray = useMemo(
-    () => transformMovies(movies),
-    [movies, transformMovies],
-  );
-
-  const renderBook = (item: Movie[]) => {
+  const renderMovie = (item: Movie[]) => {
+    const [first, second] = item;
     return (
       <Box alignItems="flex-start" my="m">
-        {item[0] && (
+        {first && (
           <MoviePoster
             style={styles.image}
-            key={item[0]._id}
-            uri={item[0].poster_path}
+            key={first._id}
+            uri={first.poster_path}
           />
         )}
-        {item[1] && (
+        {second && (
           <MoviePoster
             style={styles.image}
-            key={item[1]._id}
-            uri={item[1].poster_path}
+            key={second._id}
+            uri={second.poster_path}
           />
         )}
       </Box>
@@ -110,6 +91,11 @@ const MovieList = ({
   const onExpand = () => {
     expanded.value = expanded.value === 0 ? 1 : 0;
   };
+
+  const moviesArray = useMemo(
+    () => transformMovies(movies),
+    [movies, transformMovies],
+  );
 
   const animatedStyles = useAnimatedStyle(() => ({
     marginBottom: withSpring(
@@ -130,21 +116,7 @@ const MovieList = ({
         bg={MOVIELIST_MAP[name] as keyof Theme['colors']}
         borderRadius="m"
         {...shadows}>
-        <Box
-          flexDirection="row"
-          flex={1}
-          justifyContent="space-between"
-          pt="xs"
-          px="s">
-          <TouchableWithoutFeedback onPress={onExpand}>
-            <Text fontWeight="600" textTransform="uppercase">
-              {title}
-            </Text>
-          </TouchableWithoutFeedback>
-          <TouchableOpacity onPress={() => navigate('List', { shelf: name })}>
-            <Text variant="body">Show all movies</Text>
-          </TouchableOpacity>
-        </Box>
+        <Header title={title} name={name} onExpand={onExpand} />
         <FlatList
           onLayout={e => setSnapToInterval(e.nativeEvent.layout.width)}
           data={moviesArray}
@@ -159,7 +131,7 @@ const MovieList = ({
           ]}
           decelerationRate="fast"
           scrollEventThrottle={1}
-          renderItem={({ item }) => renderBook(item)}
+          renderItem={({ item }) => renderMovie(item)}
         />
       </Box>
     </Animated.View>

@@ -22,3 +22,13 @@ export const MOVIE_LISTS = [
     backgroundColor: 'brown',
   },
 ];
+
+export const MOVIELIST_HEIGHT = 320;
+export const TITLE_HEIGHT = 35;
+
+export const MOVIELIST_MAP = {
+  wishlist: 'gold',
+  watching: 'orange',
+  watched: 'secondary',
+  'watch-again': 'primary',
+};
