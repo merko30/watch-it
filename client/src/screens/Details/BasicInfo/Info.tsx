@@ -1,7 +1,7 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Box, Text } from '../../theme';
+import { Box, Text } from 'theme';
 
 interface InfoProps {
   text: string | number;
