@@ -35,18 +35,10 @@ const TabNavigator = () => {
       <Tab.Screen
         options={{
           headerShown: false,
-          tabBarIcon: props => <TabIcon name="library" {...props} size={24} />,
+          tabBarIcon: props => <TabIcon name="film" {...props} size={24} />,
         }}
         name="Movies"
         component={Books}
-      />
-      <Tab.Screen
-        options={{
-          headerShown: false,
-          tabBarIcon: props => <TabIcon name="person" {...props} size={24} />,
-        }}
-        name="Profile"
-        component={ProfileNavigator}
       />
       <Tab.Screen
         options={{
@@ -55,6 +47,14 @@ const TabNavigator = () => {
         }}
         name="Search"
         component={Search}
+      />
+      <Tab.Screen
+        options={{
+          headerShown: false,
+          tabBarIcon: props => <TabIcon name="person" {...props} size={24} />,
+        }}
+        name="Profile"
+        component={ProfileNavigator}
       />
     </Tab.Navigator>
   );

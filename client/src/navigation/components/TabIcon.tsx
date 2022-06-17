@@ -8,7 +8,7 @@ interface TabIconProps {
   size: number;
 }
 
-const TabIcon = ({name, ...props}: TabIconProps) => {
+const TabIcon = ({ name, ...props }: TabIconProps) => {
   return <Icon name={name} {...props} />;
 };
 
