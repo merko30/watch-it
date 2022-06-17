@@ -1,30 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Keyboard, TextInput } from 'react-native';
-import { useTheme } from '@shopify/restyle';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-import theme, { Theme, Box } from '../../../theme';
-import { RoundedIcon } from '../../../components';
+import { Box } from 'theme';
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.background,
-    paddingHorizontal: 10,
-    paddingVertical: 10,
-    alignItems: 'center',
-    margin: 10,
-    ...theme.shadows.medium,
-    borderRadius: theme.borderRadii.m,
-  },
   flex: {
     display: 'flex',
     alignItems: 'center',
     flexDirection: 'row',
   },
   input: {
-    width: '100%',
-    backgroundColor: 'transparent',
-    lineHeight: 20,
-    fontSize: theme.fontSizes.textLg,
+    paddingVertical: 4,
+    fontSize: 20,
+    lineHeight: 24,
+    marginLeft: 12,
   },
 });
 
@@ -33,7 +23,6 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ onSearch }: SearchBarProps) => {
-  const { colors, shadows } = useTheme<Theme>();
   const [term, setTerm] = useState('');
   const [error, setError] = useState<boolean>(false);
 
@@ -49,42 +38,37 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
   };
 
   useEffect(() => {
-    if (error) {
-      setTimeout(() => {
-        setError(false);
-      }, 3000);
-    }
-  }, [error]);
+    let timeout = setTimeout(() => {
+      if (term.length > 3) {
+        onSearch(term);
+      }
+    }, 2000);
 
-  const errorStyle = error && { borderColor: colors.negative, borderWidth: 1 };
+    return () => clearTimeout(timeout);
+  }, [onSearch, term]);
 
   return (
     <Box
-      backgroundColor="white"
-      alignItems="center"
+      mt="l"
+      px="l"
+      py="s"
+      mb="l"
       mx="m"
-      marginTop="xl"
-      padding="s"
-      mb="m"
-      borderRadius="m"
-      style={[errorStyle, { ...shadows.medium }]}>
-      <Box
-        flexDirection="row"
-        alignItems="center"
-        justifyContent="space-between">
-        <Box flex={2} backgroundColor="white" paddingLeft="m">
-          <TextInput
-            // underlineColorAndroid="transparent"
-            style={styles.input}
-            placeholder="Search for a book..."
-            onChangeText={(term: string) => setTerm(term)}
-            value={term}
-            // returnKeyLabel="Search"
-            onSubmitEditing={search}
-            returnKeyType="search"
-          />
-        </Box>
-        <RoundedIcon onPress={search} icon="search" size={48} color="primary" />
+      bg="lighterGray"
+      borderRadius="full"
+      borderWidth={1}
+      borderColor={error ? 'negative' : 'lightGray'}>
+      <Box flexDirection="row" alignItems="center">
+        <Icon onPress={search} name="search" size={24} color="lightgray" />
+        <TextInput
+          // underlineColorAndroid="transparent"
+          style={styles.input}
+          placeholder="Search for a movie..."
+          onChangeText={(searchTerm: string) => setTerm(searchTerm)}
+          value={term}
+          onSubmitEditing={search}
+          returnKeyType="search"
+        />
       </Box>
     </Box>
   );

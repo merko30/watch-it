@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { SafeAreaView, ActivityIndicator } from 'react-native';
 import { useTheme } from '@shopify/restyle';
 // import {AxiosError, AxiosResponse} from 'axios';
@@ -27,7 +27,7 @@ const Search = () => {
 
   // console.log(results);
 
-  const onSearch = (term: string) => mutate(term);
+  const onSearch = useCallback((term: string) => mutate(term), [mutate]);
 
   return (
     <SafeAreaView

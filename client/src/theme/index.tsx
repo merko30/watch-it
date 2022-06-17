@@ -57,18 +57,18 @@ const theme = createTheme({
   },
   shadows: {
     small: {
-      shadowColor: '#000',
+      // shadowColor: 'black',
       shadowOffset: {
         width: 0,
         height: 1,
       },
       shadowOpacity: 0.18,
       shadowRadius: 1.0,
-      ...Platform.select({
-        android: {
-          elevation: 1,
-        },
-      }),
+      // ...Platform.select({
+      //   android: {
+      //     elevation: 1,
+      //   },
+      // }),
     },
     medium: {
       shadowColor: '#000',
@@ -101,6 +101,7 @@ const theme = createTheme({
   },
   colors: {
     white: 'white',
+    black: 'black',
     background: 'white',
     backgroundTwo: palette.lightGray,
     backgroundThree: palette.lighterGray,
