@@ -65,6 +65,9 @@ const Navigation = () => {
               options={{
                 headerTransparent: true,
                 headerMode: 'float',
+                headerLeftLabelVisible: false,
+                headerTintColor: 'black',
+                headerLeftContainerStyle: { paddingLeft: 4 },
               }}
               component={Details}
             />

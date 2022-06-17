@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
 import { RouteProp } from '@react-navigation/native';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -6,6 +6,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme } from '@shopify/restyle';
 import { useMutation, useQuery } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import MoviePoster from 'components/MoviePoster';
 
@@ -51,7 +52,7 @@ const Details = ({
 }: DetailsProps) => {
   const [showMenu, setShowMenu] = useState(false);
 
-  const { spacing } = useTheme<Theme>();
+  const { spacing, colors } = useTheme<Theme>();
 
   const { data, isLoading, error } = useQuery<
     AxiosResponse<{ volume: TMDBMovie }>,
@@ -88,21 +89,21 @@ const Details = ({
     }
   };
 
-  // useEffect(() => {
-  //   if (movie) {
-  //     navigation.setOptions({
-  //       headerRight: () => (
-  //         <Icon
-  //           name="add-circle-outline"
-  //           style={{ marginRight: spacing.m }}
-  //           size={32}
-  //           color={colors.foreground}
-  //           onPress={() => setShowMenu(!showMenu)}
-  //         />
-  //       ),
-  //     });
-  //   }
-  // }, [movie, colors.foreground, spacing.m, navigation, showMenu]);
+  useEffect(() => {
+    if (movie) {
+      navigation.setOptions({
+        headerRight: () => (
+          <Icon
+            name="add-circle-outline"
+            style={{ marginRight: spacing.m }}
+            size={32}
+            color={colors.foreground}
+            onPress={() => setShowMenu(previousValue => !previousValue)}
+          />
+        ),
+      });
+    }
+  }, [movie, colors.foreground, spacing.m, navigation]);
 
   const height = useHeaderHeight();
 
