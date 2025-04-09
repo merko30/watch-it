@@ -1,7 +1,8 @@
-// import axios from "axios";
+import axios from 'axios'
 import { RequestHandler } from 'express'
 import { db } from '../db'
 import { movies as moviesTable } from '../db/schema'
+import { eq } from 'drizzle-orm'
 
 const getAll: RequestHandler = async (req, res, next) => {
   const { page, limit } = req.query || {}
@@ -43,17 +44,16 @@ const create: RequestHandler = async (req, res, next) => {
   }
 }
 
-const checkMovie: RequestHandler = async (req, res, next) => {
+const getOne: RequestHandler = async (req, res, next) => {
   try {
-    // const movie = await Movie.findOne({
-    //   id: req.params.id,
-    //   user: req.user._id,
-    // });
-    // if (movie) {
-    //   res.json({ movieStatus: movie.status });
-    // } else {
-    res.json({ movieStatus: null })
-    // }
+    const [movie] = await db
+      .select()
+      .from(moviesTable)
+      .where(eq(moviesTable.id, parseInt(req.params.id)))
+    if (!movie) {
+      res.status(404).json({ message: 'Movie not found' })
+    }
+    res.json({ movie })
   } catch (error) {
     next(error)
   }
@@ -61,23 +61,32 @@ const checkMovie: RequestHandler = async (req, res, next) => {
 
 const remove: RequestHandler = async (req, res, next) => {
   try {
-    // await Movie.findOneAndDelete({ id: req.params.id });
-    res.json({ ok: true })
+    const [movie] = await db
+      .delete(moviesTable)
+      .where(eq(moviesTable.id, parseInt(req.params.id)))
+      .returning()
+
+    if (!movie) {
+      res.status(404).json({ message: 'Movie not found' })
+    }
+
+    res.json({
+      message: 'Movie deleted successfully'
+    })
   } catch (error) {
     next(error)
   }
 }
 
-const getSingleMovie: RequestHandler = async (req, res, next) => {
+const getTMDBMovie: RequestHandler = async (req, res, next) => {
   try {
-    // const response = await axios.get(
-    //   `${process.env.TMDB_API_BASE_URL}/${req.params.type}/${req.params.id}?api_key=${process.env.TMDB_API_KEY}`,
+    const response = await axios.get(
+      `${process.env.TMDB_API_BASE_URL}/${req.params.type}/${req.params.id}?api_key=${process.env.TMDB_API_KEY}`
+    )
 
-    // );
+    const movie = response.data
 
-    // const volume = await response.data
-
-    res.json({ volume: {} })
+    res.json({ movie })
   } catch (error) {
     next(error)
   }
@@ -85,17 +94,16 @@ const getSingleMovie: RequestHandler = async (req, res, next) => {
 
 const search: RequestHandler = async (req, res, next) => {
   try {
-    // const response = await axios.get(
-    //   `${process.env.TMDB_API_BASE_URL}/search/multi?query=${req.params.term}&api_key=${process.env.TMDB_API_KEY}`,
+    const response = await axios.get(
+      `${process.env.TMDB_API_BASE_URL}/search/multi?query=${req.params.term}&api_key=${process.env.TMDB_API_KEY}`
+    )
 
-    // );
+    const { results } = response.data
 
-    // const { results } = response.data;
-
-    res.json({ results: [] })
+    res.json({ results })
   } catch (error) {
     next(error)
   }
 }
 
-export { getAll, create, remove, checkMovie, search, getSingleMovie }
+export { getAll, create, remove, getOne, search, getTMDBMovie }

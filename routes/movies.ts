@@ -5,21 +5,17 @@ import {
   getAll,
   create,
   remove,
-  checkMovie,
+  getOne,
   search,
-  getSingleMovie
+  getTMDBMovie
 } from '../controllers/movies'
+
+router.route('/').get(getAll).post(create)
 
 router.get('/search/:term', search)
 
-router.get('/', getAll)
+router.route('/:id').get(getOne).delete(remove)
 
-router.post('/', create)
-
-router.get('/exists/:id', checkMovie)
-
-router.get('/:type/:id', getSingleMovie)
-
-router.delete('/:id', remove)
+router.get('/:type/:id', getTMDBMovie)
 
 export default router

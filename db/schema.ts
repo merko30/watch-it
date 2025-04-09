@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar } from 'drizzle-orm/pg-core'
+import { integer, pgEnum, pgTable, varchar } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -9,9 +9,12 @@ export const users = pgTable('users', {
   password: varchar({ length: 255 }).notNull()
 })
 
+export const statusEnum = pgEnum('status', ['to-watch', 'watching', 'watched'])
+
 export const movies = pgTable('movies', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
+  status: statusEnum().default('to-watch'),
   description: varchar({ length: 255 }),
   genres: varchar({ length: 255 }).array(),
   rating: integer(),
