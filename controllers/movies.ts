@@ -32,8 +32,11 @@ const getAll: RequestHandler = async (req, res, next) => {
 
 const create: RequestHandler = async (req, res, next) => {
   try {
-    console.log(req.body)
-    const movie = await db.insert(moviesTable).values(req.body).returning()
+    const { userId } = req.auth!
+    const movie = await db
+      .insert(moviesTable)
+      .values({ userId, ...req.body })
+      .returning()
     res.json({ movie })
   } catch (error) {
     next(error)

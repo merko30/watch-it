@@ -15,5 +15,10 @@ export const movies = pgTable('movies', {
   description: varchar({ length: 255 }),
   genres: varchar({ length: 255 }).array(),
   rating: integer(),
-  image: varchar({ length: 255 })
+  image: varchar({ length: 255 }),
+  userId: integer()
+    .notNull()
+    .references(() => users.id, {
+      onDelete: 'cascade' // delete all movies if user is deleted
+    })
 })

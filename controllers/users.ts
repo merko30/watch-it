@@ -1,6 +1,8 @@
 import bcrypt from 'bcryptjs'
-import { eq } from 'drizzle-orm'
+import { eq, or } from 'drizzle-orm'
 import { RequestHandler } from 'express'
+import jwt from 'jsonwebtoken'
+
 import { db } from '../db'
 import { users } from '../db/schema'
 
@@ -53,24 +55,29 @@ const register: RequestHandler = async (req, res, next) => {
 
 const login: RequestHandler = async (req, res, next) => {
   try {
-    // const { emailOrUsername, password } = req.body
-    // const user = await User.findOne({
-    //   $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
-    // });
-    // if (user) {
-    //   const match = await bcrypt.compare(password, user.password);
-    //   if (!match) {
-    //     throw new Error("Wrong password");
-    //   } else {
-    //     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-    //     res.json({
-    //       token,
-    //     });
-    //   }
-    // } else {
-    //   throw new Error("User not found");
-    // }
-    res.json({ ok: true })
+    const { emailOrUsername, password } = req.body
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(
+        or(
+          eq(users.email, emailOrUsername),
+          eq(users.username, emailOrUsername)
+        )
+      )
+
+    if (user) {
+      const match = await bcrypt.compare(password, user.password)
+      if (!match) {
+        res.status(401).json({ message: 'Wrong credentials' })
+      } else {
+        const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!)
+        res.json({
+          token
+        })
+      }
+    }
+    res.status(401).json({ message: 'Wrong credentials' })
   } catch (error) {
     next(error)
   }
