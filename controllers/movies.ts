@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { RequestHandler } from 'express'
 import { eq } from 'drizzle-orm'
 
@@ -81,11 +80,17 @@ const remove: RequestHandler = async (req, res, next) => {
 
 const getTMDBMovie: RequestHandler = async (req, res, next) => {
   try {
-    const response = await axios.get(
+    const response = await fetch(
       `${process.env.TMDB_API_BASE_URL}/${req.params.type}/${req.params.id}?api_key=${process.env.TMDB_API_KEY}`
     )
 
-    const movie = response.data
+    const movie = await response.json()
+
+    console.log(movie)
+
+    if (!movie) {
+      res.status(404).json({ message: 'Movie not found' })
+    }
 
     res.json({ movie })
   } catch (error) {
@@ -95,11 +100,11 @@ const getTMDBMovie: RequestHandler = async (req, res, next) => {
 
 const search: RequestHandler = async (req, res, next) => {
   try {
-    const response = await axios.get(
+    const response = await fetch(
       `${process.env.TMDB_API_BASE_URL}/search/multi?query=${req.params.term}&api_key=${process.env.TMDB_API_KEY}`
     )
 
-    const { results } = response.data
+    const { results } = await response.json()
 
     res.json({ results })
   } catch (error) {
