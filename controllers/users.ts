@@ -82,8 +82,9 @@ const login: RequestHandler = async (req, res, next) => {
           token
         })
       }
+    } else {
+      res.status(401).json({ message: 'Wrong credentials' })
     }
-    res.status(401).json({ message: 'Wrong credentials' })
   } catch (error) {
     next(error)
   }
