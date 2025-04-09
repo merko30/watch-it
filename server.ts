@@ -1,22 +1,23 @@
-import express from "express";
+import express from 'express'
 import ip from 'ip'
-import cors from "cors";
+import cors from 'cors'
 
-import routes from "./routes/index";
+import routes from './routes/index'
 
-const app = express();
+const app = express()
 
+app.use('/uploads', express.static('uploads'))
+app.use(cors())
+// app.use(
+//   morgan(":method :url :status :res[content-length] - :response-time ms")
+// );
 
-app.use("/uploads", express.static("uploads"));
-app.use(cors());
-  // app.use(
-  //   morgan(":method :url :status :res[content-length] - :response-time ms")
-  // );
+console.log(ip.address())
 
-console.log(ip.address());
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use('/api', routes)
 
-app.use("/api", routes);
+const port = process.env.PORT || 4000
 
-const port =  process.env.PORT || 4000;
-
-app.listen(port, () =>  console.log(`App running on port ${port}.`));
+app.listen(port, () => console.log(`App running on port ${port}.`))

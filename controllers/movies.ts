@@ -1,27 +1,21 @@
 // import axios from "axios";
 import { RequestHandler } from 'express'
+import { db } from '../db'
+import { movies as moviesTable } from '../db/schema'
 
 const getAll: RequestHandler = async (req, res, next) => {
-  // let query = { user: req.user._id };
-
-  // query = { ...query, ...req.query };
-
   try {
-    const movies: string[] = []
+    const movies = await db.select().from(moviesTable)
     res.json({ movies })
   } catch (error) {
     next(error)
   }
 }
 
-const createOrUpdate: RequestHandler = async (req, res, next) => {
+const create: RequestHandler = async (req, res, next) => {
   try {
-    // const movie = await Movie.findOneAndUpdate(
-    //   { id: req.body.id },
-    //   { ...req.body, user: req.user._id },
-    //   { upsert: true, new: true }
-    // );
-    const movie = {}
+    console.log(req.body)
+    const movie = await db.insert(moviesTable).values(req.body).returning()
     res.json({ movie })
   } catch (error) {
     next(error)
@@ -83,4 +77,4 @@ const search: RequestHandler = async (req, res, next) => {
   }
 }
 
-export { getAll, createOrUpdate, remove, checkMovie, search, getSingleMovie }
+export { getAll, create, remove, checkMovie, search, getSingleMovie }

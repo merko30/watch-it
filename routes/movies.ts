@@ -1,35 +1,25 @@
+import express from 'express'
+const router = express.Router()
 
-import express from "express";
-const router = express.Router();
-
-import  {
+import {
   getAll,
-  createOrUpdate,
+  create,
   remove,
   checkMovie,
   search,
-  getSingleMovie,
-} from "../controllers/movies";
-
-router.get("/search/:term", search);
-
-router.get("/", getAll);
-
-router.put(
-  "/",
-  createOrUpdate
-);
-
-router.get(
-  "/exists/:id",
-  checkMovie
-);
-
-router.get(
-  "/:type/:id",
   getSingleMovie
-);
+} from '../controllers/movies'
 
-router.delete("/:id",  remove);
+router.get('/search/:term', search)
 
-export default router;
+router.get('/', getAll)
+
+router.post('/', create)
+
+router.get('/exists/:id', checkMovie)
+
+router.get('/:type/:id', getSingleMovie)
+
+router.delete('/:id', remove)
+
+export default router
