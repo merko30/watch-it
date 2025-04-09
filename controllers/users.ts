@@ -14,6 +14,12 @@ import { users } from '../db/schema'
 //   return number.toString().length < 6 ? generateSixDigitNumber() : number
 // }
 
+const hashPassword = async (password: string) => {
+  const salt = await bcrypt.genSalt(10)
+  const hashedPassword = await bcrypt.hash(password, salt)
+  return hashedPassword
+}
+
 const register: RequestHandler = async (req, res, next) => {
   if (!req.body) {
     res.status(400).json({ message: 'No body provided' })
@@ -21,8 +27,8 @@ const register: RequestHandler = async (req, res, next) => {
 
   try {
     const { password, ...data } = req.body
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+
+    const hashedPassword = await hashPassword(password)
 
     const existingUser = await db
       .select()
@@ -85,8 +91,16 @@ const login: RequestHandler = async (req, res, next) => {
 
 const getUser: RequestHandler = async (req, res, next) => {
   try {
-    // const user = await User.findOne({ _id: req.user._id }, { password: 0 });
-    res.json({ user: {} })
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.id, req.auth!.userId))
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' })
+    }
+
+    res.json({ user })
   } catch (error) {
     next(error)
   }
@@ -94,8 +108,27 @@ const getUser: RequestHandler = async (req, res, next) => {
 
 const updateUser: RequestHandler = async (req, res, next) => {
   try {
-    // const user = await User.findByIdAndUpdate(req.user._id, req.body);
-    res.json({ user: {}, message: 'Your profile has been updated' })
+    const data = { ...req.body }
+
+    if ('password' in data) {
+      const hashedPassword = await hashPassword(data.password)
+      data.password = hashedPassword
+    }
+
+    const [user] = await db
+      .update(users)
+      .set(data)
+      .where(eq(users.id, req.auth!.userId))
+      .returning()
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' })
+    }
+
+    res.json({
+      user,
+      message: 'Your account has been updated'
+    })
   } catch (error) {
     next(error)
   }
@@ -183,27 +216,6 @@ const resetPassword: RequestHandler = async (req, res) => {
   res.json({ message: 'Your password has been updated' })
 }
 
-const updatePassword: RequestHandler = async (req, res) => {
-  // try {
-  //   const user = await User.findById(req.user._id);
-
-  //   const validPassword = bcrypt.compareSync(req.body.password, user.password);
-
-  //   if (validPassword) {
-  //     user.password = req.body.newPassword;
-
-  //     await user.save();
-
-  //     res.json({ user, message: "Your account has been updated" });
-  //   } else {
-  //     throw new Error("Wrong old password");
-  //   }
-  // } catch (error) {
-  //   next(error);
-  // }
-  res.json({ message: 'Your account has been updated' })
-}
-
 export {
   register,
   login,
@@ -212,6 +224,5 @@ export {
   sendResetPasswordMail,
   resetPassword,
   verifyResetCode,
-  updateUser,
-  updatePassword
+  updateUser
 }

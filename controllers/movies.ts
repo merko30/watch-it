@@ -1,8 +1,9 @@
 import axios from 'axios'
 import { RequestHandler } from 'express'
+import { eq } from 'drizzle-orm'
+
 import { db } from '../db'
 import { movies as moviesTable } from '../db/schema'
-import { eq } from 'drizzle-orm'
 
 const getAll: RequestHandler = async (req, res, next) => {
   const { page, limit } = req.query || {}
