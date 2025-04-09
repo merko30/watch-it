@@ -1,29 +1,28 @@
-import bcrypt from "bcryptjs"
-import { RequestHandler } from "express";
+// import bcrypt from 'bcryptjs'
+import { RequestHandler } from 'express'
 
 // const transporter = require("../config/nodemailer");
 
+// const generateSixDigitNumber = (): number => {
+//   const number = Math.floor(Math.pow(10, 6) * Math.random())
 
-const generateSixDigitNumber = ():number => {
-  let number = Math.floor(Math.pow(10, 6) * Math.random());
+//   return number.toString().length < 6 ? generateSixDigitNumber() : number
+// }
 
-  return number.toString().length < 6 ? generateSixDigitNumber() : number;
-};
-
-const register:RequestHandler = async (req, res, next) => {
+const register: RequestHandler = async (req, res, next) => {
   // let user = new User(req.body);
 
   try {
     // await user.save();
-    res.json({ ok: true });
+    res.json({ ok: true })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-const login:RequestHandler = async (req, res, next) => {
+const login: RequestHandler = async (req, res, next) => {
   try {
-    const { emailOrUsername, password } = req.body;
+    // const { emailOrUsername, password } = req.body
     // const user = await User.findOne({
     //   $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
     // });
@@ -40,31 +39,31 @@ const login:RequestHandler = async (req, res, next) => {
     // } else {
     //   throw new Error("User not found");
     // }
-    res.json({ ok: true });
+    res.json({ ok: true })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-const getUser:RequestHandler = async (req, res, next) => {
+const getUser: RequestHandler = async (req, res, next) => {
   try {
     // const user = await User.findOne({ _id: req.user._id }, { password: 0 });
-    res.json({ user:{} });
+    res.json({ user: {} })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-const updateUser:RequestHandler = async (req, res, next) => {
+const updateUser: RequestHandler = async (req, res, next) => {
   try {
     // const user = await User.findByIdAndUpdate(req.user._id, req.body);
-    res.json({ user:{}, message: "Your profile has been updated" });
+    res.json({ user: {}, message: 'Your profile has been updated' })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-const changeAvatar:RequestHandler = async (req, res, next) => {
+const changeAvatar: RequestHandler = async (req, res, next) => {
   try {
     // const user = await User.findOne({ _id: req.user._id }, { password: 0 });
     // if (user) {
@@ -73,15 +72,15 @@ const changeAvatar:RequestHandler = async (req, res, next) => {
     // await user.save();
     res.json({
       avatar: 'req.file.filename',
-      message: "Your avatar has been updated",
-    });
+      message: 'Your avatar has been updated'
+    })
   } catch (error) {
-    next(error);
+    next(error)
   }
-};
+}
 
-const sendResetPasswordMail:RequestHandler = async (req, res, next) => {
-  const { email } = req.body;
+const sendResetPasswordMail: RequestHandler = async (req, res) => {
+  const { email } = req.body
 
   // var mailOptions = (token) => ({
   //   from: "Booker",
@@ -103,16 +102,16 @@ const sendResetPasswordMail:RequestHandler = async (req, res, next) => {
   //     await transporter.sendMail(mailOptions(token));
   //     user.resetPasswordToken = token;
   //     await user.save();
-      res.json({ email, message: "The mail has been sent. Check your inbox!" });
-    // } else {
-    //   throw new Error("User not found");
-    // }
+  res.json({ email, message: 'The mail has been sent. Check your inbox!' })
+  // } else {
+  //   throw new Error("User not found");
+  // }
   // } catch (error) {
   //   next(error);
   // }
-};
+}
 
-const verifyResetCode:RequestHandler = async (req, res, next) => {
+const verifyResetCode: RequestHandler = async (req, res) => {
   // try {
   //   const user = await User.findOne({ email: req.body.email });
 
@@ -128,10 +127,10 @@ const verifyResetCode:RequestHandler = async (req, res, next) => {
   // } catch (error) {
   //   next(error);
   // }
-  res.json({ message: "Well done. Set your new password" });
-};
+  res.json({ message: 'Well done. Set your new password' })
+}
 
-const resetPassword:RequestHandler = async (req, res, next) => {
+const resetPassword: RequestHandler = async (req, res) => {
   // try {
   //   const user = await User.findOne({ email: req.body.email });
 
@@ -143,10 +142,10 @@ const resetPassword:RequestHandler = async (req, res, next) => {
   // } catch (error) {
   //   next(error);
   // }
-  res.json({ message: "Your password has been updated" });
-};
+  res.json({ message: 'Your password has been updated' })
+}
 
-const updatePassword:RequestHandler = async (req, res, next) => {
+const updatePassword: RequestHandler = async (req, res) => {
   // try {
   //   const user = await User.findById(req.user._id);
 
@@ -164,8 +163,8 @@ const updatePassword:RequestHandler = async (req, res, next) => {
   // } catch (error) {
   //   next(error);
   // }
-  res.json({ message: "Your account has been updated" });
-};
+  res.json({ message: 'Your account has been updated' })
+}
 
 export {
   register,
@@ -176,5 +175,5 @@ export {
   resetPassword,
   verifyResetCode,
   updateUser,
-  updatePassword,
-};
+  updatePassword
+}

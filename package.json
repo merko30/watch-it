@@ -19,18 +19,14 @@
     "drizzle-orm": "^0.41.0",
     "express": "^4.16.4",
     "ip": "^2.0.1",
-    "jsonwebtoken": "^9.0.2",
-    "jwt-decode": "^4.0.0",
-    "mongoose": "^8.8.1",
     "morgan": "^1.9.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.6.3",
-    "passport": "^0.7.0",
-    "passport-jwt": "^4.0.0",
     "pg": "^8.14.1",
     "request": "^2.88.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.24.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
@@ -38,9 +34,13 @@
     "@types/node": "^22.14.0",
     "@types/pg": "^8.11.11",
     "drizzle-kit": "^0.30.6",
+    "eslint": "^9.24.0",
+    "globals": "^16.0.0",
     "nodemon": "^3.1.7",
+    "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.29.1"
   }
 }
