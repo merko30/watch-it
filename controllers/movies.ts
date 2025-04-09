@@ -4,9 +4,27 @@ import { db } from '../db'
 import { movies as moviesTable } from '../db/schema'
 
 const getAll: RequestHandler = async (req, res, next) => {
+  const { page, limit } = req.query || {}
+  const pageNumber = Number(page) || 1
+  const limitNumber = Number(limit) || 10
+  const offset = (pageNumber - 1) * limitNumber
   try {
-    const movies = await db.select().from(moviesTable)
-    res.json({ movies })
+    const movies = await db
+      .select()
+      .from(moviesTable)
+      .limit(limitNumber)
+      .offset(offset)
+    const totalMovies = await db.$count(moviesTable)
+    const totalPages = Math.ceil(totalMovies / limitNumber)
+    res.json({
+      movies,
+      meta: {
+        page: pageNumber,
+        limit: limitNumber,
+        totalPages,
+        totalMovies
+      }
+    })
   } catch (error) {
     next(error)
   }

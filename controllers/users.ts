@@ -1,5 +1,8 @@
-// import bcrypt from 'bcryptjs'
+import bcrypt from 'bcryptjs'
+import { eq } from 'drizzle-orm'
 import { RequestHandler } from 'express'
+import { db } from '../db'
+import { users } from '../db/schema'
 
 // const transporter = require("../config/nodemailer");
 
@@ -10,11 +13,39 @@ import { RequestHandler } from 'express'
 // }
 
 const register: RequestHandler = async (req, res, next) => {
-  // let user = new User(req.body);
+  if (!req.body) {
+    res.status(400).json({ message: 'No body provided' })
+  }
 
   try {
-    // await user.save();
-    res.json({ ok: true })
+    const { password, ...data } = req.body
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+
+    const existingUser = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, data.email))
+
+    if (existingUser.length) {
+      res.status(400).json({ message: 'User already exists' })
+    }
+
+    const user = await db
+      .insert(users)
+      .values({
+        ...data,
+        password: hashedPassword
+      })
+      .returning()
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...userData } = user[0]
+
+    res.json({
+      user: { ...userData },
+      message: 'User created successfully'
+    })
   } catch (error) {
     next(error)
   }
