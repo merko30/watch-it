@@ -3,14 +3,14 @@ const router = express.Router()
 
 import {
   getAll,
-  create,
+  insertOrUpdate,
   remove,
   getOne,
   search,
   getTMDBMovie
 } from '../controllers/movies'
 
-router.route('/').get(getAll).post(create)
+router.route('/').get(getAll).post(insertOrUpdate)
 
 router.get('/search/:term', search)
 

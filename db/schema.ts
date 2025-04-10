@@ -16,15 +16,20 @@ export const users = pgTable('users', {
   password: varchar({ length: 255 }).notNull()
 })
 
-export const statusEnum = pgEnum('status', ['to-watch', 'watching', 'watched'])
+export const statusEnum = pgEnum('status', [
+  'wishlist',
+  'watching',
+  'watched',
+  'watch-again'
+])
 
 export const typeEnum = pgEnum('type', ['movie', 'tv'])
 
 export const movies = pgTable('movies', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
   title: varchar({ length: 255 }).notNull(),
-  status: statusEnum().default('to-watch'),
-  tmdbId: integer().notNull(),
+  status: statusEnum().default('watching'),
+  tmdbId: integer().notNull().unique(),
   tmdbType: typeEnum().notNull(),
   details: json(),
   description: text(),

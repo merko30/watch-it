@@ -62,7 +62,7 @@ const STATUSES: Status[] = [
 
 type StatusMenuProps = {
   movieId: number;
-  onPress: (key: MovieStatus | 'info' | 'delete') => void;
+  onUpdateStatus: (key: MovieStatus | 'info' | 'delete') => void;
   showInfoItem?: boolean;
   containerStyle?: StyleProp<ViewStyle>;
   modalStyle?: StyleProp<ViewStyle>;
@@ -73,7 +73,7 @@ type StatusMenuProps = {
 
 const StatusMenu = ({
   movieId,
-  onPress,
+  onUpdateStatus,
   showInfoItem,
   containerStyle,
   modalStyle,
@@ -144,7 +144,7 @@ const StatusMenu = ({
                 ]}
                 key={status.value}
                 onPress={() => {
-                  onPress(status.value);
+                  onUpdateStatus(status.value);
                   toggleModal();
                 }}>
                 <Text style={styles.labelText}>{status.label}</Text>

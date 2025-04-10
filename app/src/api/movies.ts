@@ -19,10 +19,8 @@ export const getAll = async () => {
   return await axios.get(url.href);
 };
 
-export const addOrUpdateMovie = async (data: Partial<Movie>) => {
-  // TODO: add book
-  return await axios.put(API_URL, data);
-};
+export const updateMovie = async (data: Partial<Movie>) =>
+  await axios.post(API_URL, data);
 
 export const checkStatus = async (id: number) => {
   return await axios.get(`${API_URL}/exists/${id}`);

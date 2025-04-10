@@ -21,7 +21,7 @@ import { RootStackParamList } from 'navigation';
 
 import { Theme, Box, Text } from '@/theme';
 
-import { getSingleMovie, addOrUpdateMovie, remove } from '@/api/movies';
+import { getSingleMovie, updateMovie, remove } from '@/api/movies';
 
 import { MovieStatus, TMDBMovie } from 'types';
 
@@ -96,7 +96,7 @@ const Details = ({
   const { data: { volume: movie = null } = {} } = data || {};
 
   const { mutate } = useMutation({
-    mutationFn: addOrUpdateMovie,
+    mutationFn: updateMovie,
   });
 
   const { mutate: deleteMovie } = useMutation({
@@ -115,8 +115,8 @@ const Details = ({
       } else {
         mutate({
           title: movie.title,
-          poster_path: movie.poster_path,
-          id: movie.id,
+          tmdbType: type,
+          tmdbId: movie.id,
           status,
         });
       }
@@ -184,7 +184,7 @@ const Details = ({
           visible={showMenu}
           toggleVisible={() => setShowMenu(!showMenu)}
           movieId={movie.id}
-          onPress={onMenuItemPress}
+          onUpdateStatus={onMenuItemPress}
           containerStyle={styles.menu}
         />
         <Box alignItems="center" pt="xl">

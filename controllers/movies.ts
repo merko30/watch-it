@@ -31,12 +31,18 @@ const getAll: RequestHandler = async (req, res, next) => {
   }
 }
 
-const create: RequestHandler = async (req, res, next) => {
+const insertOrUpdate: RequestHandler = async (req, res, next) => {
   try {
     const { userId } = req.auth!
     const movie = await db
       .insert(moviesTable)
       .values({ userId, ...req.body })
+      .onConflictDoUpdate({
+        target: moviesTable.tmdbId,
+        set: {
+          status: req.body.status
+        }
+      })
       .returning()
     res.json({ movie })
   } catch (error) {
@@ -112,4 +118,4 @@ const search: RequestHandler = async (req, res, next) => {
   }
 }
 
-export { getAll, create, remove, getOne, search, getTMDBMovie }
+export { getAll, insertOrUpdate, remove, getOne, search, getTMDBMovie }
