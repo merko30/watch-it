@@ -50,7 +50,7 @@ const List = ({
             // data={books.filter((b) => b.status === params.shelf)}
             data={movies}
             contentContainerStyle={{ overflow: 'visible' }}
-            keyExtractor={i => i._id}
+            keyExtractor={i => i.id.toString()}
             renderItem={({ item, index }) => {
               const last = index === movies.length - 1;
               return (

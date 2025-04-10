@@ -1,18 +1,13 @@
 import React from 'react';
-import {
-  // StyleProp, ViewStyle,
-  TouchableOpacity,
-} from 'react-native';
-// import Animated from 'react-native-reanimated';
+import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import { Theme, Box } from '../../theme';
+import { Theme, Box } from '@/theme';
 
 interface BookSlideIconProps {
   icon: string;
   backgroundColor: keyof Theme['colors'];
   onPress: () => void;
-  // style?: StyleProp<Animated.AnimateStyle<ViewStyle>>;
   iconColor?: string;
 }
 
@@ -24,12 +19,14 @@ const BookSlideIcon = ({
   icon,
   backgroundColor,
   iconColor,
-}: // style,
-BookSlideIconProps) => {
+}: BookSlideIconProps) => {
   return (
     <TouchableOpacity
-      // style={style}
-      onPress={onPress}>
+      onPress={onPress}
+      style={{
+        height: '100%',
+        width: 60,
+      }}>
       <Box
         backgroundColor={backgroundColor}
         justifyContent="center"

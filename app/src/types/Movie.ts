@@ -7,6 +7,8 @@ export interface Movie {
   poster_path: string;
   user: string;
   status: MovieStatus;
+  tmdbId: number;
+  tmdbType: string;
 }
 
 export interface Genre {

@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, StaticParamList } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import TabNavigator from './TabNavigator';
@@ -14,7 +14,7 @@ import { AuthContext, IAuthContext } from '@/providers/AuthProvider';
 import List from '@/screens/List';
 
 export type RootStackParamList = {
-  Details: { id: string; type: 'movie' | 'tv' };
+  Details: { id: number; type: 'movie' | 'tv' };
   Home: undefined;
   List: { shelf: string };
   Auth: undefined;
