@@ -53,7 +53,16 @@ const List = ({
             keyExtractor={i => i._id}
             renderItem={({ item, index }) => {
               const last = index === movies.length - 1;
-              return <Movie movie={item} last={last} onSwipe={console.log} />;
+              return (
+                <Movie
+                  movie={item}
+                  last={last}
+                  onSwipe={() => {
+                    'worklet';
+                    console.log('delete', item.id);
+                  }}
+                />
+              );
             }}
           />
         )}

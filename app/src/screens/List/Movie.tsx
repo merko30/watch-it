@@ -1,24 +1,19 @@
 import React from 'react';
 import { StyleSheet, Dimensions, View } from 'react-native';
-import {
-  PanGestureHandler,
-  PanGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler';
-import { snapPoint } from 'react-native-redash';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
-  useAnimatedGestureHandler,
   useSharedValue,
   withTiming,
-  withSpring,
   useDerivedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
-import { useNavigation } from '@react-navigation/native';
+// import { useNavigation } from '@react-navigation/native';
 
 import { Movie as MovieI } from '@/types';
 
 import { Box, Text } from '@/theme';
-// import BookSlideIcon from './BookSlideIcon';
+
+import BookSlideIcon from './BookSlideIcon';
 
 const { width: wWidth } = Dimensions.get('window');
 
@@ -39,65 +34,51 @@ interface MovieProps {
   onSwipe: () => void;
 }
 
-const Movie = ({
-  movie,
-  last,
-}: // onSwipe
-MovieProps) => {
-  const navigation = useNavigation();
-  const HEIGHT = 60;
-  const translateX = useSharedValue(0);
-  const width = useSharedValue(0);
-  const right = useSharedValue(-200);
-  const shouldRemove = useSharedValue<0 | 1>(0);
+// const END_POSITION = -200;
 
-  const gestureHandler = useAnimatedGestureHandler<
-    PanGestureHandlerGestureEvent,
-    { offsetX: number }
-  >({
-    onActive: (e, ctx) => {
-      (translateX.value = ctx.offsetX + Math.min(e.translationX, 0)),
-        (width.value = Math.abs(translateX.value));
-      right.value = translateX.value;
-    },
-    onEnd: (e, ctx) => {
-      const to = snapPoint(translateX.value, e.velocityX, SNAP_POINTS);
-      translateX.value = withTiming(to, {
-        duration: 500,
-      });
-      ctx.offsetX = translateX.value;
-      if (to === -wWidth) {
-        shouldRemove.value = 1;
-      } else if (to === -200) {
-        width.value = withSpring(210);
-        right.value = -200;
-      } else if (to === 0) {
-        width.value = withTiming(0);
+const Movie = ({ movie, last, onSwipe }: MovieProps) => {
+  // const navigation = useNavigation();
+  const HEIGHT = 60;
+  const shouldRemove = useSharedValue<0 | 1>(0);
+  const position = useSharedValue(0);
+
+  const panGesture = Gesture.Pan()
+    .onUpdate(e => {
+      // goes to the left
+      if (e.translationX < 0) {
+        position.value = e.translationX;
+      } else {
+        // move to the start if user swipes right
+        position.value = 0;
       }
-    },
-  });
+    })
+    .onEnd(() => {
+      // handle swipe delete
+      if (position.value < -wWidth / 2) {
+        onSwipe();
+        shouldRemove.value = 1;
+        position.value = withTiming(-wWidth, { duration: 300 });
+      }
+    });
 
   const height = useDerivedValue(() =>
     shouldRemove.value === 1 ? withTiming(0, { duration: 300 }) : HEIGHT,
   );
 
-  const style = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: position.value }],
     height: height.value,
   }));
 
-  const iconStyle = useAnimatedStyle(() => ({
-    right: right.value,
-  }));
-
   return (
-    <PanGestureHandler {...gestureHandler} hitSlop={{ right: 300 }}>
-      <View style={[style]}>
+    <GestureDetector gesture={panGesture}>
+      <Animated.View style={[animatedStyle]}>
         <Box
           height="100%"
-          backgroundColor="background"
+          backgroundColor="backgroundThree"
           justifyContent="center"
           paddingLeft="m"
+          paddingVertical="l"
           position="relative"
           borderBottomColor="spacer"
           borderBottomWidth={last ? 0 : 1}>
@@ -109,24 +90,24 @@ MovieProps) => {
               styles.iconsContainer,
               // iconStyle
             ]}>
-            {/* <BookSlideIcon
-            backgroundColor="gray"
-            // style={{ width: divide(width.value, 2) }}
-            onPress={() => {}}
-            // onPress={() => navigation.navigate('Details', { id: book.id })}
-            icon="information-circle-outline"
-          />
-          <BookSlideIcon
-            onPress={() => {}}
-            // style={{ width: divide(width.value, 2) }}
-            // onPress={() => (shouldRemove.value = 1)}
-            icon="trash"
-            backgroundColor="negative"
-          /> */}
+            <BookSlideIcon
+              backgroundColor="gray"
+              // style={{ width: divide(width.value, 2) }}
+              onPress={() => {}}
+              // onPress={() => navigation.navigate('Details', { id: book.id })}
+              icon="information-circle-outline"
+            />
+            <BookSlideIcon
+              onPress={() => {}}
+              // style={{ width: divide(width.value, 2) }}
+              // onPress={() => (shouldRemove.value = 1)}
+              icon="trash"
+              backgroundColor="negative"
+            />
           </View>
         </Box>
-      </View>
-    </PanGestureHandler>
+      </Animated.View>
+    </GestureDetector>
   );
 };
 
