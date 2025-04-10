@@ -40,7 +40,7 @@ export const getSingleMovie = async ({
   id,
   type,
 }: {
-  id: string;
+  id: number;
   type: string;
 }) => {
   return await axios.get(`${API_URL}/${type}/${id}`);

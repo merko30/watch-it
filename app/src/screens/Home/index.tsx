@@ -67,9 +67,9 @@ const Home = () => {
           alignItems="center"
           mb="m">
           <Text variant="subtitle">Your lists</Text>
-          {/* <Button onPress={onExpand}>
-            {/* <Text variant="body">See all</Text> */}
-          {/* </Button> */}
+          <Button onPress={onExpand}>
+            <Text variant="body">See all</Text>
+          </Button>
         </Box>
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}

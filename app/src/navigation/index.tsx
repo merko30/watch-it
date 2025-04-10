@@ -64,10 +64,7 @@ const Navigation = () => {
             <Stack.Screen
               name="Details"
               options={{
-                headerTransparent: true,
-                headerMode: 'float',
-                headerTintColor: 'black',
-                headerLeftContainerStyle: { paddingLeft: 4 },
+                headerShown: false,
               }}
               component={Details}
             />

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { StyleSheet, Dimensions, View, TouchableOpacity } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -102,6 +102,17 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
     height: height.value,
   }));
 
+  const navigateToDetails = () => {
+    navigation.navigate('Details', {
+      id: movie.tmdbId,
+      type: movie.tmdbType as 'movie' | 'tv',
+    });
+  };
+
+  const iconsStyle = useAnimatedStyle(() => ({
+    zIndex: position.value > -50 ? 10 : 0,
+  }));
+
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View style={[styles.container, animatedHeightStyle]}>
@@ -113,18 +124,15 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
             },
             animatedStyle,
           ]}>
-          <Text color="foreground" variant="body" pl="m">
-            {movie.title}
-          </Text>
+          <TouchableOpacity onPress={navigateToDetails}>
+            <Text color="foreground" variant="body" pl="m">
+              {movie.title}
+            </Text>
+          </TouchableOpacity>
         </Animated.View>
-        <Animated.View style={styles.iconsContainer}>
+        <Animated.View style={[styles.iconsContainer, iconsStyle]}>
           <BookSlideIcon
-            onPress={() => {
-              navigation.navigate('Details', {
-                id: movie.tmdbId,
-                type: movie.tmdbType as 'movie' | 'tv',
-              });
-            }}
+            onPress={navigateToDetails}
             backgroundColor="gray"
             icon="information-circle-outline"
           />

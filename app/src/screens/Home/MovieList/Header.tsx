@@ -1,11 +1,11 @@
 import React from 'react';
-import {TouchableOpacity, TouchableWithoutFeedback} from 'react-native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {useNavigation} from '@react-navigation/native';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
 
-import {RootStackParamList} from 'navigation';
+import { RootStackParamList } from 'navigation';
 
-import {Box, Text} from '@/theme';
+import { Box, Text } from '@/theme';
 
 interface HeaderProps {
   title: string;
@@ -13,22 +13,17 @@ interface HeaderProps {
   onExpand: () => void;
 }
 
-const Header = ({title, name, onExpand}: HeaderProps) => {
-  const {navigate} = useNavigation<StackNavigationProp<RootStackParamList>>();
+const Header = ({ title, name, onExpand }: HeaderProps) => {
+  const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   return (
-    <Box
-      flexDirection="row"
-      flex={1}
-      justifyContent="space-between"
-      pt="xs"
-      px="s">
+    <Box flexDirection="row" justifyContent="space-between" pt="xs" px="s">
       <TouchableWithoutFeedback onPress={onExpand}>
         <Text fontWeight="600" textTransform="uppercase">
           {title}
         </Text>
       </TouchableWithoutFeedback>
-      <TouchableOpacity onPress={() => navigate('List', {shelf: name})}>
+      <TouchableOpacity onPress={() => navigate('List', { shelf: name })}>
         <Text variant="body">Show all movies</Text>
       </TouchableOpacity>
     </Box>
