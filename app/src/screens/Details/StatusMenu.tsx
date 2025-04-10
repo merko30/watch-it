@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
   },
   container: {},
   button: {
-    backgroundColor: theme.colors.white,
+    backgroundColor: 'white',
     padding: 10,
   },
   label: {
@@ -60,7 +60,7 @@ const STATUSES: Status[] = [
   { value: 'delete', label: 'Delete' },
 ];
 
-type BookMenuProps = {
+type StatusMenuProps = {
   movieId: number;
   onPress: (key: MovieStatus | 'info' | 'delete') => void;
   showInfoItem?: boolean;
@@ -71,7 +71,7 @@ type BookMenuProps = {
   | { visible?: never; toggleVisible?: never }
 );
 
-const BookMenu = ({
+const StatusMenu = ({
   movieId,
   onPress,
   showInfoItem,
@@ -79,7 +79,7 @@ const BookMenu = ({
   modalStyle,
   visible,
   toggleVisible,
-}: BookMenuProps) => {
+}: StatusMenuProps) => {
   // const {colors} = useTheme<Theme>();
   const [isVisible, setIsVisible] = useState(false);
   const [statuses, setStatuses] = useState<Status[]>([]);
@@ -123,14 +123,7 @@ const BookMenu = ({
   const paddingVertical = isLoading ? 20 : 0;
   return (
     <View style={[styles.container, containerStyle]}>
-      {!visible && !toggleVisible && (
-        <RoundedIcon
-          color="secondary"
-          onPress={toggleModal}
-          icon="ellipsis-vertical"
-          size={36}
-        />
-      )}
+      <RoundedIcon onPress={toggleModal} icon="ellipsis-vertical" size={40} />
       <Modal
         style={[styles.modal, modalStyle, { paddingVertical }]}
         isVisible={showModal}
@@ -164,4 +157,4 @@ const BookMenu = ({
   );
 };
 
-export default BookMenu;
+export default StatusMenu;

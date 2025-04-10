@@ -44,7 +44,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     backgroundColor: 'white',
     borderRadius: 50,
-    padding: 5,
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
     zIndex: 30,
   },
   backdrop: {
@@ -57,8 +60,8 @@ const styles = StyleSheet.create({
   overlay: { width, height: 400, position: 'absolute', top: 0, left: 0 },
   menu: {
     position: 'absolute',
-    top: 0,
-    right: 10,
+    top: 40,
+    right: 20,
     zIndex: 100,
   },
 });

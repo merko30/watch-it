@@ -8,13 +8,11 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {Theme} from '../theme';
-import {useTheme} from '@shopify/restyle';
-
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white',
   },
 });
 
@@ -22,47 +20,31 @@ interface RoundedIconProps {
   icon: string;
   size: number;
   onPress?: () => void;
-  color: keyof Theme['colors'];
   style?: StyleProp<ViewStyle>;
-  backdropStyle?: StyleProp<ViewStyle>;
 }
 
-const RoundedIcon = ({
-  size,
-  icon,
-  onPress,
-  color,
-  style,
-  backdropStyle,
-}: RoundedIconProps) => {
-  const {colors} = useTheme<Theme>();
-  return (
-    <TouchableOpacity
-      onPress={onPress}
+const RoundedIcon = ({ size, icon, onPress, style }: RoundedIconProps) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[
+      styles.container,
+      {
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+      },
+      style,
+    ]}>
+    <View
       style={[
-        styles.container,
         {
-          width: size,
-          height: size,
+          ...StyleSheet.absoluteFillObject,
           borderRadius: size / 2,
         },
-        style,
-      ]}>
-      <View
-        style={[
-          {
-            ...StyleSheet.absoluteFillObject,
-            backgroundColor: colors[color],
-            borderRadius: size / 2,
-
-            opacity: 0.2,
-          },
-          backdropStyle,
-        ]}
-      />
-      <Icon name={icon} size={size / 1.6} color={colors[color]} />
-    </TouchableOpacity>
-  );
-};
+      ]}
+    />
+    <Icon name={icon} size={size / 1.6} />
+  </TouchableOpacity>
+);
 
 export default RoundedIcon;
