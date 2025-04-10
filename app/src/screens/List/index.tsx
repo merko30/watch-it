@@ -1,30 +1,32 @@
-import React, {useEffect} from 'react';
-import {FlatList, SafeAreaView, ActivityIndicator} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
-import {StackScreenProps} from '@react-navigation/stack';
+import React from 'react';
+import { FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
+import { useQuery } from 'react-query';
+import { AxiosError, AxiosResponse } from 'axios';
+import { useTheme } from '@shopify/restyle';
+import { StackScreenProps } from '@react-navigation/stack';
 
-import {RootStackParamList} from '../../navigation';
+import { RootStackParamList } from '../../navigation';
 
-import {getBooks, deleteBook} from '../../store/reducers/books';
-import {RootState} from '../../store/reducers';
+import Movie from './Movie';
 
-import Book from './Book';
-
-import {Theme, Text} from '../../theme';
+import { Theme, Text } from '../../theme';
 
 import capitalize from '../../utils/capitalize';
-import {useTheme} from '@shopify/restyle';
+import { Movie as MovieI } from '@/types';
+import { getAll } from '@/api/movies';
 
 const List = ({
-  route: {params},
+  route: { params },
 }: StackScreenProps<RootStackParamList, 'List'>) => {
-  const dispatch = useDispatch();
-  const {books, loadings} = useSelector((state: RootState) => state.books);
-  const {colors} = useTheme<Theme>();
+  const { colors } = useTheme<Theme>();
 
-  useEffect(() => {
-    dispatch(getBooks({status: params.shelf}));
-  }, [params.shelf]);
+  const { data, isLoading: loading } = useQuery<
+    AxiosResponse<{ movies: MovieI[] }>,
+    AxiosError,
+    AxiosResponse<{ movies: MovieI[] }>
+  >('movies', getAll);
+
+  const { movies = [] } = data?.data || {};
 
   return (
     <SafeAreaView
@@ -39,28 +41,23 @@ const List = ({
           marginVertical="m"
           color="secondary"
           fontWeight="600">
-          {capitalize(params.shelf)} bookshelf
+          {capitalize(params.shelf)} list
         </Text>
-        {books && !loadings.common && (
+        {movies && (
           <FlatList
-            onRefresh={() => dispatch(getBooks({status: params.shelf}))}
-            refreshing={loadings['common']}
-            data={books.filter((b) => b.status === params.shelf)}
-            contentContainerStyle={{overflow: 'visible'}}
-            keyExtractor={(i) => i._id}
-            renderItem={({item, index}) => {
-              const last = index === books.length - 1;
-              return (
-                <Book
-                  book={item}
-                  last={last}
-                  onSwipe={() => dispatch(deleteBook(item.id))}
-                />
-              );
+            // onRefresh={() => dispatch(getBooks({status: params.shelf}))}
+            refreshing={loading}
+            // data={books.filter((b) => b.status === params.shelf)}
+            data={movies}
+            contentContainerStyle={{ overflow: 'visible' }}
+            keyExtractor={i => i._id}
+            renderItem={({ item, index }) => {
+              const last = index === movies.length - 1;
+              return <Movie movie={item} last={last} onSwipe={console.log} />;
             }}
           />
         )}
-        {loadings.common && <ActivityIndicator size="large" />}
+        {loading && <ActivityIndicator size="large" />}
       </>
     </SafeAreaView>
   );

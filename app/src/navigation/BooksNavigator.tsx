@@ -1,21 +1,23 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-// import {useTheme} from '@shopify/restyle';
+import { useTheme } from '@shopify/restyle';
 
-import {
-  Home,
-  //  List
-} from '../screens';
-// import {BLANK_HEADER} from './headerStyles';
+import { Home, List } from '../screens';
+import { BLANK_HEADER } from './headerStyles';
 
-// import {Theme} from '../theme';
+import { Theme } from '@/theme';
 
-// import {BackIcon} from '../components';
+import { BackIcon } from '@/components';
 
-const BooksNavigator = createStackNavigator();
+type BooksNavigatorParamList = {
+  Home: undefined;
+  List: { shelf: string };
+};
+
+const BooksNavigator = createStackNavigator<BooksNavigatorParamList>();
 
 const Books = () => {
-  // const {colors} = useTheme<Theme>();
+  const { colors } = useTheme<Theme>();
   return (
     <BooksNavigator.Navigator>
       <BooksNavigator.Screen
@@ -23,19 +25,19 @@ const Books = () => {
         component={Home}
         options={{ headerShown: false }}
       />
-      {/* <BooksNavigator.Screen
+      <BooksNavigator.Screen
         name="List"
         component={List}
         options={{
           title: '',
           headerBackImage: () => <BackIcon color={colors.foreground} />,
-          headerBackTitleVisible: false,
+          headerShown: false,
           headerStyle: {
             ...BLANK_HEADER.headerStyle,
             backgroundColor: colors.background,
           },
         }}
-      /> */}
+      />
     </BooksNavigator.Navigator>
   );
 };

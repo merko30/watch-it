@@ -1,22 +1,23 @@
-import React, {useCallback, useMemo, useState} from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import React, { useCallback, useMemo, useState } from 'react';
+import { FlatList, StyleSheet } from 'react-native';
 import Animated, {
   Extrapolate,
+  Extrapolation,
   interpolate,
   SharedValue,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import {useTheme} from '@shopify/restyle';
+import { useTheme } from '@shopify/restyle';
 
-import {Box, Theme} from '@/theme';
+import { Box, Theme } from '@/theme';
 
-import {Movie, MovieStatus} from 'types';
+import { Movie, MovieStatus } from 'types';
 
 import MoviePoster from '@/components/MoviePoster';
 
-import {MOVIELIST_HEIGHT, MOVIELIST_MAP} from '../constants';
+import { MOVIELIST_HEIGHT, MOVIELIST_MAP } from '../constants';
 import Header from './Header';
 
 const styles = StyleSheet.create({
@@ -48,7 +49,7 @@ const MovieList = ({
 }: MovieListProps) => {
   const [snapToInterval, setSnapToInterval] = useState(0);
   const expanded = useSharedValue(0);
-  const {shadows} = useTheme<Theme>();
+  const { shadows } = useTheme<Theme>();
 
   const transformMovies = useCallback((moviesArr: Movie[]) => {
     const movieArrays: Movie[][] = [];
@@ -63,7 +64,7 @@ const MovieList = ({
     index,
     [0, 1, 2, 3],
     [0.85, 0.9, 0.95, 1],
-    Extrapolate.CLAMP,
+    Extrapolation.CLAMP,
   );
 
   const renderMovie = (item: Movie[]) => {
@@ -105,7 +106,7 @@ const MovieList = ({
           : -MOVIELIST_HEIGHT + (shelfExpanded.value ? 36 : 20)
         : 0,
     ),
-    transform: [{scale: shelfExpanded.value ? 1 : scaleInterpolation}],
+    transform: [{ scale: shelfExpanded.value ? 1 : scaleInterpolation }],
   }));
 
   return (
@@ -131,7 +132,7 @@ const MovieList = ({
           ]}
           decelerationRate="fast"
           scrollEventThrottle={1}
-          renderItem={({item}) => renderMovie(item)}
+          renderItem={({ item }) => renderMovie(item)}
         />
       </Box>
     </Animated.View>

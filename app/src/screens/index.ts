@@ -5,7 +5,7 @@ export { default as Home } from './Home';
 // export {default as Details} from './Details';
 export { default as Register } from './Register';
 export { default as Splash } from './Splash';
-// export {default as List} from './List';
+export { default as List } from './List';
 export { default as ForgotPassword } from './ForgotPassword';
 export { default as ResetPassword } from './ResetPassword';
 export { default as VerifyCode } from './VerifyCode';

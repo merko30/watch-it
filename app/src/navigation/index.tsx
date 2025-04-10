@@ -1,28 +1,29 @@
-import React, {useContext} from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createStackNavigator} from '@react-navigation/stack';
+import React, { useContext } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import TabNavigator from './TabNavigator';
 import AuthNavigator from './AuthNavigator';
 
-import {navigationRef} from '../utils/navigation';
+import { navigationRef } from '../utils/navigation';
 
 import Details from '@/screens/Details';
 import Splash from '@/screens/Splash';
 
-import {AuthContext, IAuthContext} from '@/providers/AuthProvider';
+import { AuthContext, IAuthContext } from '@/providers/AuthProvider';
+import List from '@/screens/List';
 
 export type RootStackParamList = {
-  Details: {id: string; type: 'movie' | 'tv'};
+  Details: { id: string; type: 'movie' | 'tv' };
   Home: undefined;
-  List: {shelf: string};
+  List: { shelf: string };
   Auth: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
 
 const Navigation = () => {
-  const {loading, loggedIn} = useContext(AuthContext) as IAuthContext;
+  const { loading, loggedIn } = useContext(AuthContext) as IAuthContext;
 
   const linking = {
     config: {
@@ -47,7 +48,7 @@ const Navigation = () => {
       <Stack.Navigator>
         {!loggedIn ? (
           <Stack.Screen
-            options={{headerShown: false}}
+            options={{ headerShown: false }}
             component={AuthNavigator}
             name="Auth"
           />
@@ -66,9 +67,16 @@ const Navigation = () => {
                 headerTransparent: true,
                 headerMode: 'float',
                 headerTintColor: 'black',
-                headerLeftContainerStyle: {paddingLeft: 4},
+                headerLeftContainerStyle: { paddingLeft: 4 },
               }}
               component={Details}
+            />
+            <Stack.Screen
+              name="List"
+              options={{
+                headerShown: false,
+              }}
+              component={List}
             />
           </>
         )}

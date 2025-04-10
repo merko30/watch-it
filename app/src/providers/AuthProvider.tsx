@@ -1,4 +1,9 @@
-import React, {createContext, SetStateAction, useEffect, useState} from 'react';
+import React, {
+  createContext,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface IAuthContext {
@@ -14,7 +19,7 @@ export const AuthContext = createContext<IAuthContext>({
   logOut: () => {},
 });
 
-const AuthProvider = ({children}: {children: React.ReactNode}) => {
+const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
