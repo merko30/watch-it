@@ -30,7 +30,9 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ededed',
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ededed',
   },
   iconsContainer: {
     position: 'absolute',
