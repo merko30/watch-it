@@ -37,6 +37,7 @@ interface MovieListProps {
   isLast: Boolean;
   expanded: SharedValue<boolean>;
   index: number;
+  verticalSpace: SharedValue<number>;
 }
 
 const MovieList = ({
@@ -46,10 +47,11 @@ const MovieList = ({
   isLast,
   index,
   expanded: shelfExpanded,
+  verticalSpace,
 }: MovieListProps) => {
   const [snapToInterval, setSnapToInterval] = useState(0);
   const expanded = useSharedValue(0);
-  const { shadows } = useTheme<Theme>();
+  const { shadows, colors } = useTheme<Theme>();
 
   const transformMovies = useCallback((moviesArr: Movie[]) => {
     const movieArrays: Movie[][] = [];
@@ -85,9 +87,7 @@ const MovieList = ({
     );
   };
 
-  const onExpand = () => {
-    expanded.value = expanded.value === 0 ? 1 : 0;
-  };
+  const onExpand = () => (expanded.value = expanded.value === 0 ? 1 : 0);
 
   const moviesArray = useMemo(
     () => transformMovies(movies),
@@ -99,20 +99,29 @@ const MovieList = ({
       !isLast
         ? expanded.value
           ? 0
-          : -MOVIELIST_HEIGHT + (shelfExpanded.value ? 36 : 20)
+          : -MOVIELIST_HEIGHT + (shelfExpanded.value ? 36 : verticalSpace.value)
         : 0,
     ),
-    transform: [{ scale: shelfExpanded.value ? 1 : scaleInterpolation }],
+    transform: [
+      {
+        scale: shelfExpanded.value ? 1 : scaleInterpolation,
+      },
+    ],
   }));
 
   return (
     <Animated.View style={animatedStyles}>
-      <Box
-        flex={1}
-        height={MOVIELIST_HEIGHT}
-        bg={MOVIELIST_MAP[name] as keyof Theme['colors']}
-        borderRadius="m"
-        {...shadows}>
+      <Animated.View
+        style={[
+          {
+            flex: 1,
+            borderRadius: 20,
+            height: MOVIELIST_HEIGHT,
+            backgroundColor:
+              colors[MOVIELIST_MAP[name] as keyof Theme['colors']],
+            ...shadows,
+          },
+        ]}>
         <Header title={title} name={name} onExpand={onExpand} />
         <FlatList
           onLayout={e => setSnapToInterval(e.nativeEvent.layout.width)}
@@ -130,7 +139,7 @@ const MovieList = ({
           scrollEventThrottle={1}
           renderItem={({ item }) => renderMovie(item)}
         />
-      </Box>
+      </Animated.View>
     </Animated.View>
   );
 };

@@ -11,11 +11,10 @@ import { snapPoint } from 'react-native-redash';
 import { useNavigation } from '@react-navigation/native';
 
 import { Movie as MovieI } from '@/types';
-
 import { Text } from '@/theme';
+import { RootStackParamList } from '@/navigation';
 
 import BookSlideIcon from './BookSlideIcon';
-import { RootStackParamList } from '@/navigation';
 
 const { width: wWidth } = Dimensions.get('window');
 
@@ -58,8 +57,6 @@ interface MovieProps {
   last: boolean;
   onSwipe: () => void;
 }
-
-// const END_POSITION = -200;
 
 import type { StackNavigationProp } from '@react-navigation/stack';
 

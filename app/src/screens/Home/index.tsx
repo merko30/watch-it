@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useQuery } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -20,6 +20,11 @@ import { Movie } from 'types';
 import MovieList from './MovieList';
 
 import { MOVIE_LISTS } from './constants';
+import {
+  Gesture,
+  GestureDetector,
+  ScrollView,
+} from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -29,6 +34,7 @@ const Home = () => {
   const [movieLists] = useState(MOVIE_LISTS);
 
   const expanded = useSharedValue(false);
+  const verticalSpace = useSharedValue(20);
 
   const { spacing } = useTheme<Theme>();
 
@@ -40,9 +46,21 @@ const Home = () => {
 
   const { movies = [] } = data?.data || {};
 
-  const onExpand = () => {
-    expanded.value = !expanded.value;
-  };
+  const panGesture = Gesture.Pan()
+    .onUpdate(e => {
+      console.log('e.translationY', e);
+
+      if (e.translationY > 0) {
+        if (!expanded.value) {
+          verticalSpace.value = 60;
+        }
+      }
+    })
+    .onEnd(() => {
+      verticalSpace.value = 20;
+    });
+
+  const onExpand = () => (expanded.value = !expanded.value);
 
   const animatedStyles = useAnimatedProps(() => {
     return {
@@ -51,6 +69,10 @@ const Home = () => {
       },
     };
   });
+
+  const scrollGesture = Gesture.Native(); // fallback for ScrollView
+
+  const gesture = Gesture.Simultaneous(panGesture, scrollGesture);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -61,34 +83,39 @@ const Home = () => {
         ]}
         showsVerticalScrollIndicator={false}
         bounces={false}>
-        <Box
-          justifyContent="space-between"
-          flexDirection="row"
-          alignItems="center"
-          mb="m">
-          <Text variant="subtitle">Your lists</Text>
-          <Button onPress={onExpand}>
-            <Text variant="body">See all</Text>
-          </Button>
-        </Box>
-        <Animated.ScrollView
-          showsVerticalScrollIndicator={false}
-          scrollEventThrottle={16}
-          {...animatedStyles}>
-          {movieLists.map((list, index, arr) => {
-            return (
-              <MovieList
-                movies={movies.filter(b => b.status === list.name)}
-                name={list.name}
-                title={list.title}
-                key={list.name}
-                isLast={index === arr.length - 1}
-                expanded={expanded}
-                index={index}
-              />
-            );
-          })}
-        </Animated.ScrollView>
+        <GestureDetector gesture={gesture}>
+          <View>
+            <Box
+              justifyContent="space-between"
+              flexDirection="row"
+              alignItems="center"
+              mb="m">
+              <Text variant="subtitle">Your lists</Text>
+              <Button onPress={onExpand}>
+                <Text variant="body">See all</Text>
+              </Button>
+            </Box>
+            <Animated.ScrollView
+              showsVerticalScrollIndicator={false}
+              scrollEventThrottle={16}
+              {...animatedStyles}>
+              {movieLists.map((list, index, arr) => {
+                return (
+                  <MovieList
+                    movies={movies.filter(b => b.status === list.name)}
+                    name={list.name}
+                    title={list.title}
+                    key={list.name}
+                    isLast={index === arr.length - 1}
+                    expanded={expanded}
+                    verticalSpace={verticalSpace}
+                    index={index}
+                  />
+                );
+              })}
+            </Animated.ScrollView>
+          </View>
+        </GestureDetector>
       </ScrollView>
     </SafeAreaView>
   );
