@@ -10,7 +10,7 @@ import { RouteProp } from '@react-navigation/native';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTheme } from '@shopify/restyle';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -23,7 +23,7 @@ import { Theme, Box, Text } from '@/theme';
 
 import { getSingleMovie, updateMovie, remove } from '@/api/movies';
 
-import { MovieStatus, TMDBMovie } from 'types';
+import { Movie, MovieStatus, TMDBMovie } from 'types';
 
 import StatusMenu from './StatusMenu';
 import BasicInfo from './BasicInfo';
@@ -95,12 +95,36 @@ const Details = ({
 
   const { data: { volume: movie = null } = {} } = data || {};
 
+  const queryClient = useQueryClient();
+
   const { mutate } = useMutation({
     mutationFn: updateMovie,
+    onSuccess: (newData: AxiosResponse<{ movie: Movie }>) => {
+      queryClient.setQueryData(
+        ['user-movie', { id }],
+        (oldData?: AxiosResponse<{ movie: Movie }>) => {
+          if (!oldData) {
+            return newData;
+          }
+
+          return {
+            ...oldData,
+            data: {
+              ...oldData?.data,
+              movie: {
+                ...oldData?.data.movie,
+                status: newData.data.movie.status,
+              },
+            },
+          };
+        },
+      );
+    },
   });
 
   const { mutate: deleteMovie } = useMutation({
     mutationFn: remove,
+    onSuccess: () => {},
   });
 
   const onMenuItemPress = (status: MovieStatus | 'delete' | 'info') => {

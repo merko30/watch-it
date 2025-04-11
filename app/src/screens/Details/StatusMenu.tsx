@@ -1,4 +1,3 @@
-import { checkStatus } from '@/api/movies';
 import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
@@ -11,13 +10,16 @@ import {
   ViewStyle,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 
-import { MovieStatus } from 'types/Movie';
+import { getMovieOrShow } from '@/api/movies';
+
+import { Movie, MovieStatus } from 'types/Movie';
 
 import RoundedIcon from '@/components/RoundedIcon';
 
 import theme from '@/theme';
+import { AxiosError, AxiosResponse } from 'axios';
 
 const { width } = Dimensions.get('window');
 
@@ -86,24 +88,17 @@ const StatusMenu = ({
 
   const toggleIsVisible = () => setIsVisible(!isVisible);
 
-  const {
-    mutate: checkMovie,
-    data,
-    isLoading,
-  } = useMutation({
-    mutationFn: checkStatus,
-  });
+  const { data, isLoading } = useQuery<
+    AxiosResponse<{ movie: Movie }>,
+    AxiosError<{ message: string }>
+  >(['user-movie', { id: movieId }], () => getMovieOrShow(movieId));
 
-  const { data: { movieStatus = null } = {} } = data || {};
+  const { data: { movie } = {} } = data || {};
+
+  const movieStatus = movie?.status as MovieStatus | undefined;
 
   const showModal = visible ? visible : isVisible;
   const toggleModal = visible ? toggleVisible : toggleIsVisible;
-
-  useEffect(() => {
-    if (movieId) {
-      checkMovie(movieId);
-    }
-  }, [movieId, showModal, checkMovie]);
 
   useEffect(() => {
     if (movieStatus) {

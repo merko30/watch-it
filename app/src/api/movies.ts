@@ -22,8 +22,8 @@ export const getAll = async () => {
 export const updateMovie = async (data: Partial<Movie>) =>
   await axios.post(API_URL, data);
 
-export const checkStatus = async (id: number) => {
-  return await axios.get(`${API_URL}/exists/${id}`);
+export const getMovieOrShow = async (id: number) => {
+  return await axios.get(`${API_URL}/${id}`);
 };
 
 export const remove = async (id: number) => {

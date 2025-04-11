@@ -1,7 +1,6 @@
 export type MovieStatus = 'wishlist' | 'watching' | 'watched' | 'watch-again';
 
 export interface Movie {
-  _id: string;
   id: number;
   title: string;
   image: string;

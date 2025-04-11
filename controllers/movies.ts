@@ -34,7 +34,7 @@ const getAll: RequestHandler = async (req, res, next) => {
 const insertOrUpdate: RequestHandler = async (req, res, next) => {
   try {
     const { userId } = req.auth!
-    const movie = await db
+    const [movie] = await db
       .insert(moviesTable)
       .values({ userId, ...req.body })
       .onConflictDoUpdate({
@@ -55,11 +55,12 @@ const getOne: RequestHandler = async (req, res, next) => {
     const [movie] = await db
       .select()
       .from(moviesTable)
-      .where(eq(moviesTable.id, parseInt(req.params.id)))
+      .where(eq(moviesTable.tmdbId, parseInt(req.params.id)))
     if (!movie) {
       res.status(404).json({ message: 'Movie not found' })
+    } else {
+      res.json({ movie })
     }
-    res.json({ movie })
   } catch (error) {
     next(error)
   }
