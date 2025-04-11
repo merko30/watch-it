@@ -117,7 +117,7 @@ const MovieList = ({
         <FlatList
           onLayout={e => setSnapToInterval(e.nativeEvent.layout.width)}
           data={moviesArray}
-          keyExtractor={item => item.map(i => i._id).join('')}
+          keyExtractor={item => item.map(i => i.id).join('')}
           horizontal
           snapToInterval={snapToInterval}
           contentContainerStyle={[

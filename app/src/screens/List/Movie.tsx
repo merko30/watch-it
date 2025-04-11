@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -8,7 +8,7 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import { snapPoint } from 'react-native-redash';
-import { StaticParamList, useNavigation } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import { Movie as MovieI } from '@/types';
 
@@ -24,10 +24,10 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   titleContainer: {
+    width: wWidth,
     position: 'absolute',
     top: 0,
     bottom: 0,
-    zIndex: 5,
     height: '100%',
     flexDirection: 'row',
     alignItems: 'center',
@@ -44,8 +44,13 @@ const styles = StyleSheet.create({
   },
 });
 
-const ICONS_WIDTH = -120;
+const ICONS_WIDTH = -60;
 const SNAP_POINTS = [-wWidth, ICONS_WIDTH, 0];
+
+const getPosition = (value: number) => {
+  'worklet';
+  return withTiming(value, { duration: 300 });
+};
 
 const INITIAL_POSITION = 0;
 interface MovieProps {
@@ -85,7 +90,9 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
       if (to === -wWidth) {
         onDelete();
       } else if (to === ICONS_WIDTH) {
-        position.value = withTiming(ICONS_WIDTH, { duration: 300 });
+        position.value = getPosition(ICONS_WIDTH);
+      } else {
+        position.value = getPosition(INITIAL_POSITION);
       }
     });
 
@@ -96,6 +103,7 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: position.value }],
     height: height.value,
+    zIndex: position.value > -50 ? 20 : -1,
   }));
 
   const animatedHeightStyle = useAnimatedStyle(() => ({
@@ -110,20 +118,13 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
   };
 
   const iconsStyle = useAnimatedStyle(() => ({
-    zIndex: position.value > -50 ? 10 : 0,
+    zIndex: position.value < -50 ? 30 : 0,
   }));
 
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View style={[styles.container, animatedHeightStyle]}>
-        <Animated.View
-          style={[
-            styles.titleContainer,
-            {
-              width: wWidth,
-            },
-            animatedStyle,
-          ]}>
+        <Animated.View style={[styles.titleContainer, animatedStyle]}>
           <TouchableOpacity onPress={navigateToDetails}>
             <Text color="foreground" variant="body" pl="m">
               {movie.title}
@@ -131,11 +132,6 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
           </TouchableOpacity>
         </Animated.View>
         <Animated.View style={[styles.iconsContainer, iconsStyle]}>
-          <BookSlideIcon
-            onPress={navigateToDetails}
-            backgroundColor="gray"
-            icon="information-circle-outline"
-          />
           <BookSlideIcon
             onPress={onDelete}
             icon="trash"
