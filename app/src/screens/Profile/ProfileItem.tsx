@@ -1,20 +1,25 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity, StyleProp, ViewStyle} from 'react-native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {useNavigation} from '@react-navigation/native';
-import {useTheme} from '@shopify/restyle';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  StyleProp,
+  ViewStyle,
+} from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '@shopify/restyle';
 
 import RoundedIcon from '@/components/RoundedIcon';
 
-import theme, {Theme, Box, Text} from '@/theme';
+import theme, { Theme, Box, Text } from '@/theme';
 
-import {ProfileNavigatorParamList} from 'navigation/ProfileNavigator';
+import { ProfileNavigatorParamList } from 'navigation/ProfileNavigator';
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: theme.spacing.s,
+    marginBottom: theme.spacing.s,
     position: 'relative',
     padding: 4,
     paddingLeft: 0,
@@ -29,7 +34,7 @@ const styles = StyleSheet.create({
 type ProfileItemProps = {
   title: string;
   icon: string;
-  color: keyof Theme['colors'];
+  color?: keyof Theme['colors'];
   style?: StyleProp<ViewStyle>;
 } & (
   | {
@@ -37,7 +42,7 @@ type ProfileItemProps = {
       params?: any;
       onPress?: never;
     }
-  | {name?: never; params?: never; onPress: () => void}
+  | { name?: never; params?: never; onPress: () => void }
 );
 
 type ProfileScreenNavigationProp =
@@ -46,15 +51,13 @@ type ProfileScreenNavigationProp =
 const ProfileItem = ({
   title,
   icon,
-  color,
+  color = 'primary',
   name,
   params,
   style,
   onPress: _onPress,
 }: ProfileItemProps) => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
-  const {borderRadii} = useTheme<Theme>();
-
   const onPress = () => {
     if (name) {
       navigation.navigate(name, params);
@@ -66,13 +69,17 @@ const ProfileItem = ({
     <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
       <Box
         backgroundColor={color}
-        style={{
-          ...StyleSheet.absoluteFillObject,
-          opacity: 0.05,
-          borderRadius: borderRadii.xl,
-        }}
+        style={StyleSheet.absoluteFillObject}
+        opacity={0.05}
+        borderRadius="m"
+        borderWidth={1}
       />
-      <RoundedIcon icon={icon} size={42} color={color} />
+      <RoundedIcon
+        icon={icon}
+        size={42}
+        style={{ backgroundColor: 'transparent', marginLeft: 5 }}
+        color={color}
+      />
       <Text color={color} style={[styles.title]}>
         {title}
       </Text>
