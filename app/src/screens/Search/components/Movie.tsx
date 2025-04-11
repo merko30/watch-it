@@ -1,17 +1,17 @@
 import React from 'react';
-import {StyleSheet, TouchableOpacity} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {useTheme} from '@shopify/restyle';
+import { StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useTheme } from '@shopify/restyle';
 
 import MoviePoster from '@/components/MoviePoster';
 import Rating from '@/components/Rating';
 
-import {TMDBMovie} from 'types/Movie';
+import { TMDBMovie } from 'types/Movie';
 
-import {Theme, Box, Text} from '@/theme';
+import { Theme, Box, Text } from '@/theme';
 
-import {RootStackParamList} from 'navigation';
+import { RootStackParamList } from 'navigation';
 interface MovieProps {
   movie: TMDBMovie;
 }
@@ -20,13 +20,13 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: 'white',
   },
-  rating: {alignItems: 'flex-end', marginTop: 'auto', marginBottom: 0},
-  poster: {aspectRatio: 6 / 9, height: 120},
+  rating: { alignItems: 'flex-end', marginTop: 'auto', marginBottom: 0 },
+  poster: { aspectRatio: 6 / 9, height: 120 },
 });
 
-const Movie = ({movie}: MovieProps) => {
-  const {navigate} = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const {shadows} = useTheme<Theme>();
+const Movie = ({ movie }: MovieProps) => {
+  const { navigate } = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const { shadows } = useTheme<Theme>();
 
   const isMovie = movie.media_type === 'movie';
   const titleKey = isMovie ? 'title' : 'name';
@@ -34,7 +34,7 @@ const Movie = ({movie}: MovieProps) => {
   const navigateToDetails = () =>
     navigate('Details', {
       type: movie.media_type as 'movie' | 'tv',
-      id: movie.id.toString(),
+      id: movie.id,
     });
 
   return (

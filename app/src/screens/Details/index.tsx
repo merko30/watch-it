@@ -117,6 +117,7 @@ const Details = ({
           title: movie.title,
           tmdbType: type,
           tmdbId: movie.id,
+          image: movie.poster_path,
           status,
         });
       }

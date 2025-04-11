@@ -96,10 +96,6 @@ const StatusMenu = ({
 
   const { data: { movieStatus = null } = {} } = data || {};
 
-  // let movieStatus = null;
-
-  console.log(data);
-
   const showModal = visible ? visible : isVisible;
   const toggleModal = visible ? toggleVisible : toggleIsVisible;
 

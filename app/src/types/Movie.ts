@@ -4,7 +4,7 @@ export interface Movie {
   _id: string;
   id: number;
   title: string;
-  poster_path: string;
+  image: string;
   user: string;
   status: MovieStatus;
   tmdbId: number;

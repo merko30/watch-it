@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import Animated, {
-  Extrapolate,
   Extrapolation,
   interpolate,
   SharedValue,
@@ -27,6 +26,7 @@ const styles = StyleSheet.create({
   },
   bookList: {
     justifyContent: 'flex-start',
+    padding: 10,
   },
 });
 
@@ -72,17 +72,13 @@ const MovieList = ({
     return (
       <Box alignItems="flex-start" my="m">
         {first && (
-          <MoviePoster
-            style={styles.image}
-            key={first._id}
-            uri={first.poster_path}
-          />
+          <MoviePoster style={styles.image} key={first.id} uri={first.image} />
         )}
         {second && (
           <MoviePoster
             style={styles.image}
-            key={second._id}
-            uri={second.poster_path}
+            key={second.id}
+            uri={second.image}
           />
         )}
       </Box>

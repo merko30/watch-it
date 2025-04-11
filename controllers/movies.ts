@@ -92,8 +92,6 @@ const getTMDBMovie: RequestHandler = async (req, res, next) => {
 
     const movie = await response.json()
 
-    console.log(movie)
-
     if (!movie) {
       res.status(404).json({ message: 'Movie not found' })
     }
