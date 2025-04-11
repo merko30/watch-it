@@ -48,11 +48,9 @@ const Home = () => {
 
   const panGesture = Gesture.Pan()
     .onUpdate(e => {
-      console.log('e.translationY', e);
-
       if (e.translationY > 0) {
         if (!expanded.value) {
-          verticalSpace.value = 60;
+          verticalSpace.value = 40;
         }
       }
     })
@@ -89,7 +87,8 @@ const Home = () => {
               justifyContent="space-between"
               flexDirection="row"
               alignItems="center"
-              mb="m">
+              mb="s"
+              pt="m">
               <Text variant="subtitle">Your lists</Text>
               <Button onPress={onExpand}>
                 <Text variant="body">See all</Text>

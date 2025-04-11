@@ -14,7 +14,7 @@ import { Movie as MovieI } from '@/types';
 import { Text } from '@/theme';
 import { RootStackParamList } from '@/navigation';
 
-import BookSlideIcon from './BookSlideIcon';
+import SlideIcon from './SlideIcon';
 
 const { width: wWidth } = Dimensions.get('window');
 
@@ -131,7 +131,7 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
           </TouchableOpacity>
         </Animated.View>
         <Animated.View style={[styles.iconsContainer, iconsStyle]}>
-          <BookSlideIcon
+          <SlideIcon
             onPress={onDelete}
             icon="trash"
             backgroundColor="negative"

@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {StyleSheet, Keyboard, TextInput} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Keyboard, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {Box} from '@/theme';
+import { Box } from '@/theme';
+import { useTheme } from '@shopify/restyle';
 
 const styles = StyleSheet.create({
   flex: {
@@ -22,9 +23,11 @@ interface SearchBarProps {
   onSearch: (term: string) => void;
 }
 
-const SearchBar = ({onSearch}: SearchBarProps) => {
+const SearchBar = ({ onSearch }: SearchBarProps) => {
   const [term, setTerm] = useState('');
   const [error, setError] = useState<boolean>(false);
+
+  const { colors } = useTheme();
 
   const search = () => {
     if (term) {
@@ -50,16 +53,16 @@ const SearchBar = ({onSearch}: SearchBarProps) => {
   return (
     <Box
       mt="l"
-      px="l"
+      pl="s"
       py="s"
       mb="l"
       mx="m"
       bg="lighterGray"
-      borderRadius="full"
+      borderRadius="m"
       borderWidth={1}
-      borderColor={error ? 'negative' : 'lightGray'}>
+      borderColor="primary">
       <Box flexDirection="row" alignItems="center">
-        <Icon onPress={search} name="search" size={24} color="lightgray" />
+        <Icon onPress={search} name="search" size={24} color={colors.primary} />
         <TextInput
           // underlineColorAndroid="transparent"
           style={styles.input}
