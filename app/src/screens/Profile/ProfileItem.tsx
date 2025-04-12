@@ -7,11 +7,11 @@ import {
 } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useNavigation } from '@react-navigation/native';
-import { useTheme } from '@shopify/restyle';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 import RoundedIcon from '@/components/RoundedIcon';
 
-import theme, { Theme, Box, Text } from '@/theme';
+import { Theme, Box, Text } from '@/theme';
 
 import { ProfileNavigatorParamList } from 'navigation/ProfileNavigator';
 
@@ -19,15 +19,12 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing.s,
     position: 'relative',
-    padding: 4,
+    paddingVertical: 10,
     paddingLeft: 0,
-  },
-  title: {
-    fontSize: theme.fontSizes.titleM,
-    marginLeft: theme.spacing.l,
-    fontWeight: '600',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ededed',
+    justifyContent: 'space-between',
   },
 });
 
@@ -67,22 +64,22 @@ const ProfileItem = ({
   };
   return (
     <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
-      <Box
-        backgroundColor={color}
-        style={StyleSheet.absoluteFillObject}
-        opacity={0.05}
-        borderRadius="m"
-        borderWidth={1}
+      <Box flexDirection="row" alignItems="center">
+        <RoundedIcon
+          icon={icon}
+          size={42}
+          style={{ backgroundColor: 'transparent', marginLeft: 5 }}
+          color={color}
+        />
+        <Text color={color} variant="title" fontWeight="600">
+          {title}
+        </Text>
+      </Box>
+      <Icon
+        name="chevron-forward-outline"
+        style={{ color: 'lightgray', paddingRight: 10 }}
+        size={20}
       />
-      <RoundedIcon
-        icon={icon}
-        size={42}
-        style={{ backgroundColor: 'transparent', marginLeft: 5 }}
-        color={color}
-      />
-      <Text color={color} style={[styles.title]}>
-        {title}
-      </Text>
     </TouchableOpacity>
   );
 };

@@ -21,8 +21,9 @@ import Header from './Header';
 
 const styles = StyleSheet.create({
   image: {
-    width: 60,
-    height: 90,
+    width: 80,
+    height: 120,
+    marginBottom: 5,
   },
   bookList: {
     justifyContent: 'flex-start',

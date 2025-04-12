@@ -36,11 +36,12 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   content: {
-    width,
-    paddingHorizontal: 20,
-    flex: 1,
+    width: width - 30,
+    alignSelf: 'center',
+    borderRadius: 10,
     marginTop: 20,
     overflow: 'visible',
+    backgroundColor: '#fff',
   },
 });
 
@@ -98,7 +99,6 @@ const Profile = () => {
               />
               <ProfileItem title="Settings" icon="cog" name="Settings" />
               <ProfileItem
-                style={{ marginTop: 20 }}
                 title="Logout"
                 icon="exit"
                 onPress={() => logOut()}
