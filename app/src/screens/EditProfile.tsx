@@ -10,6 +10,7 @@ import { Box } from '@/theme';
 import { fetchUser, updateUser } from '@/api/users';
 import { User } from '@/types';
 import { AxiosResponse } from 'axios';
+import { Notifier } from 'react-native-notifier';
 
 interface InitialState {
   firstName: string;
@@ -48,10 +49,14 @@ const EditProfile = () => {
 
   const client = useQueryClient();
 
-  const { mutate, data, error } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: updateUser,
     mutationKey: 'updateUser',
     onSuccess: ({ data }) => {
+      Notifier.showNotification({
+        title: 'Profile updated',
+        description: 'Your profile has been updated successfully',
+      });
       client.setQueryData(
         ['profile'],
         (old?: AxiosResponse<{ user: User }>) => {
@@ -90,7 +95,7 @@ const EditProfile = () => {
         }
 
         if (values.lastName && values.lastName.length <= 3) {
-          errors.lastName = 'Last name must be at least 2 characters long';
+          errors.lastName = 'Last name must be at least 3 characters long';
         }
 
         return errors;
@@ -102,8 +107,6 @@ const EditProfile = () => {
   //     dispatch(changeAvatar(p));
   //   });
   // };
-
-  console.log(errors);
 
   const avatar = '';
   return (

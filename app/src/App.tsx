@@ -1,11 +1,12 @@
 import React from 'react';
-// import { LogBox } from 'react-native';
+import { NotifierWrapper } from 'react-native-notifier';
 
-import {QueryClient, QueryClientProvider} from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import Navigation from './navigation';
 import AuthProvider from '@/providers/AuthProvider';
 import ThemeProvider from '@/theme/ThemeProvider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // LogBox.ignoreLogs([
 //   'Setting a timer for a long period of time',
@@ -17,13 +18,17 @@ function App() {
   const queryClient = new QueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <ThemeProvider>
-          <Navigation />
-        </ThemeProvider>
-      </AuthProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView>
+      <NotifierWrapper>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <ThemeProvider>
+              <Navigation />
+            </ThemeProvider>
+          </AuthProvider>
+        </QueryClientProvider>
+      </NotifierWrapper>
+    </GestureHandlerRootView>
   );
 }
 
