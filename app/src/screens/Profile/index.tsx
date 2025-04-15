@@ -53,6 +53,7 @@ const Profile = () => {
     AxiosError<{ message: string }>
   >({
     queryFn: () => fetchUser(),
+    queryKey: 'profile',
   });
   const {
     data: { user },
@@ -82,7 +83,7 @@ const Profile = () => {
                 }}
               />
               <Box alignItems="center">
-                <Text color="foreground" variant="header">
+                <Text color="foreground" variant="header" textAlign="center">
                   {displayName}
                 </Text>
 

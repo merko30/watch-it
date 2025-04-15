@@ -36,7 +36,13 @@ const ProfileNavigator = () => {
         component={Profile}
       />
       <Stack.Screen
-        options={{ title: 'Edit profile' }}
+        options={{
+          title: '',
+          headerBackTitle: 'Back',
+          headerTitleStyle: {
+            color: colors.foreground,
+          },
+        }}
         name="EditProfile"
         component={EditProfile}
       />

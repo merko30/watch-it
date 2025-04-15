@@ -67,11 +67,11 @@ const ProfileItem = ({
       <Box flexDirection="row" alignItems="center">
         <RoundedIcon
           icon={icon}
-          size={42}
+          size={36}
           style={{ backgroundColor: 'transparent', marginLeft: 5 }}
           color={color}
         />
-        <Text color={color} variant="title" fontWeight="600">
+        <Text color={color} variant="subtitle" fontWeight="600">
           {title}
         </Text>
       </Box>

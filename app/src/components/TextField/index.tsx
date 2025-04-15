@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, { useRef, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -15,10 +15,10 @@ import {
 // useAnimatedStyle,
 // withTiming,
 // } from 'react-native-reanimated';
-import {useTheme} from '@shopify/restyle';
+import { useTheme } from '@shopify/restyle';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import theme, {Theme, Box, Text} from '../../theme';
+import theme, { Theme, Box, Text } from '../../theme';
 
 const LINE_HEIGHT = 16;
 const PADDING_VERTICAL = 8;
@@ -72,7 +72,7 @@ const TextField = ({
   console.log(placeholder);
 
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const {colors} = useTheme<Theme>();
+  const { colors } = useTheme<Theme>();
   const ref = useRef<TextInput>(null);
   // const TRANSLATE = MARGIN_VERTICAL + PADDING_VERTICAL + LINE_HEIGHT;
   // const focused = useSharedValue(0);
@@ -103,7 +103,7 @@ const TextField = ({
       : undefined;
 
   const textAreaStyles = isTextArea
-    ? {...styles.textarea, paddingLeft: 5}
+    ? { ...styles.textarea, paddingLeft: 5 }
     : null;
   const hidePassword = props.secureTextEntry && !passwordVisible;
 
@@ -149,7 +149,7 @@ const TextField = ({
         )}
       </Box>
       {touched && error && (
-        <Text variant="small" color="negative" marginTop="s">
+        <Text color="negative" style={{ marginTop: 3 }}>
           {error}
         </Text>
       )}

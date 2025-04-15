@@ -1,98 +1,101 @@
-import React, {
-  useState,
-  // useEffect
-} from 'react';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-// import {useTheme} from '@shopify/restyle';
-import {useFormik} from 'formik';
-// import Icon from 'react-native-vector-icons/Ionicons';
-import {StackScreenProps} from '@react-navigation/stack';
+import React, { useState } from 'react';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useFormik } from 'formik';
+import { SafeAreaView } from 'react-native';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
-import {
-  TextField,
-  RoundedIcon,
-  //  Message,
-  Avatar,
-  Button,
-} from '../components';
+import { TextField, RoundedIcon, Avatar, Button } from '@/components';
 
-// import {RootState} from '../store/reducers';
-// import {changeAvatar, updateUser} from '../store/reducers/auth';
+import { Box } from '@/theme';
+import { fetchUser, updateUser } from '@/api/users';
+import { User } from '@/types';
+import { AxiosResponse } from 'axios';
 
-import {
-  // Theme,
-  Box,
-} from '../theme';
+interface InitialState {
+  firstName: string;
+  lastName: string;
+  username: string;
+  about: string;
+  email: string;
+}
 
-// import {User} from '../types';
-
-// import pickImage from '../utils/pickImage';
-
-interface EditProfileProps {}
-
-const EditProfile = ({}: // navigation,
-EditProfileProps & StackScreenProps<any, 'EditProfile'>) => {
-  const [initValues] = useState({
+const EditProfile = () => {
+  const [initialValues, setInitialValues] = useState<InitialState>({
     firstName: '',
     lastName: '',
     username: '',
     about: '',
     email: '',
   });
-  // const dispatch = useDispatch();
-  // const {
-  //   user,
-  //   //  loading,
-  //   error,
-  //   message,
-  // } = useSelector((state: RootState) => state.auth);
-  // const {colors, spacing} = useTheme<Theme>();
 
-  // useEffect(() => {
-  //   navigation.setOptions({
-  //     headerStyle: {
-  //       backgroundColor: colors.background,
-  //       shadowOffset: {width: 0, height: 0},
-  //     },
-  //     headerTintColor: 'white',
-  //     headerRight: () => (
-  //       <Icon
-  //         color={colors.foreground}
-  //         name="checkmark"
-  //         style={{marginRight: spacing.m}}
-  //         onPress={handleSubmit}
-  //         size={32}
-  //       />
-  //     ),
-  //   });
-  // }, []);
+  const { isLoading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: fetchUser,
+    onSuccess: ({ data }) => {
+      setInitialValues(old => {
+        let newState = { ...old };
+        Object.keys(old || {}).forEach((key: string) => {
+          if (data.user[key as keyof User]) {
+            newState[key as keyof InitialState] =
+              data.user[key as keyof User] || '';
+          }
+        });
 
-  // useEffect(() => {
-  //   if (user) {
-  //     Object.entries(initValues).map(([key, value]) => {
-  //       if (user[key as keyof User]) {
-  //         setInitialValues((old) => ({...old, [key]: user[key as keyof User]}));
-  //       }
-  //     });
-  //   }
-  // }, [user]);
-
-  // const onSubmit = () => {
-  //   dispatch(updateUser(values));
-  // };
-
-  const {
-    values,
-    handleBlur,
-    handleChange,
-    errors,
-    touched,
-    // handleSubmit
-  } = useFormik({
-    initialValues: initValues,
-    enableReinitialize: true,
-    onSubmit: () => {},
+        return newState;
+      });
+    },
   });
+
+  const client = useQueryClient();
+
+  const { mutate, data, error } = useMutation({
+    mutationFn: updateUser,
+    mutationKey: 'updateUser',
+    onSuccess: ({ data }) => {
+      client.setQueryData(
+        ['profile'],
+        (old?: AxiosResponse<{ user: User }>) => {
+          if (!old) {
+            return data;
+          }
+
+          return {
+            ...old,
+            data: {
+              ...old.data,
+              user: {
+                ...old.data.user,
+                ...data.user,
+              },
+            },
+          };
+        },
+      );
+    },
+  });
+
+  const { values, handleBlur, handleChange, errors, touched, handleSubmit } =
+    useFormik({
+      initialValues,
+      enableReinitialize: true,
+      onSubmit: values => {
+        console.log('values', values);
+        mutate(values);
+      },
+      validate: values => {
+        const errors: Record<string, string> = {};
+
+        if (values.firstName && values.firstName.length <= 3) {
+          errors.firstName = 'First name must be at least 3 characters long';
+        }
+
+        if (values.lastName && values.lastName.length <= 3) {
+          errors.lastName = 'Last name must be at least 2 characters long';
+        }
+
+        return errors;
+      },
+    });
 
   // const onChangeAvatar = () => {
   //   pickImage('Select your profile photo', (p) => {
@@ -100,75 +103,73 @@ EditProfileProps & StackScreenProps<any, 'EditProfile'>) => {
   //   });
   // };
 
-  const avatar = 'string';
+  console.log(errors);
+
+  const avatar = '';
   return (
-    <KeyboardAwareScrollView
-      style={{flex: 1}}
-      contentContainerStyle={{flex: 1}}>
-      <Box
-        flex={1}
-        backgroundColor="background"
-        alignItems="center"
-        paddingVertical="xl">
-        {!avatar ? (
-          <RoundedIcon icon="camera" size={64} color="foreground" />
-        ) : (
-          <Avatar
-            size={72}
-            source={{uri: `http://192.168.1.8:5000/uploads/${avatar}`}}
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAwareScrollView
+        style={{ flex: 1, backgroundColor: 'white', paddingTop: 20 }}
+        contentContainerStyle={{ flex: 1 }}>
+        <Box flex={1} backgroundColor="background" alignItems="center">
+          {!avatar ? (
+            <RoundedIcon
+              icon="camera"
+              size={120}
+              color="foreground"
+              style={{ borderWidth: 1, borderColor: 'lightgray' }}
+            />
+          ) : (
+            <Avatar
+              size={120}
+              source={{ uri: `http://192.168.1.8:5000/uploads/${avatar}` }}
+            />
+          )}
+          <Button
+            onPress={() => console.log('change avatar')}
+            label="Change avatar"
+            color="transparent"
           />
-        )}
-        <Button
-          onPress={() => console.log('change avatar')}
-          label="Change avatar"
-          color="transparent"
-        />
-        <Box
-          flex={1}
-          width="100%"
-          marginVertical="xl"
-          alignSelf="flex-start"
-          paddingHorizontal="m">
-          {/* {error && <Message variant="negative" message={error} />}
+          <Box
+            flex={1}
+            width="100%"
+            alignSelf="flex-start"
+            paddingHorizontal="m">
+            {/* {error && <Message variant="negative" message={error} />}
           {message && <Message variant="positive" message={message} />} */}
-          {/* <KeyboardAvoidingView
+            {/* <KeyboardAvoidingView
                 behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
                 style={{flex: 1, backgroundColor: 'red'}}> */}
-          <TextField
-            containerStyle={{marginVertical: 10}}
-            onChangeText={handleChange('firstName')}
-            onBlur={handleBlur('firstName')}
-            error={errors['firstName']}
-            touched={touched['firstName']}
-            label="First name"
-            value={values.firstName!}
-          />
-          <TextField
-            containerStyle={{marginVertical: 10}}
-            onChangeText={handleChange('lastName')}
-            onBlur={handleBlur('lastName')}
-            error={errors['lastName']}
-            touched={touched['lastName']}
-            label="Last name"
-            value={values.lastName!}
-          />
+            <TextField
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={handleChange('firstName')}
+              onBlur={handleBlur('firstName')}
+              error={errors['firstName']}
+              touched={touched['firstName']}
+              name="firstName"
+              label="First name"
+              value={values.firstName!}
+            />
+            <TextField
+              containerStyle={{ marginBottom: 20 }}
+              onChangeText={handleChange('lastName')}
+              onBlur={handleBlur('lastName')}
+              error={errors['lastName']}
+              touched={touched['lastName']}
+              name="lastName"
+              label="Last name"
+              value={values.lastName!}
+            />
 
-          <TextField
-            containerStyle={{marginVertical: 10}}
-            onChangeText={handleChange('about')}
-            onBlur={handleBlur('about')}
-            error={errors['about']}
-            touched={touched['about']}
-            label="About"
-            value={values.about!}
-            placeholder="Share few things about yourself"
-            animateLabel={false}
-            numberOfLines={5}
-            multiline={true}
-          />
+            <Button
+              onPress={handleSubmit}
+              label="Save changes"
+              color="primary"
+            />
+          </Box>
         </Box>
-      </Box>
-    </KeyboardAwareScrollView>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 };
 
