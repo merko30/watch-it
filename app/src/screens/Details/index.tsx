@@ -31,7 +31,7 @@ import BasicInfo from './BasicInfo';
 const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
-  poster: { aspectRatio: 6 / 9, height: 300, alignSelf: 'center' },
+  poster: { aspectRatio: 6 / 9, height: 300, alignSelf: 'center', zIndex: 30 },
   genres: { justifyContent: 'center', flex: 1, marginTop: 10 },
   overview: {
     justifyContent: 'center',
@@ -56,11 +56,18 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
+    zIndex: 10,
   },
-  overlay: { width, height: 400, position: 'absolute', top: 0, left: 0 },
+  overlay: {
+    width,
+    height: 400,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 20,
+  },
   menu: {
     position: 'absolute',
-    top: 40,
     right: 20,
     zIndex: 100,
   },
@@ -184,8 +191,9 @@ const Details = ({
         contentContainerStyle={[
           styles.container,
           {
-            paddingTop: height,
+            paddingTop: height + 20,
             paddingHorizontal: spacing.l,
+            backgroundColor: colors.background,
           },
         ]}>
         <Image
@@ -200,7 +208,7 @@ const Details = ({
           style={[
             styles.backIcon,
             {
-              top: spacing.xl,
+              top: spacing.xxl,
               left: spacing.m,
             },
           ]}
@@ -210,9 +218,15 @@ const Details = ({
           toggleVisible={() => setShowMenu(!showMenu)}
           movieId={movie.id}
           onUpdateStatus={onMenuItemPress}
-          containerStyle={styles.menu}
+          containerStyle={[
+            styles.menu,
+            {
+              top: spacing.xxl,
+            },
+          ]}
         />
-        <Box alignItems="center" pt="xl">
+
+        <Box alignItems="center" pt="xl" bg="background">
           <MoviePoster style={styles.poster} uri={movie.poster_path} />
           <Text
             variant="title"
@@ -230,7 +244,7 @@ const Details = ({
         </Box>
 
         {movie.overview && (
-          <Text py="l" textAlign="center" fontSize={16}>
+          <Text py="l" textAlign="center" fontSize={16} color="foreground">
             {movie.overview}
           </Text>
         )}

@@ -1,7 +1,8 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useTheme } from '@shopify/restyle';
 
-import {Box, Text} from '@/theme';
+import { Box, Text, Theme } from '@/theme';
 
 interface InfoProps {
   text: string | number;
@@ -9,12 +10,17 @@ interface InfoProps {
   icon?: string;
 }
 
-const Info = ({text, last = false, icon}: InfoProps) => {
+const Info = ({ text, last = false, icon }: InfoProps) => {
+  const { colors } = useTheme<Theme>();
   return (
     <>
       <Box flexDirection="row" mr="m" alignItems="center">
-        {icon && <Icon name={icon} size={18} />}
-        <Text color="dark" ml={icon ? 's' : 0} fontWeight="700" fontSize={18}>
+        {icon && <Icon name={icon} size={18} color={colors.foreground} />}
+        <Text
+          color="foreground"
+          ml={icon ? 's' : 0}
+          fontWeight="700"
+          fontSize={18}>
           {text}
         </Text>
       </Box>

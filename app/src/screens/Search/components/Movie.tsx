@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   rating: { alignItems: 'flex-end', marginTop: 'auto', marginBottom: 0 },
-  poster: { aspectRatio: 6 / 9, height: 120 },
+  poster: { aspectRatio: 6 / 9, height: 120, maxHeight: 120, width: 80 },
 });
 
 const Movie = ({ movie }: MovieProps) => {
@@ -47,14 +47,18 @@ const Movie = ({ movie }: MovieProps) => {
         bg="white"
         borderRadius="m"
         {...shadows.small}
-        shadowColor="black">
+        shadowColor="black"
+        backgroundColor="foreground">
         <MoviePoster style={styles.poster} uri={movie.poster_path} />
         <Box marginLeft="m" flexShrink={1} width="100%">
           <Text variant="body" numberOfLines={2}>
             {movie[titleKey]}
           </Text>
           {movie.vote_average && movie.vote_average !== 0 ? (
-            <Rating style={styles.rating} rating={movie.vote_average} />
+            <Rating
+              style={styles.rating}
+              rating={movie.vote_average.toFixed(1)}
+            />
           ) : (
             <Text style={styles.rating}>Not rated</Text>
           )}

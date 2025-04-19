@@ -1,19 +1,19 @@
 import React from 'react';
-import {View, StyleSheet, ViewStyle, StyleProp} from 'react-native';
+import { View, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import MaskedView from '@react-native-community/masked-view';
-import {Text} from '@/theme';
+import { Text } from '@/theme';
 
 interface RatingProps {
-  rating: number;
+  rating: string | number;
   size?: number;
   style?: StyleProp<ViewStyle>;
   maxVote?: number;
 }
 
 const styles = StyleSheet.create({
-  container: {marginVertical: 8},
-  row: {flexDirection: 'row'},
+  container: { marginVertical: 8 },
+  row: { flexDirection: 'row' },
   inactiveStars: {
     backgroundColor: 'gray',
   },
@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Rating = ({rating, size = 18, maxVote = 5, style}: RatingProps) => {
+const Rating = ({ rating, size = 18, maxVote = 5, style }: RatingProps) => {
   return (
     <View style={[styles.container, style]}>
       <MaskedView

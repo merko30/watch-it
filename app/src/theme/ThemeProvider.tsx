@@ -1,9 +1,9 @@
-import React, {createContext, useEffect, useState} from 'react';
-import {StatusBar} from 'react-native';
-import {ThemeProvider as RestyleProvider} from '@shopify/restyle';
+import React, { createContext, useEffect, useState } from 'react';
+import { StatusBar } from 'react-native';
+import { ThemeProvider as RestyleProvider } from '@shopify/restyle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import {themes} from '@/theme';
+import { themes } from '@/theme';
 
 export enum Theme {
   DARK = 'dark',
@@ -15,17 +15,17 @@ export const ThemeContext = createContext({
   toggleTheme: () => {},
 });
 
-const ThemeProvider = ({children}: {children: React.ReactNode}) => {
+const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [mode, setMode] = useState<Theme>('light' as Theme);
 
   useEffect(() => {
-    async () => {
+    (async () => {
       const themeMode = await AsyncStorage.getItem('theme');
 
       if (themeMode) {
         setMode(themeMode as Theme);
       }
-    };
+    })();
   }, []);
 
   const toggleTheme = () => {
@@ -34,7 +34,7 @@ const ThemeProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   return (
-    <ThemeContext.Provider value={{mode, toggleTheme}}>
+    <ThemeContext.Provider value={{ mode, toggleTheme }}>
       <StatusBar
         barStyle={mode === Theme.LIGHT ? 'dark-content' : 'light-content'}
         translucent={true}
