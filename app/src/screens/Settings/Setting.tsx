@@ -57,7 +57,7 @@ const Setting = ({
           <>
             <TouchableOpacity onPress={() => setVisible(!visible)}>
               <Text color="foreground" variant="body">
-                {items.find(k => k.key === value)}
+                {items.find(k => k.key === value)?.label}
               </Text>
             </TouchableOpacity>
             <Modal

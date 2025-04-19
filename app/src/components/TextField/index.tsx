@@ -111,7 +111,7 @@ const TextField = ({
 
   return (
     <View style={containerStyle}>
-      {label && <Text>{label}</Text>}
+      {label && <Text color="foreground">{label}</Text>}
       <Box
         flexDirection="row"
         borderBottomColor="lightGray"

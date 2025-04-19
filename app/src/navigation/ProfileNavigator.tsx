@@ -31,7 +31,7 @@ const ProfileNavigator = () => {
         headerBackImage: () => <BackIcon color={colors.foreground} />,
       }}>
       <Stack.Screen
-        options={{ headerShown: false }}
+        options={{ headerShown: false, headerTitle: 'Profile' }}
         name="ProfileHome"
         component={Profile}
       />

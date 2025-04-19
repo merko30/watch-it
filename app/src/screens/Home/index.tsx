@@ -36,7 +36,7 @@ const Home = () => {
   const expanded = useSharedValue(false);
   const verticalSpace = useSharedValue(20);
 
-  const { spacing } = useTheme<Theme>();
+  const { spacing, colors } = useTheme<Theme>();
 
   const { data } = useQuery<
     AxiosResponse<{ movies: Movie[] }>,
@@ -73,7 +73,13 @@ const Home = () => {
   const gesture = Gesture.Simultaneous(panGesture, scrollGesture);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {
+          backgroundColor: colors.background,
+        },
+      ]}>
       <ScrollView
         contentContainerStyle={[
           styles.container,
@@ -89,9 +95,13 @@ const Home = () => {
               alignItems="center"
               mb="s"
               pt="m">
-              <Text variant="subtitle">Your lists</Text>
+              <Text variant="subtitle" color="foreground">
+                Your lists
+              </Text>
               <Button onPress={onExpand}>
-                <Text variant="body">See all</Text>
+                <Text variant="body" color="foreground">
+                  See all
+                </Text>
               </Button>
             </Box>
             <Animated.ScrollView
