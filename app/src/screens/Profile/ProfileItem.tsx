@@ -14,6 +14,7 @@ import RoundedIcon from '@/components/RoundedIcon';
 import { Theme, Box, Text } from '@/theme';
 
 import { ProfileNavigatorParamList } from 'navigation/ProfileNavigator';
+import { useTheme } from '@shopify/restyle';
 
 const styles = StyleSheet.create({
   container: {
@@ -48,13 +49,14 @@ type ProfileScreenNavigationProp =
 const ProfileItem = ({
   title,
   icon,
-  color = 'primary',
+  color = 'foreground',
   name,
   params,
   style,
   onPress: _onPress,
 }: ProfileItemProps) => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const { colors } = useTheme<Theme>();
   const onPress = () => {
     if (name) {
       navigation.navigate(name, params);
@@ -63,7 +65,16 @@ const ProfileItem = ({
     }
   };
   return (
-    <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        style,
+        {
+          backgroundColor: colors.foregroundTwo,
+          borderBottomColor: colors.backgroundTwo,
+        },
+      ]}
+      onPress={onPress}>
       <Box flexDirection="row" alignItems="center">
         <RoundedIcon
           icon={icon}
@@ -77,7 +88,10 @@ const ProfileItem = ({
       </Box>
       <Icon
         name="chevron-forward-outline"
-        style={{ color: 'lightgray', paddingRight: 10 }}
+        style={{
+          color: colors.backgroundTwo,
+          paddingRight: 10,
+        }}
         size={20}
       />
     </TouchableOpacity>

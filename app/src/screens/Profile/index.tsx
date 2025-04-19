@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     borderRadius: 10,
     marginTop: 20,
-    overflow: 'visible',
+    overflow: 'hidden',
     backgroundColor: '#fff',
   },
 });
@@ -65,8 +65,8 @@ const Profile = () => {
       : user?.username;
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <View style={styles.container}>
+    <Box flex={1}>
+      <Box style={styles.container} bg="background" pt="l">
         {error && (
           <Text alignSelf="center" color="negative">
             Failed to load profile information
@@ -79,7 +79,7 @@ const Profile = () => {
                 style={styles.image}
                 size={100}
                 source={{
-                  uri: `http://192.168.1.8:5000/uploads/${user.avatar}`,
+                  uri: user.avatar ?? '',
                 }}
               />
               <Box alignItems="center">
@@ -87,7 +87,9 @@ const Profile = () => {
                   {displayName}
                 </Text>
 
-                <Text variant="body">{user.email}</Text>
+                <Text variant="body" color="foregroundBrown">
+                  {user.email}
+                </Text>
               </Box>
             </Box>
             <ScrollView
@@ -104,6 +106,7 @@ const Profile = () => {
                 icon="exit"
                 onPress={() => logOut()}
                 color="negative"
+                style={{ borderBottomWidth: 0 }}
               />
             </ScrollView>
           </>
@@ -113,8 +116,8 @@ const Profile = () => {
             <LoadingContent numOfLines={3} />
           </View>
         )}
-      </View>
-    </SafeAreaView>
+      </Box>
+    </Box>
   );
 };
 
