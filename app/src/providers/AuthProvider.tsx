@@ -26,7 +26,6 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     (async () => {
       const token = await AsyncStorage.getItem('token');
-      console.log(token);
 
       if (token) {
         setLoggedIn(true);

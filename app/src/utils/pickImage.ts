@@ -1,45 +1,36 @@
-import ImagePicker, {ImagePickerResponse} from 'react-native-image-picker';
-import {Platform} from 'react-native';
+import {
+  ImageLibraryOptions,
+  launchImageLibrary,
+} from 'react-native-image-picker';
 
 interface Options {
-  uri: string;
+  uri: string | undefined;
   type: string | undefined;
   name: string | undefined;
 }
 
 const pickImage = (title: string, callback: (options: Options) => void) => {
-  var options = {
-    title,
-    storageOptions: {
-      skipBackup: true,
-      path: 'images',
-    },
+  const options: ImageLibraryOptions = {
+    mediaType: 'photo',
+    selectionLimit: 1,
+    includeBase64: false,
+    presentationStyle: 'fullScreen',
+    quality: 0.5,
   };
 
-  return ImagePicker.showImagePicker(
-    options,
-    (response: ImagePickerResponse) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-      } else {
-        let path = response.uri;
-        if (Platform.OS === 'ios') {
-          path = '~' + path.substring(path.indexOf('/Documents'));
-        }
-        if (!response.fileName) response.fileName = path.split('/').pop();
-
-        if (response) {
-          callback({
-            uri: response.uri,
-            type: response.type,
-            name: response.fileName,
-          });
-        }
-      }
-    },
-  );
+  launchImageLibrary(options, response => {
+    const source = response.assets?.[0];
+    if (!source) {
+      console.log('No image selected');
+      return;
+    }
+    const file = {
+      uri: source.uri,
+      type: source.type,
+      name: source.fileName,
+    };
+    callback(file);
+  });
 };
 
 export default pickImage;

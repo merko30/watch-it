@@ -1,7 +1,6 @@
 import { User, LoginData, VerifyResetCodeParams } from '../types';
 import { axios } from '../config/axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Axios, { AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 
 const API_URL = '/auth';
 
@@ -18,19 +17,12 @@ export const fetchUser = async (): Promise<AxiosResponse<{ user: User }>> => {
 };
 
 export const updateAvatar = async (formData: FormData) => {
-  const token = await AsyncStorage.getItem('token');
   const headers = {
-    Authorization: token,
-    Accept: 'application/json',
     'Content-Type': 'multipart/form-data',
   };
-  return await Axios.put(
-    `http://192.168.1.8:5000/api${API_URL}/avatar`,
-    formData,
-    {
-      headers,
-    },
-  );
+  return await axios.put(`${API_URL}/avatar`, formData, {
+    headers,
+  });
 };
 
 export const sendResetMail = async (email: string) => {

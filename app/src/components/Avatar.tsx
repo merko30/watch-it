@@ -1,27 +1,36 @@
 import React from 'react';
-import {ImageSourcePropType, Image, StyleProp, ImageStyle} from 'react-native';
-import {avatar} from '../images';
+import {
+  ImageSourcePropType,
+  Image,
+  StyleProp,
+  ImageStyle,
+  TouchableOpacity,
+} from 'react-native';
+import { avatar } from '../images';
 
 interface AvatarProps {
   size: number;
   source: ImageSourcePropType;
   style?: StyleProp<ImageStyle>;
+  onPress?: () => void;
 }
 
-const Avatar = ({source, size, style}: AvatarProps) => {
+const Avatar = ({ source, size, style, onPress }: AvatarProps) => {
   return (
-    <Image
-      source={source}
-      defaultSource={avatar}
-      style={[
-        {
-          width: size,
-          height: size,
-          borderRadius: size / 2,
-        },
-        style,
-      ]}
-    />
+    <TouchableOpacity onPress={onPress}>
+      <Image
+        source={source}
+        defaultSource={avatar}
+        style={[
+          {
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+          },
+          style,
+        ]}
+      />
+    </TouchableOpacity>
   );
 };
 

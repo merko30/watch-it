@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken'
 
 import { db } from '../db'
 import { users } from '../db/schema'
+import { uploadImage } from '../config/s3'
 
 // const transporter = require("../config/nodemailer");
 
@@ -73,10 +74,7 @@ const login: RequestHandler = async (req, res, next) => {
       )
 
     if (user) {
-      console.log(user)
       const match = await bcrypt.compare(password, user.password)
-      console.log('match', match)
-
       if (!match) {
         res.status(401).json({ message: 'Wrong credentials' })
       } else {
@@ -161,13 +159,34 @@ const updateUser: RequestHandler = async (req, res, next) => {
 
 const changeAvatar: RequestHandler = async (req, res, next) => {
   try {
-    // const user = await User.findOne({ _id: req.user._id }, { password: 0 });
-    // if (user) {
-    //   user.avatar = req.file.filename;
-    // }
-    // await user.save();
-    res.json({
-      avatar: 'req.file.filename',
+    if (!req.file) {
+      res.status(400).json({ message: 'No file provided' })
+      return
+    }
+
+    const uploaded = await uploadImage(
+      `avatars/${req.auth!.userId}/${req.file.originalname}`,
+      req.file.buffer
+    )
+    if (!uploaded) {
+      res.status(500).json({ message: 'Error uploading image' })
+      return
+    }
+    const [user] = await db
+      .update(users)
+      .set({
+        avatar: uploaded
+      })
+      .where(eq(users.id, req.auth!.userId))
+      .returning()
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' })
+      return
+    }
+
+    res.status(200).json({
+      user,
       message: 'Your avatar has been updated'
     })
   } catch (error) {

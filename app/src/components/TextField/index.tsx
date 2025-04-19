@@ -69,8 +69,6 @@ const TextField = ({
   // animateLabel = true,
   ...props
 }: TextFieldProps) => {
-  console.log(placeholder);
-
   const [passwordVisible, setPasswordVisible] = useState(false);
   const { colors } = useTheme<Theme>();
   const ref = useRef<TextInput>(null);

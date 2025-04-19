@@ -3,14 +3,15 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { useFormik } from 'formik';
 import { SafeAreaView } from 'react-native';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
+import { AxiosError, AxiosResponse } from 'axios';
+import { Notifier } from 'react-native-notifier';
 
 import { TextField, RoundedIcon, Avatar, Button } from '@/components';
 
 import { Box } from '@/theme';
-import { fetchUser, updateUser } from '@/api/users';
+import { fetchUser, updateAvatar, updateUser } from '@/api/users';
 import { User } from '@/types';
-import { AxiosResponse } from 'axios';
-import { Notifier } from 'react-native-notifier';
+import pickImage from '@/utils/pickImage';
 
 interface InitialState {
   firstName: string;
@@ -29,7 +30,7 @@ const EditProfile = () => {
     email: '',
   });
 
-  const { isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['profile'],
     queryFn: fetchUser,
     onSuccess: ({ data }) => {
@@ -49,33 +50,59 @@ const EditProfile = () => {
 
   const client = useQueryClient();
 
+  const onUpdateUser = (
+    data: AxiosResponse<{
+      message: string;
+      user: User;
+    }>,
+  ) => {
+    client.setQueryData(['profile'], (old?: AxiosResponse<{ user: User }>) => {
+      if (!old) {
+        return data;
+      }
+
+      return {
+        ...old,
+        data: {
+          ...old.data,
+          user: {
+            ...old.data.user,
+            ...data.data.user,
+          },
+        },
+      };
+    });
+  };
+
   const { mutate } = useMutation({
     mutationFn: updateUser,
     mutationKey: 'updateUser',
-    onSuccess: ({ data }) => {
+    onSuccess: data => {
       Notifier.showNotification({
         title: 'Profile updated',
         description: 'Your profile has been updated successfully',
       });
-      client.setQueryData(
-        ['profile'],
-        (old?: AxiosResponse<{ user: User }>) => {
-          if (!old) {
-            return data;
-          }
+      onUpdateUser(data);
+    },
+  });
 
-          return {
-            ...old,
-            data: {
-              ...old.data,
-              user: {
-                ...old.data.user,
-                ...data.user,
-              },
-            },
-          };
-        },
-      );
+  const { mutate: updateAvatarMutation } = useMutation({
+    mutationFn: updateAvatar,
+    mutationKey: 'updateAvatar',
+    onSuccess: data => {
+      Notifier.showNotification({
+        title: 'Avatar updated',
+        description: 'Your avatar has been updated successfully',
+      });
+      onUpdateUser(data);
+    },
+    onError: (error: AxiosError) => {
+      console.log(error.response?.data);
+
+      Notifier.showNotification({
+        title: 'Error',
+        description: 'Failed to update avatar',
+      });
     },
   });
 
@@ -83,10 +110,7 @@ const EditProfile = () => {
     useFormik({
       initialValues,
       enableReinitialize: true,
-      onSubmit: values => {
-        console.log('values', values);
-        mutate(values);
-      },
+      onSubmit: values => mutate(values as User),
       validate: values => {
         const errors: Record<string, string> = {};
 
@@ -102,13 +126,18 @@ const EditProfile = () => {
       },
     });
 
-  // const onChangeAvatar = () => {
-  //   pickImage('Select your profile photo', (p) => {
-  //     dispatch(changeAvatar(p));
-  //   });
-  // };
+  const onChangeAvatar = async () => {
+    pickImage('Select an image', async file => {
+      console.log(file.uri);
 
-  const avatar = '';
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      updateAvatarMutation(formData);
+    });
+  };
+
+  const avatar = data?.data.user.avatar;
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAwareScrollView
@@ -121,18 +150,15 @@ const EditProfile = () => {
               size={120}
               color="foreground"
               style={{ borderWidth: 1, borderColor: 'lightgray' }}
+              onPress={onChangeAvatar}
             />
           ) : (
             <Avatar
               size={120}
-              source={{ uri: `http://192.168.1.8:5000/uploads/${avatar}` }}
+              source={{ uri: avatar }}
+              onPress={onChangeAvatar}
             />
           )}
-          <Button
-            onPress={() => console.log('change avatar')}
-            label="Change avatar"
-            color="transparent"
-          />
           <Box
             flex={1}
             width="100%"

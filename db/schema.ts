@@ -13,7 +13,8 @@ export const users = pgTable('users', {
   firstName: varchar({ length: 255 }),
   lastName: varchar({ length: 255 }),
   email: varchar({ length: 255 }).notNull().unique(),
-  password: varchar({ length: 255 }).notNull()
+  password: varchar({ length: 255 }).notNull(),
+  avatar: varchar({ length: 255 })
 })
 
 export const statusEnum = pgEnum('status', [
