@@ -1,33 +1,33 @@
 import React from 'react';
-import {View} from 'react-native';
-import {StackScreenProps} from '@react-navigation/stack';
-import {useTheme} from '@shopify/restyle';
-import {FormikProvider, FormikValues, useFormik} from 'formik';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {useMutation} from 'react-query';
+import { View } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
+import { useTheme } from '@shopify/restyle';
+import { FormikProvider, FormikValues, useFormik } from 'formik';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useMutation } from 'react-query';
 
 import Button from '@/components/Button';
 import Message from '@/components/Message';
 import AuthLayout from '@/components/AuthLayout';
 import FormikField from '@/components/TextField/FormikField';
 
-import {Theme} from '@/theme';
+import { Theme } from '@/theme';
 
-import {createUser} from '@/api/users';
+import { createUser } from '@/api/users';
 
-import {User} from 'types';
+import { User } from 'types';
 
 import validationSchema from './validationSchema';
 
-import {navigate} from '@/utils/navigation';
-import {AxiosError, AxiosResponse} from 'axios';
+import { navigate } from '@/utils/navigation';
+import { AxiosError, AxiosResponse } from 'axios';
 
-const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
-  const {colors, fontSizes} = useTheme<Theme>();
+const Register = ({ navigation }: StackScreenProps<any, 'Register'>) => {
+  const { colors, fontSizes } = useTheme<Theme>();
 
-  const {mutate, error, isLoading} = useMutation<
-    AxiosResponse<{ok: boolean}>,
-    AxiosError<{message: string}>,
+  const { mutate, error, data, isLoading } = useMutation<
+    AxiosResponse<{ ok: boolean }>,
+    AxiosError<{ message: string }>,
     Partial<User>
   >((input: Partial<User>) => createUser(input), {
     onSuccess: () => navigate('Login'),
@@ -45,26 +45,27 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
     validationSchema,
   });
 
-  const {handleSubmit} = formik;
+  const { handleSubmit } = formik;
 
+  const errorMessage = error?.response?.data.message || 'Something went wrong';
   return (
-    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
-      <AuthLayout back title="Join today" text="Track your bookshelves">
+    <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
+      <AuthLayout back title="Join today" text="What's your next movie ?">
         <FormikProvider value={formik}>
-          <View style={{flex: 2}}>
-            {error && <Message variant="negative" message={error.message} />}
+          <View style={{ flex: 2 }}>
+            {error && <Message variant="negative" message={errorMessage} />}
 
             <FormikField
               name="username"
-              placeholder="Username"
+              label="Username"
               autoCapitalize="none"
             />
 
-            <FormikField name="email" placeholder="Email" />
+            <FormikField name="email" label="Email" />
 
             <FormikField
               name="password"
-              placeholder="Password"
+              label="Password"
               secureTextEntry
               passwordRules={null}
             />
@@ -75,7 +76,7 @@ const Register = ({navigation}: StackScreenProps<any, 'Register'>) => {
                 textTransform: 'uppercase',
                 fontWeight: '700',
               }}
-              containerStyle={{marginTop: 40, paddingVertical: 12}}
+              containerStyle={{ marginTop: 40, paddingVertical: 12 }}
               color="primary"
               onPress={handleSubmit}
               label="Sign up"
