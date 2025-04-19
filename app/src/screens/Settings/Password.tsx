@@ -1,38 +1,45 @@
 import React from 'react';
-import {useMutation} from 'react-query';
-import {FormikProvider, useFormik} from 'formik';
+import { useMutation } from 'react-query';
+import { FormikProvider, useFormik } from 'formik';
+import { AxiosError, AxiosResponse } from 'axios';
 
 import Button from '@/components/Button';
 import FormikField from '@/components/TextField/FormikField';
 
-import {updatePasswordRequest} from '@/api/users';
+import { updateUser } from '@/api/users';
 
 import Section from './Section';
 
-import {passwordSchema} from './validationSchemas';
-import {AxiosError, AxiosResponse} from 'axios';
+import { passwordSchema } from './validationSchemas';
+import { Notifier } from 'react-native-notifier';
 
 const Password = () => {
-  const {mutate: updatePassword} = useMutation<
-    AxiosResponse<{message: string}>,
-    AxiosError<{message: string}>,
-    {password: string; newPassword: string}
+  const { mutate: updatePassword } = useMutation<
+    AxiosResponse<{ message: string }>,
+    AxiosError<{ message: string }>,
+    { password: string; newPassword: string }
   >({
-    mutationFn: ({password, newPassword}) =>
-      updatePasswordRequest(password, newPassword),
+    mutationFn: ({ password, newPassword }) =>
+      updateUser({ password, newPassword }),
+    onSuccess: () =>
+      Notifier.showNotification({
+        title: 'Success',
+        description: 'Your password has been updated successfully',
+      }),
   });
 
   const formik = useFormik({
     initialValues: {
       password: '',
       newPassword: '',
+      confirmPassword: '',
     },
     validationSchema: passwordSchema,
-    onSubmit: ({password, newPassword}) =>
-      updatePassword({password, newPassword}),
+    onSubmit: ({ password, newPassword }) =>
+      updatePassword({ password, newPassword }),
   });
 
-  const {handleSubmit} = formik;
+  const { handleSubmit } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -40,7 +47,7 @@ const Password = () => {
         <FormikField
           name="password"
           autoCapitalize="none"
-          label="Your old password"
+          label="Current password"
           secureTextEntry
         />
         <FormikField

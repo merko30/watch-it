@@ -6,6 +6,7 @@ export interface User {
   email: string;
   about: string | null;
   avatar: string | null;
+  password?: string;
 }
 
 export interface LoginData {

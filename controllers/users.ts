@@ -73,7 +73,10 @@ const login: RequestHandler = async (req, res, next) => {
       )
 
     if (user) {
+      console.log(user)
       const match = await bcrypt.compare(password, user.password)
+      console.log('match', match)
+
       if (!match) {
         res.status(401).json({ message: 'Wrong credentials' })
       } else {
@@ -109,11 +112,30 @@ const getUser: RequestHandler = async (req, res, next) => {
 
 const updateUser: RequestHandler = async (req, res, next) => {
   try {
-    const data = { ...req.body }
+    let data = { ...req.body }
 
-    if ('password' in data) {
-      const hashedPassword = await hashPassword(data.password)
-      data.password = hashedPassword
+    if ('password' in data && 'newPassword' in data) {
+      const [user] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, req.auth!.userId))
+
+      if (!user) {
+        res.status(404).json({ message: 'User not found' })
+        return
+      }
+
+      const match = await bcrypt.compare(data.password, user.password)
+
+      if (!match) {
+        res.status(401).json({ message: 'Your current password is incorrect' })
+        return
+      }
+
+      const hashedPassword = await hashPassword(data.newPassword)
+      data = {
+        password: hashedPassword
+      }
     }
 
     const [user] = await db
@@ -124,13 +146,15 @@ const updateUser: RequestHandler = async (req, res, next) => {
 
     if (!user) {
       res.status(404).json({ message: 'User not found' })
+      return
     }
 
-    res.json({
+    res.status(200).json({
       user,
       message: 'Your account has been updated'
     })
   } catch (error) {
+    console.log(error)
     next(error)
   }
 }

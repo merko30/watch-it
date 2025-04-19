@@ -41,17 +41,14 @@ export const verifyCode = async ({ code, email }: VerifyResetCodeParams) => {
   return await axios.put(`${API_URL}/verify/${code}`, { email });
 };
 
-export const updateUser = async (data: Partial<User>) => {
+export const updateUser = async (
+  data: Partial<User> & {
+    newPassword?: string;
+  },
+) => {
   return await axios.put(`${API_URL}/user`, data);
 };
 
 export const updateEmailRequest = async (email: string) => {
   return await axios.put(`${API_URL}/email`, { email });
-};
-
-export const updatePasswordRequest = async (
-  password: string,
-  newPassword: string,
-) => {
-  return await axios.put(`${API_URL}/password`, { password, newPassword });
 };

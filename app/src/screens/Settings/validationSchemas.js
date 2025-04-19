@@ -10,11 +10,11 @@ export const validationSchema = Yup.object().shape({
 });
 
 export const passwordSchema = Yup.object().shape({
-  oldPassword: Yup.string().required('Please type your old password'),
-  password: Yup.string().required('Password is required field'),
+  password: Yup.string().required('Please enter password'),
+  newPassword: Yup.string().required('Please enter new password'),
   confirmPassword: Yup.string()
-    .required('Confirm your password')
-    .oneOf([Yup.ref('password')], 'Passwords must match'),
+    .required('Please confirm your new password')
+    .oneOf([Yup.ref('newPassword')], 'Confirm password must match password'),
 });
 
 export const emailSchema = Yup.object().shape({
