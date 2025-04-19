@@ -70,7 +70,7 @@ const ProfileItem = ({
         styles.container,
         style,
         {
-          backgroundColor: colors.foregroundTwo,
+          backgroundColor: colors.background,
           borderBottomColor: colors.backgroundTwo,
         },
       ]}

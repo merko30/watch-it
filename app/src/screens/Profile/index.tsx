@@ -38,10 +38,7 @@ const styles = StyleSheet.create({
   content: {
     width: width - 30,
     alignSelf: 'center',
-    borderRadius: 10,
     marginTop: 20,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
   },
 });
 
