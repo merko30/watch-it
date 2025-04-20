@@ -31,7 +31,7 @@ const Info = ({ text, last = false, icon }: InfoProps) => {
           mr="m"
           width={10}
           height={10}
-          bg="dark"
+          bg="background"
         />
       )}
     </>

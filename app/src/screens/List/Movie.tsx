@@ -9,9 +9,11 @@ import Animated, {
 } from 'react-native-reanimated';
 import { snapPoint } from 'react-native-redash';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
+import { useTheme } from '@shopify/restyle';
 
 import { Movie as MovieI } from '@/types';
-import { Text } from '@/theme';
+import { Text, Theme } from '@/theme';
 import { RootStackParamList } from '@/navigation';
 
 import SlideIcon from './SlideIcon';
@@ -30,9 +32,7 @@ const styles = StyleSheet.create({
     height: '100%',
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
     borderBottomWidth: 1,
-    borderBottomColor: '#ededed',
   },
   iconsContainer: {
     position: 'absolute',
@@ -60,9 +60,9 @@ interface MovieProps {
   onSwipe: () => void;
 }
 
-import type { StackNavigationProp } from '@react-navigation/stack';
-
 const Movie = ({ movie, last, onSwipe }: MovieProps) => {
+  const { colors } = useTheme<Theme>();
+
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const HEIGHT = 60;
   const shouldRemove = useSharedValue<0 | 1>(0);
@@ -123,7 +123,16 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View style={[styles.container, animatedHeightStyle]}>
-        <Animated.View style={[styles.titleContainer, animatedStyle]}>
+        <Animated.View
+          style={[
+            styles.titleContainer,
+            {
+              backgroundColor: colors.background,
+              borderBottomColor: colors.spacer,
+              borderBottomWidth: last ? 0 : 1,
+            },
+            animatedStyle,
+          ]}>
           <TouchableOpacity onPress={navigateToDetails}>
             <Text color="foreground" variant="body" pl="m">
               {movie.title}
@@ -131,11 +140,7 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
           </TouchableOpacity>
         </Animated.View>
         <Animated.View style={[styles.iconsContainer, iconsStyle]}>
-          <SlideIcon
-            onPress={onDelete}
-            icon="trash"
-            backgroundColor="negative"
-          />
+          <SlideIcon onPress={onDelete} icon="trash" backgroundColor="error" />
         </Animated.View>
       </Animated.View>
     </GestureDetector>

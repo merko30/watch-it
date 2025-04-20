@@ -118,8 +118,7 @@ const MovieList = ({
             flex: 1,
             borderRadius: 20,
             height: MOVIELIST_HEIGHT,
-            backgroundColor:
-              colors[MOVIELIST_MAP[name] as keyof Theme['colors']],
+            backgroundColor: MOVIELIST_MAP[name],
             ...shadows,
           },
         ]}>

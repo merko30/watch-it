@@ -53,7 +53,7 @@ const Register = ({ navigation }: StackScreenProps<any, 'Register'>) => {
       <AuthLayout back title="Join today" text="What's your next movie ?">
         <FormikProvider value={formik}>
           <View style={{ flex: 2 }}>
-            {error && <Message variant="negative" message={errorMessage} />}
+            {error && <Message variant="error" message={errorMessage} />}
 
             <FormikField
               name="username"

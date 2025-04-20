@@ -19,7 +19,10 @@ const Section = ({ icon, title, children, isSubsection }: SectionProps) => {
   const { colors } = useTheme<Theme>();
 
   return (
-    <Box px={isSubsection ? 0 : 'm'}>
+    <Box
+      px={isSubsection ? 0 : 'm'}
+      borderBottomWidth={isSubsection ? 0 : 1}
+      borderBottomColor={isSubsection ? 'transparent' : 'spacer'}>
       <TouchableWithoutFeedback onPress={() => setExpanded(!expanded)}>
         <Box flexDirection="row" py="m" justifyContent="space-between">
           <Box flexDirection="row" alignItems="center">
@@ -35,7 +38,7 @@ const Section = ({ icon, title, children, isSubsection }: SectionProps) => {
           </Box>
           <Icon
             name={`chevron-${expanded ? 'up' : 'down'}`}
-            color={colors.gray}
+            color={colors.spacer}
             size={24}
           />
         </Box>

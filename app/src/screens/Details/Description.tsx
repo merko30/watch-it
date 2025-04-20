@@ -19,7 +19,7 @@ const Description = ({ description }: DescriptionProps) => {
   if (loadingDescription) {
     return (
       <Box flex={1} alignItems="center" py="xxl">
-        <ActivityIndicator size="large" color={colors.dark} />
+        <ActivityIndicator size="large" color={colors.foreground} />
       </Box>
     );
   }

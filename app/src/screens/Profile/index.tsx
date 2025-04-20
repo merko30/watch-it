@@ -65,7 +65,7 @@ const Profile = () => {
     <Box flex={1}>
       <Box style={styles.container} bg="background" pt="l">
         {error && (
-          <Text alignSelf="center" color="negative">
+          <Text alignSelf="center" color="error">
             Failed to load profile information
           </Text>
         )}
@@ -84,7 +84,7 @@ const Profile = () => {
                   {displayName}
                 </Text>
 
-                <Text variant="body" color="foregroundBrown">
+                <Text variant="body" color="foreground">
                   {user.email}
                 </Text>
               </Box>
@@ -102,7 +102,7 @@ const Profile = () => {
                 title="Logout"
                 icon="exit"
                 onPress={() => logOut()}
-                color="negative"
+                color="error"
                 style={{ borderBottomWidth: 0 }}
               />
             </ScrollView>

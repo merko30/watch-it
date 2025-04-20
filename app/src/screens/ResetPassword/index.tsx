@@ -1,13 +1,13 @@
 import React from 'react';
-import {FormikProvider, useFormik, FormikValues} from 'formik';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
-import {StackScreenProps} from '@react-navigation/stack';
+import { FormikProvider, useFormik, FormikValues } from 'formik';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { StackScreenProps } from '@react-navigation/stack';
 
 import Button from '@/components/Button';
 import AuthLayout from '@/components/AuthLayout';
 import FormikField from '@/components/TextField/FormikField';
 
-import {AuthStackParamList} from 'navigation/AuthNavigator';
+import { AuthStackParamList } from 'navigation/AuthNavigator';
 
 import validationSchema from './validationSchema';
 
@@ -16,7 +16,7 @@ interface ResetPasswordProps
 
 const ResetPassword = ({
   route: {
-    params: {email},
+    params: { email },
   },
 }: ResetPasswordProps) => {
   // const {fontSizes} = useTheme<Theme>();
@@ -27,24 +27,24 @@ const ResetPassword = ({
   };
 
   const formik = useFormik({
-    initialValues: {password: '', confirmPassword: ''},
+    initialValues: { password: '', confirmPassword: '' },
     validationSchema,
     onSubmit,
   });
 
-  const {handleSubmit} = formik;
+  const { handleSubmit } = formik;
 
   return (
-    <KeyboardAwareScrollView contentContainerStyle={{flex: 1}}>
+    <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
       <AuthLayout
         back
         title="Reset your password"
         text="Type your new password">
         <FormikProvider value={formik}>
           {' '}
-          {/* {error && <Message variant="negative" message={error} />}
+          {/* {error && <Message variant="error" message={error} />}
                     {message && (
-                      <Message variant="positive" message={message} />
+                      <Message variant="success" message={message} />
                     )} */}
           <FormikField
             name="password"
@@ -69,7 +69,7 @@ const ResetPassword = ({
               // fontSize: fontSizes.text,
               textTransform: 'uppercase',
             }}
-            containerStyle={{marginTop: 40, paddingVertical: 12}}
+            containerStyle={{ marginTop: 40, paddingVertical: 12 }}
           />
         </FormikProvider>
       </AuthLayout>

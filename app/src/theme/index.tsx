@@ -1,5 +1,5 @@
-import {createTheme, createBox, createText} from '@shopify/restyle';
-import {Platform} from 'react-native';
+import { createTheme, createBox, createText } from '@shopify/restyle';
+import { Platform } from 'react-native';
 
 const palette = {
   light: '#F3F0E9',
@@ -21,7 +21,6 @@ const palette = {
   lighterGray: '#f9f9f9',
 
   gold: 'gold',
-  orange: 'orange',
 };
 
 const theme = createTheme({
@@ -106,24 +105,14 @@ const theme = createTheme({
     white: 'white',
     black: 'black',
     background: 'white',
-    backgroundTwo: palette.lightGray,
-    backgroundThree: palette.lighterGray,
     foreground: palette.darkestGray,
-    foregroundTwo: palette.darkerGray,
-    foregroundBrown: palette.darkBrown,
     spacer: palette.lightGray,
     text: palette.gray,
     primary: palette.darkBrown,
     secondary: palette.lightBrown,
-    positive: palette.green,
-    positiveLight: palette.greenLight,
-    negative: palette.red,
-    lightGray: palette.lightGray,
-    lighterGray: palette.lighterGray,
-    gray: palette.gray,
+    success: palette.green,
+    error: palette.red,
     gold: palette.gold,
-    dark: palette.darkestGray,
-    orange: palette.orange,
     transparent: 'transparent',
   },
   spacing: {
@@ -159,12 +148,8 @@ const darkTheme: Theme = {
   colors: {
     ...theme.colors,
     background: palette.darkestGray,
-    backgroundTwo: palette.darkerGray,
-    backgroundThree: palette.darkGray,
     foreground: palette.lightGray,
-    foregroundTwo: palette.gray,
-    foregroundBrown: palette.light,
-    spacer: palette.darkerGray,
+    spacer: palette.gray,
     primary: palette.brown,
     secondary: palette.lightBrown,
   },

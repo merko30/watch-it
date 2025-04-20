@@ -57,7 +57,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
       py="s"
       mb="l"
       mx="m"
-      bg="lighterGray"
+      bg="spacer"
       borderRadius="m"
       borderWidth={1}
       borderColor="primary">

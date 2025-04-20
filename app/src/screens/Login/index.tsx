@@ -56,8 +56,8 @@ const LoginScreen = ({ navigation }: StackScreenProps<any, 'Login'>) => {
     <KeyboardAwareScrollView contentContainerStyle={{ flex: 1 }}>
       <AuthLayout title="Welcome back" text="We're happy to see you again.">
         <FormikProvider value={formik}>
-          {error && <Message variant="negative" message={errorMessage} />}
-          {/* {message && <Message variant="positive" message={message} />} */}
+          {error && <Message variant="error" message={errorMessage} />}
+          {/* {message && <Message variant="success" message={message} />} */}
 
           <FormikField
             autoCapitalize="none"

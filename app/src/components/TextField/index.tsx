@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
   },
   textarea: {
     borderWidth: 1,
-    borderColor: theme.colors.lightGray,
+    borderColor: theme.colors.spacer,
     borderRadius: theme.borderRadii.s,
     paddingLeft: 5,
   },
@@ -114,7 +114,7 @@ const TextField = ({
       {label && <Text color="foreground">{label}</Text>}
       <Box
         flexDirection="row"
-        borderBottomColor="lightGray"
+        borderBottomColor="spacer"
         borderBottomWidth={1}
         alignItems="center">
         <TextInput
@@ -147,7 +147,7 @@ const TextField = ({
         )}
       </Box>
       {touched && error && (
-        <Text color="negative" style={{ marginTop: 3 }}>
+        <Text color="error" style={{ marginTop: 3 }}>
           {error}
         </Text>
       )}

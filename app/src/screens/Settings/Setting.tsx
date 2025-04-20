@@ -39,12 +39,10 @@ const Setting = ({
 }: SettingProps) => {
   const [visible, setVisible] = useState(false);
   return (
-    <Box paddingLeft="l">
+    <Box paddingLeft="s">
       <Box
         paddingVertical="s"
         flexDirection="row"
-        borderBottomWidth={1}
-        borderBottomColor="spacer"
         justifyContent="space-between"
         alignItems="center">
         <Text color="foreground" variant="body">

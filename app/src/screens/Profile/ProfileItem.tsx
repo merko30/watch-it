@@ -71,7 +71,7 @@ const ProfileItem = ({
         style,
         {
           backgroundColor: colors.background,
-          borderBottomColor: colors.backgroundTwo,
+          borderBottomColor: colors.spacer,
         },
       ]}
       onPress={onPress}>
@@ -89,7 +89,7 @@ const ProfileItem = ({
       <Icon
         name="chevron-forward-outline"
         style={{
-          color: colors.backgroundTwo,
+          color: colors.spacer,
           paddingRight: 10,
         }}
         size={20}

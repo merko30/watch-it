@@ -149,7 +149,7 @@ const EditProfile = () => {
               icon="camera"
               size={120}
               color="foreground"
-              style={{ borderWidth: 1, borderColor: 'lightgray' }}
+              style={{ borderWidth: 1, borderColor: 'spacer' }}
               onPress={onChangeAvatar}
             />
           ) : (
@@ -164,8 +164,8 @@ const EditProfile = () => {
             width="100%"
             alignSelf="flex-start"
             paddingHorizontal="m">
-            {/* {error && <Message variant="negative" message={error} />}
-          {message && <Message variant="positive" message={message} />} */}
+            {/* {error && <Message variant="error" message={error} />}
+          {message && <Message variant="success" message={message} />} */}
             {/* <KeyboardAvoidingView
                 behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
                 style={{flex: 1, backgroundColor: 'red'}}> */}

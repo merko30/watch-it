@@ -1,6 +1,6 @@
 import React from 'react';
-import {View, ActivityIndicator} from 'react-native';
-import {StackScreenProps} from '@react-navigation/stack';
+import { View, ActivityIndicator } from 'react-native';
+import { StackScreenProps } from '@react-navigation/stack';
 
 import {
   // Message,
@@ -8,7 +8,7 @@ import {
 } from '../components';
 import Code from '../components/Code';
 
-import {AuthStackParamList} from '../navigation/AuthNavigator';
+import { AuthStackParamList } from '../navigation/AuthNavigator';
 
 // import {RootState} from '../store/reducers';
 // import {verifyResetCode} from '../store/reducers/auth';
@@ -38,11 +38,11 @@ const VerifyCode = ({
       back
       title="Here is a final step"
       text="Enter the code from email">
-      <View style={{flex: 1.4}}>
+      <View style={{ flex: 1.4 }}>
         {!true ? (
           <>
-            {/* {error && <Message variant="negative" message={error} />}
-            {message && <Message variant="positive" message={message} />} */}
+            {/* {error && <Message variant="error" message={error} />}
+            {message && <Message variant="success" message={message} />} */}
 
             <Code
               length={6}

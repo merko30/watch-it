@@ -23,11 +23,11 @@ const styles = StyleSheet.create({
     height: 18,
     opacity: 0.2,
     width: LINE_WIDTH,
-    backgroundColor: theme.colors.lightGray,
+    backgroundColor: theme.colors.spacer,
     marginVertical: 10,
   },
   second: {
-    backgroundColor: theme.colors.lightGray,
+    backgroundColor: theme.colors.spacer,
     height: 18,
     opacity: 0.2,
     width: width - theme.spacing.xl,
@@ -77,7 +77,7 @@ const LoadingContent = ({ numOfLines }: LoadingContentProps) => {
   //     colors={[
   //       'red',
   //       'transparent',
-  //       colors.negative,
+  //       colors.error,
   //       'transparent',
   //       'transparent',
   //     ]}

@@ -53,7 +53,7 @@ const Checkbox = ({
   const backgroundStyle = useAnimatedStyle(
     () => ({
       backgroundColor:
-        checkedValue.value === 0 ? colors.lightGray : colors.positive,
+        checkedValue.value === 0 ? colors.spacer : colors.success,
     }),
     [checkedValue],
   );

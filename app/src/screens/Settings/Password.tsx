@@ -12,8 +12,12 @@ import Section from './Section';
 
 import { passwordSchema } from './validationSchemas';
 import { Notifier } from 'react-native-notifier';
+import { useTheme } from '@shopify/restyle';
+import { Theme } from '@/theme';
 
 const Password = () => {
+  const { colors } = useTheme<Theme>();
+
   const { mutate: updatePassword } = useMutation<
     AxiosResponse<{ message: string }>,
     AxiosError<{ message: string }>,
@@ -62,7 +66,14 @@ const Password = () => {
           label="Confirm new Password"
           secureTextEntry
         />
-        <Button onPress={handleSubmit} color="gray" label="Save" />
+        <Button
+          onPress={handleSubmit}
+          color="foreground"
+          textStyle={{
+            color: colors.background,
+          }}
+          label="Save"
+        />
       </Section>
     </FormikProvider>
   );
