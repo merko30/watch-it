@@ -60,12 +60,23 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
       bg="spacer"
       borderRadius="m"
       borderWidth={1}
-      borderColor="primary">
+      borderColor="foreground">
       <Box flexDirection="row" alignItems="center">
-        <Icon onPress={search} name="search" size={24} color={colors.primary} />
+        <Icon
+          onPress={search}
+          name="search"
+          size={24}
+          color={colors.foreground}
+        />
         <TextInput
           // underlineColorAndroid="transparent"
-          style={styles.input}
+          placeholderTextColor={colors.foreground}
+          style={[
+            styles.input,
+            {
+              color: colors.foreground,
+            },
+          ]}
           placeholder="Search for a movie..."
           onChangeText={(searchTerm: string) => setTerm(searchTerm)}
           value={term}

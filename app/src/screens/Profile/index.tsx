@@ -63,7 +63,7 @@ const Profile = () => {
 
   return (
     <Box flex={1}>
-      <Box style={styles.container} bg="background" pt="l">
+      <Box style={styles.container} bg="background">
         {error && (
           <Text alignSelf="center" color="error">
             Failed to load profile information
@@ -71,7 +71,7 @@ const Profile = () => {
         )}
         {user && (
           <>
-            <Box margin="l" mb={0} p="l">
+            <Box margin="l" mb={0} p="l" pt="xxl">
               <Avatar
                 style={styles.image}
                 size={100}
