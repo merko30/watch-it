@@ -1,5 +1,5 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,
@@ -10,11 +10,13 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTheme } from '@shopify/restyle';
 
-import { Box, Theme } from '@/theme';
+import { Theme } from '@/theme';
 
 import { Movie, MovieStatus } from 'types';
 
 import MoviePoster from '@/components/MoviePoster';
+
+import { navigate } from '@/utils/navigation';
 
 import { MOVIELIST_HEIGHT, MOVIELIST_MAP } from '../constants';
 import Header from './Header';
@@ -26,13 +28,14 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   bookList: {
+    flexWrap: 'wrap',
     justifyContent: 'flex-start',
     padding: 10,
   },
 });
 
 interface MovieListProps {
-  movies: any[];
+  movies: Movie[];
   title: string;
   name: MovieStatus;
   isLast: Boolean;
@@ -52,16 +55,7 @@ const MovieList = ({
 }: MovieListProps) => {
   const [snapToInterval, setSnapToInterval] = useState(0);
   const expanded = useSharedValue(0);
-  const { shadows, colors } = useTheme<Theme>();
-
-  const transformMovies = useCallback((moviesArr: Movie[]) => {
-    const movieArrays: Movie[][] = [];
-
-    for (var i = 0; i < moviesArr.length; i += 2) {
-      movieArrays.push(moviesArr.slice(i, i + 2));
-    }
-    return movieArrays;
-  }, []);
+  const { shadows } = useTheme<Theme>();
 
   const scaleInterpolation = interpolate(
     index,
@@ -70,30 +64,7 @@ const MovieList = ({
     Extrapolation.CLAMP,
   );
 
-  const renderMovie = (item: Movie[]) => {
-    const [first, second] = item;
-    return (
-      <Box alignItems="flex-start" my="m">
-        {first && (
-          <MoviePoster style={styles.image} key={first.id} uri={first.image} />
-        )}
-        {second && (
-          <MoviePoster
-            style={styles.image}
-            key={second.id}
-            uri={second.image}
-          />
-        )}
-      </Box>
-    );
-  };
-
   const onExpand = () => (expanded.value = expanded.value === 0 ? 1 : 0);
-
-  const moviesArray = useMemo(
-    () => transformMovies(movies),
-    [movies, transformMovies],
-  );
 
   const animatedStyles = useAnimatedStyle(() => ({
     marginBottom: withSpring(
@@ -125,19 +96,31 @@ const MovieList = ({
         <Header title={title} name={name} onExpand={onExpand} />
         <FlatList
           onLayout={e => setSnapToInterval(e.nativeEvent.layout.width)}
-          data={moviesArray}
-          keyExtractor={item => item.map(i => i.id).join('')}
+          data={movies}
+          keyExtractor={item => item.id.toString()}
           horizontal
           snapToInterval={snapToInterval}
           contentContainerStyle={[
             styles.bookList,
             {
-              width: snapToInterval * (moviesArray.length / 3),
+              width: snapToInterval * (movies.length / 3),
+              gap: 10,
             },
           ]}
           decelerationRate="fast"
           scrollEventThrottle={1}
-          renderItem={({ item }) => renderMovie(item)}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              key={item.id}
+              onPress={() =>
+                navigate('MovieDetails', {
+                  id: item.id,
+                  name: item.title,
+                })
+              }>
+              <MoviePoster uri={item.image} style={styles.image} />
+            </TouchableOpacity>
+          )}
         />
       </Animated.View>
     </Animated.View>
