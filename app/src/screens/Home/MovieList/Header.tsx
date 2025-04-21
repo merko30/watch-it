@@ -23,7 +23,7 @@ const Header = ({ title, name, onExpand }: HeaderProps) => {
           {title}
         </Text>
       </TouchableWithoutFeedback>
-      <TouchableOpacity onPress={() => navigate('List', { shelf: name })}>
+      <TouchableOpacity onPress={() => navigate('List', { status: name })}>
         <Text variant="body">Show all movies</Text>
       </TouchableOpacity>
     </Box>

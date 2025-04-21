@@ -16,7 +16,7 @@ import List from '@/screens/List';
 export type RootStackParamList = {
   Details: { id: number; type: 'movie' | 'tv' };
   Home: undefined;
-  List: { shelf: string };
+  List: { status: string };
   Auth: undefined;
 };
 

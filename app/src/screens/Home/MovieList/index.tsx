@@ -50,7 +50,7 @@ const MovieList = ({
   name,
   isLast,
   index,
-  expanded: shelfExpanded,
+  expanded: statusExpanded,
   verticalSpace,
 }: MovieListProps) => {
   const [snapToInterval, setSnapToInterval] = useState(0);
@@ -71,12 +71,13 @@ const MovieList = ({
       !isLast
         ? expanded.value
           ? 0
-          : -MOVIELIST_HEIGHT + (shelfExpanded.value ? 36 : verticalSpace.value)
+          : -MOVIELIST_HEIGHT +
+            (statusExpanded.value ? 36 : verticalSpace.value)
         : 0,
     ),
     transform: [
       {
-        scale: shelfExpanded.value ? 1 : scaleInterpolation,
+        scale: statusExpanded.value ? 1 : scaleInterpolation,
       },
     ],
   }));

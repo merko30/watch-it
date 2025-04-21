@@ -11,7 +11,7 @@ import { BackIcon } from '@/components';
 
 type BooksNavigatorParamList = {
   Home: undefined;
-  List: { shelf: string };
+  List: { status: string };
 };
 
 const BooksNavigator = createStackNavigator<BooksNavigatorParamList>();

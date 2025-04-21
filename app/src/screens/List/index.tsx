@@ -24,7 +24,7 @@ const List = ({
     AxiosResponse<{ movies: MovieI[] }>,
     AxiosError,
     AxiosResponse<{ movies: MovieI[] }>
-  >('movies', () => getAll({ shelf: params.shelf }));
+  >('movies', () => getAll({ status: params.status }));
 
   const { movies = [] } = data?.data || {};
 
@@ -41,13 +41,13 @@ const List = ({
           marginVertical="m"
           color="secondary"
           fontWeight="600">
-          {capitalize(params.shelf)} list
+          {capitalize(params.status)} list
         </Text>
         {movies && (
           <FlatList
-            // onRefresh={() => dispatch(getBooks({status: params.shelf}))}
+            // onRefresh={() => dispatch(getBooks({status: params.status}))}
             refreshing={loading}
-            // data={books.filter((b) => b.status === params.shelf)}
+            // data={books.filter((b) => b.status === params.status)}
             data={movies}
             contentContainerStyle={{ overflow: 'visible' }}
             keyExtractor={i => i.id.toString()}
