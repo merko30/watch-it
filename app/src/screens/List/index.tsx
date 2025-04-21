@@ -24,7 +24,7 @@ const List = ({
     AxiosResponse<{ movies: MovieI[] }>,
     AxiosError,
     AxiosResponse<{ movies: MovieI[] }>
-  >('movies', getAll);
+  >('movies', () => getAll({ shelf: params.shelf }));
 
   const { movies = [] } = data?.data || {};
 

@@ -8,14 +8,14 @@ export interface GetMoviesParams {
 
 const API_URL = '/movies';
 
-export const getAll = async () => {
+export const getAll = async (params?: Record<string, string>) => {
   let url = new URL(API_URL);
 
-  // if (params) {
-  //   Object.entries(params).forEach(([key, value]) =>
-  //     url.searchParams.append(key, value),
-  //   );
-  // }
+  if (params) {
+    Object.entries(params).forEach(([key, value]) =>
+      url.searchParams.append(key, value),
+    );
+  }
   return await axios.get(url.href);
 };
 

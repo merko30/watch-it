@@ -2,19 +2,23 @@ import { RequestHandler } from 'express'
 import { eq } from 'drizzle-orm'
 
 import { db } from '../db'
-import { movies as moviesTable } from '../db/schema'
+import { movies as moviesTable, statusEnum } from '../db/schema'
 
 const getAll: RequestHandler = async (req, res, next) => {
   const { page, limit } = req.query || {}
   const pageNumber = Number(page) || 1
   const limitNumber = Number(limit) || 10
   const offset = (pageNumber - 1) * limitNumber
+  const shelfParam = statusEnum.enumValues.find(
+    (shelf) => shelf === req.query.shelf
+  )
   try {
     const movies = await db
       .select()
       .from(moviesTable)
       .limit(limitNumber)
       .offset(offset)
+      .where(shelfParam ? eq(moviesTable.status, shelfParam) : undefined)
     const totalMovies = await db.$count(moviesTable)
     const totalPages = Math.ceil(totalMovies / limitNumber)
     res.json({

@@ -42,7 +42,7 @@ const Home = () => {
     AxiosResponse<{ movies: Movie[] }>,
     AxiosError,
     AxiosResponse<{ movies: Movie[] }>
-  >('movies', getAll);
+  >('movies', () => getAll());
 
   const { movies = [] } = data?.data || {};
 
