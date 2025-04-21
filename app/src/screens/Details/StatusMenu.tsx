@@ -10,7 +10,7 @@ import {
   ViewStyle,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { useMutation, useQuery } from 'react-query';
+import { useQuery } from 'react-query';
 
 import { getMovieOrShow } from '@/api/movies';
 
@@ -91,7 +91,7 @@ const StatusMenu = ({
   const { data, isLoading } = useQuery<
     AxiosResponse<{ movie: Movie }>,
     AxiosError<{ message: string }>
-  >(['user-movie', { id: movieId }], () => getMovieOrShow(movieId));
+  >(['movies', { id: movieId }], () => getMovieOrShow(movieId));
 
   const { data: { movie } = {} } = data || {};
 

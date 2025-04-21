@@ -24,7 +24,7 @@ interface RoundedIconProps {
   size: number;
   onPress?: () => void;
   style?: StyleProp<ViewStyle>;
-  color: keyof Theme['colors'];
+  color?: keyof Theme['colors'];
 }
 
 const RoundedIcon = ({
@@ -32,7 +32,7 @@ const RoundedIcon = ({
   icon,
   onPress,
   style,
-  color,
+  color = 'primary',
 }: RoundedIconProps) => {
   const { colors } = useTheme<Theme>();
 

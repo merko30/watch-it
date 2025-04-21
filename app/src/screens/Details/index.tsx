@@ -107,25 +107,71 @@ const Details = ({
   const { mutate } = useMutation({
     mutationFn: updateMovie,
     onSuccess: (newData: AxiosResponse<{ movie: Movie }>) => {
-      queryClient.setQueryData(
-        ['user-movie', { id }],
-        (oldData?: AxiosResponse<{ movie: Movie }>) => {
-          if (!oldData) {
-            return newData;
-          }
+      queryClient
+        .getQueryCache()
+        .findAll()
+        .filter(value => {
+          const key = Array.isArray(value.queryKey)
+            ? value.queryKey[0]
+            : value.queryKey;
+          return ['home-movies', 'movies'].includes(key);
+        })
+        .forEach(query => {
+          queryClient.setQueriesData(
+            [query.queryKey],
+            (oldData?: AxiosResponse<{ movie: Movie; movies?: Movie[] }>) => {
+              if (oldData?.data.movies) {
+                if (query.queryKey === 'home-movies') {
+                  const movies = oldData?.data.movies?.map((movie: Movie) => {
+                    if (movie.id === newData.data.movie.id) {
+                      return {
+                        ...movie,
+                        status: newData.data.movie.status,
+                      };
+                    }
+                    return movie;
+                  });
 
-          return {
-            ...oldData,
-            data: {
-              ...oldData?.data,
-              movie: {
-                ...oldData?.data.movie,
-                status: newData.data.movie.status,
-              },
+                  return {
+                    ...oldData,
+                    data: {
+                      ...oldData?.data,
+                      movies,
+                    },
+                  };
+                }
+                const movies = oldData.data.movies.filter(
+                  (movie: Movie) => movie.id !== newData.data.movie.id,
+                );
+
+                return {
+                  ...oldData,
+                  data: {
+                    ...oldData?.data,
+                    movies,
+                  },
+                };
+              }
+
+              console.log('updating single movie');
+
+              if (!oldData) {
+                return newData;
+              }
+
+              return {
+                ...oldData,
+                data: {
+                  ...oldData?.data,
+                  movie: {
+                    ...oldData?.data.movie,
+                    status: newData.data.movie.status,
+                  },
+                },
+              };
             },
-          };
-        },
-      );
+          );
+        });
     },
   });
 
