@@ -111,7 +111,9 @@ const Home = () => {
               {movieLists.map((list, index, arr) => {
                 return (
                   <MovieList
-                    movies={movies.filter(b => b.status === list.name)}
+                    movies={movies
+                      .slice(0, 8)
+                      .filter(b => b.status === list.name)}
                     name={list.name}
                     title={list.title}
                     key={list.name}

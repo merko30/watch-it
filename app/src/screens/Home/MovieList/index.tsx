@@ -28,6 +28,8 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   bookList: {
+    width: '100%',
+    flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
     padding: 10,
@@ -87,7 +89,7 @@ const MovieList = ({
       <Animated.View
         style={[
           {
-            flex: 1,
+            width: '100%',
             borderRadius: 20,
             height: MOVIELIST_HEIGHT,
             backgroundColor: MOVIELIST_MAP[name],
@@ -99,12 +101,11 @@ const MovieList = ({
           onLayout={e => setSnapToInterval(e.nativeEvent.layout.width)}
           data={movies}
           keyExtractor={item => item.id.toString()}
-          horizontal
           snapToInterval={snapToInterval}
           contentContainerStyle={[
             styles.bookList,
             {
-              width: snapToInterval * (movies.length / 3),
+              // width: snapToInterval * (movies.length / 3),
               gap: 10,
             },
           ]}
