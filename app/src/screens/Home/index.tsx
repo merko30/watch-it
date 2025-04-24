@@ -112,8 +112,8 @@ const Home = () => {
                 return (
                   <MovieList
                     movies={movies
-                      .slice(0, 8)
-                      .filter(b => b.status === list.name)}
+                      .filter(b => b.status === list.name)
+                      .slice(0, 8)}
                     name={list.name}
                     title={list.title}
                     key={list.name}

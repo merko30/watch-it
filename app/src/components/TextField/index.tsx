@@ -121,6 +121,8 @@ const TextField = ({
           numberOfLines={Platform.OS === 'ios' ? undefined : numberOfLines}
           ref={ref}
           placeholder={placeholder}
+          autoCorrect={false}
+          autoCapitalize="none"
           style={[
             props.style,
             styles.input,

@@ -121,6 +121,20 @@ const Details = ({
             [query.queryKey],
             (oldData?: AxiosResponse<{ movie: Movie; movies?: Movie[] }>) => {
               if (oldData?.data.movies) {
+                if (
+                  !oldData.data.movies.some(
+                    movie => movie.id === newData.data.movie.id,
+                  )
+                ) {
+                  return {
+                    ...oldData,
+                    data: {
+                      ...oldData?.data,
+                      movies: [...oldData.data.movies, newData.data.movie],
+                    },
+                  };
+                }
+
                 if (query.queryKey === 'home-movies') {
                   const movies = oldData?.data.movies?.map((movie: Movie) => {
                     if (movie.id === newData.data.movie.id) {
@@ -140,6 +154,7 @@ const Details = ({
                     },
                   };
                 }
+
                 const movies = oldData.data.movies.filter(
                   (movie: Movie) => movie.id !== newData.data.movie.id,
                 );
@@ -152,8 +167,6 @@ const Details = ({
                   },
                 };
               }
-
-              console.log('updating single movie');
 
               if (!oldData) {
                 return newData;
@@ -191,7 +204,7 @@ const Details = ({
         });
       } else {
         mutate({
-          title: movie.title,
+          title: movie.title ?? movie.name,
           tmdbType: type,
           tmdbId: movie.id,
           image: movie.poster_path,
@@ -209,13 +222,13 @@ const Details = ({
             name="add-circle-outline"
             style={{ marginRight: spacing.m }}
             size={32}
-            color={colors.foreground}
+            color={colors.black}
             onPress={() => setShowMenu(previousValue => !previousValue)}
           />
         ),
       });
     }
-  }, [movie, colors.foreground, spacing.m, navigation]);
+  }, [movie, colors.black, spacing.m, navigation]);
 
   const height = useHeaderHeight();
 
@@ -284,7 +297,7 @@ const Details = ({
             style={{
               marginTop: 80,
             }}>
-            {movie.title}
+            {movie.title ?? movie.name}
           </Text>
           <BasicInfo movie={movie} />
         </Box>

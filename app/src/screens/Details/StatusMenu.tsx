@@ -114,7 +114,12 @@ const StatusMenu = ({
   const paddingVertical = isLoading ? 20 : 0;
   return (
     <View style={[styles.container, containerStyle]}>
-      <RoundedIcon onPress={toggleModal} icon="ellipsis-vertical" size={40} />
+      <RoundedIcon
+        onPress={toggleModal}
+        icon="ellipsis-vertical"
+        size={40}
+        color="black"
+      />
       <Modal
         style={[styles.modal, modalStyle, { paddingVertical }]}
         isVisible={showModal}

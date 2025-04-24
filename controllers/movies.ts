@@ -38,6 +38,8 @@ const getAll: RequestHandler = async (req, res, next) => {
 const insertOrUpdate: RequestHandler = async (req, res, next) => {
   try {
     const { userId } = req.auth!
+    console.log(req.body)
+
     const [movie] = await db
       .insert(moviesTable)
       .values({ userId, ...req.body })

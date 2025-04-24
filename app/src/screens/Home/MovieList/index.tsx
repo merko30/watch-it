@@ -98,8 +98,10 @@ const MovieList = ({
         ]}>
         <Header title={title} name={name} onExpand={onExpand} />
         <FlatList
+          // numColumns={4}
           onLayout={e => setSnapToInterval(e.nativeEvent.layout.width)}
           data={movies}
+          horizontal
           keyExtractor={item => item.id.toString()}
           snapToInterval={snapToInterval}
           contentContainerStyle={[

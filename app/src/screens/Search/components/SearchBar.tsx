@@ -78,6 +78,9 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
             },
           ]}
           placeholder="Search for a movie..."
+          autoComplete="off"
+          autoCorrect={false}
+          autoCapitalize="none"
           onChangeText={(searchTerm: string) => setTerm(searchTerm)}
           value={term}
           onSubmitEditing={search}

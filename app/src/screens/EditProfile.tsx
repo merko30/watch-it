@@ -141,9 +141,9 @@ const EditProfile = () => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAwareScrollView
-        style={{ flex: 1, backgroundColor: 'white', paddingTop: 20 }}
+        style={{ flex: 1 }}
         contentContainerStyle={{ flex: 1 }}>
-        <Box flex={1} backgroundColor="background" alignItems="center">
+        <Box flex={1} backgroundColor="background" alignItems="center" pt="xl">
           {!avatar ? (
             <RoundedIcon
               icon="camera"
