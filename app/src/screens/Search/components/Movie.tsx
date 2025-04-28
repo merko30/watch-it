@@ -43,12 +43,12 @@ const Movie = ({ movie }: MovieProps) => {
         flexDirection="row"
         p="s"
         mb="m"
-        mx="s"
+        mx="m"
         bg="white"
         borderRadius="m"
         {...shadows.small}
         shadowColor="black"
-        backgroundColor="foreground">
+        backgroundColor="spacer">
         <MoviePoster style={styles.poster} uri={movie.poster_path} />
         <Box marginLeft="m" flexShrink={1} width="100%">
           <Text variant="body" numberOfLines={2}>

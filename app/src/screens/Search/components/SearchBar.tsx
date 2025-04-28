@@ -60,7 +60,7 @@ const SearchBar = ({ onSearch }: SearchBarProps) => {
       bg="spacer"
       borderRadius="m"
       borderWidth={1}
-      borderColor="foreground">
+      borderColor="spacer">
       <Box flexDirection="row" alignItems="center">
         <Icon
           onPress={search}

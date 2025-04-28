@@ -7,7 +7,7 @@ import { movies as moviesTable, statusEnum } from '../db/schema'
 const getAll: RequestHandler = async (req, res, next) => {
   const { page, limit } = req.query || {}
   const pageNumber = Number(page) || 1
-  const limitNumber = Number(limit) || 10
+  const limitNumber = Number(limit) || 20
   const offset = (pageNumber - 1) * limitNumber
   const statusParam = statusEnum.enumValues.find(
     (status) => status === req.query.status
