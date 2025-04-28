@@ -26,7 +26,7 @@ export const updateAvatar = async (formData: FormData) => {
 };
 
 export const sendResetMail = async (email: string) => {
-  return await axios.post(`${API_URL}/forgot`, { email });
+  return await axios.post(`${API_URL}/forgot-password`, { email });
 };
 
 export const verifyCode = async ({ code, email }: VerifyResetCodeParams) => {

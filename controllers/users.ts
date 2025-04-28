@@ -7,13 +7,13 @@ import { db } from '../db'
 import { users } from '../db/schema'
 import { uploadImage } from '../config/s3'
 
-// const transporter = require("../config/nodemailer");
+import transporter from '../config/nodemailer'
 
-// const generateSixDigitNumber = (): number => {
-//   const number = Math.floor(Math.pow(10, 6) * Math.random())
+const generateSixDigitNumber = (): number => {
+  const number = Math.floor(Math.pow(10, 6) * Math.random())
 
-//   return number.toString().length < 6 ? generateSixDigitNumber() : number
-// }
+  return number.toString().length < 6 ? generateSixDigitNumber() : number
+}
 
 const hashPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10)
@@ -197,33 +197,47 @@ const changeAvatar: RequestHandler = async (req, res, next) => {
 const sendResetPasswordMail: RequestHandler = async (req, res) => {
   const { email } = req.body
 
-  // var mailOptions = (token) => ({
-  //   from: "Booker",
-  //   to: req.body.email,
-  //   subject: "Reset your password",
-  //   text: "Here is a link to reset your password",
-  //   html: `<div style="text-align:center;">
-  //   <h1 style="font-family:'Tahoma', sans-serif;">Here is your code</h1>
-  // <div style='display:inline-block;background-color:lightgray;padding:10px;'>
-  //   <h1 style="padding:10px;background-color:white;font-family:'Tahoma',sans-serif;">${token}</h1>
-  // </div>
-  //   </div>`,
-  // });
+  // style email
+  const mailOptions = (token: number) => ({
+    from: 'Watch it',
+    to: req.body.email,
+    subject: 'Reset your password',
+    text: 'Here is a link to reset your password',
+    html: `<div style="text-align:center;">
+    <h1 style="font-family:'Tahoma', sans-serif;">Here is your code</h1>
+  <div style='display:inline-block;background-color:lightgray;padding:10px;'>
+    <h1 style="padding:10px;background-color:white;font-family:'Tahoma',sans-serif;">${token}</h1>
+    <p style="font-family:'Tahoma', sans-serif;">This code is valid for 10 minutes</p>
+  </div>
+    </div>`
+  })
 
-  // try {
-  //   const user = await User.findOne({ email });
-  //   if (user) {
-  //     const token = generateSixDigitNumber();
-  //     await transporter.sendMail(mailOptions(token));
-  //     user.resetPasswordToken = token;
-  //     await user.save();
-  res.json({ email, message: 'The mail has been sent. Check your inbox!' })
-  // } else {
-  //   throw new Error("User not found");
-  // }
-  // } catch (error) {
-  //   next(error);
-  // }
+  try {
+    const [user] = await db.select().from(users).where(eq(users.email, email))
+    if (!user) {
+      res.status(404).json({ message: 'User not found' })
+      return
+    }
+
+    const token = generateSixDigitNumber()
+    const now = new Date()
+    const expires = now.getTime() + 10 * 60 * 1000 // 10 minutes
+
+    await db
+      .update(users)
+      .set({
+        resetPasswordToken: token.toString(),
+        resetPasswordExpires: expires.toString()
+      })
+      .where(eq(users.id, user.id))
+      .returning()
+
+    await transporter.sendMail(mailOptions(token))
+    res.json({ email, message: 'The mail has been sent. Check your inbox!' })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error sending email' })
+  }
 }
 
 const verifyResetCode: RequestHandler = async (req, res) => {

@@ -14,7 +14,9 @@ export const users = pgTable('users', {
   lastName: varchar({ length: 255 }),
   email: varchar({ length: 255 }).notNull().unique(),
   password: varchar({ length: 255 }).notNull(),
-  avatar: varchar({ length: 255 })
+  avatar: varchar({ length: 255 }),
+  resetPasswordToken: varchar({ length: 255 }),
+  resetPasswordExpires: varchar({ length: 255 })
 })
 
 export const statusEnum = pgEnum('status', [

@@ -20,7 +20,7 @@ router.post('/login', login)
 
 router.route('/user').get(getUser).put(updateUser)
 
-router.post('/forgot', sendResetPasswordMail)
+router.post('/forgot-password', sendResetPasswordMail)
 
 router.put('/verify/:code', verifyResetCode)
 
