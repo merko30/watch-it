@@ -28,24 +28,24 @@ yarn-error.log*
 coverage/
 
 # Android
-android/.gradle/
-android/app/build/
-android/build/
-*.iml
-.idea/
-local.properties
+app/android/.gradle/
+app/android/app/build/
+app/android/build/
+app/*.iml
+app/.idea/
+app/local.propertiesapp/
 
 # iOS
-ios/Pods/
-ios/DerivedData/
-ios/build/
-ios/*.xcworkspace
-ios/*.xcodeproj/project.xcworkspace/
-ios/*.xcuserstate
-ios/*.xccheckout
-ios/*.moved-aside
-ios/.xcode.env  # sometimes used in RN projects
-ios/.xcode.cache
+app/ios/Pods/
+app/ios/DerivedData/
+app/ios/build/
+app/ios/*.xcworkspace
+app/ios/*.xcodeproj/project.xcworkspace/
+app/ios/*.xcuserstate
+app/ios/*.xccheckout
+app/ios/*.moved-aside
+app/ios/.xcode.env  # sometimes used in RN projects
+app/ios/.xcode.cache
 
 # Fastlane (optional)
 fastlane/report.xml
