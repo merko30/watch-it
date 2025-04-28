@@ -1,19 +1,13 @@
 # WatchIt
 WatchIt is an app that helps you track what movies you've watched, what movies you want to watch and more..
 
-In order to run the application locally, you need to do few things:
+To run the application locally, you need to do a few things:
 
-* Create `.env` file in root directory
-* Add these environment variables:
-    * JWT_SECRET=jwtsecret
-    * DB=mongouri
-    * SMTP_USER=user
-    * SMTP_PASSWORD=password
-    * SMTP_HOST=host
-    * SMTP_PORT=port
-    * TMDB_API_KEY=tmdb api key
-    * TMDB_API_BASE_URL=https://api.themoviedb.org/3
-* Add your API endpoint in client/config/axios.ts - you'll get the IP address on server start, add the port, eg. http://192.168.1.8:5000/api 
-* `npm i`in root and client folder
-* `pod install` in ios folder - for iOS
-
+* Run `copy .env.example .env` in the root folder
+* Run `copy .env.example .env` in the /app folder
+* Replace placeholder values: TMDB API key and S3 credentials
+* run `npm install` in the root folder
+* run `npm install` in the /app folder
+* run `pod install` in the /app/ios folder
+* run `npm run dev` in the root folder
+* run `npm start` in the /app folder
