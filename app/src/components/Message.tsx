@@ -1,24 +1,25 @@
 import React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import {useTheme} from '@shopify/restyle';
+import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '@shopify/restyle';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import theme, {Theme} from '../theme';
+import theme, { Theme } from '../theme';
 
 interface MessageProps {
   message: string;
-  variant: 'positive' | 'negative';
+  variant: 'success' | 'error';
 }
 
-const Message = ({message, variant}: MessageProps) => {
-  const {colors, fontSizes} = useTheme<Theme>();
+const Message = ({ message, variant }: MessageProps) => {
+  const { colors, fontSizes } = useTheme<Theme>();
   const color = colors[variant as keyof Theme['colors']];
-  const icon = variant == 'negative' ? 'close-circle' : 'checkmark-circle';
-  const backgroundColor = variant == 'negative' ? 'pink' : 'lightgreen';
+  const isError = variant == 'error';
+  const icon = isError ? 'close-circle' : 'checkmark-circle';
+  const backgroundColor = isError ? 'pink' : 'lightgreen';
   return message ? (
-    <View style={[styles.container, {backgroundColor}]}>
+    <View style={[styles.container, { backgroundColor }]}>
       <Icon name={icon} color={color} size={24} />
-      <Text style={[styles.message, {color, fontSize: fontSizes.text}]}>
+      <Text style={[styles.message, { color, fontSize: fontSizes.text }]}>
         {message}
       </Text>
     </View>
