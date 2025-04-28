@@ -14,7 +14,7 @@ app.use(cors())
 //   morgan(":method :url :status :res[content-length] - :response-time ms")
 // );
 
-console.log(ip.address())
+console.log('Your API URL: ', `http://${ip.address()}/api`)
 
 const jwtMiddleware = expressjwt({
   secret: process.env.JWT_SECRET!,

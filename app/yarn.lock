@@ -6107,6 +6107,11 @@ react-native-autoheight-webview@^1.5.8:
     deprecated-react-native-prop-types "^2.3.0"
     prop-types "^15.7.2"
 
+react-native-config@^1.5.5:
+  version "1.5.5"
+  resolved "https://registry.npmjs.org/react-native-config/-/react-native-config-1.5.5.tgz"
+  integrity sha512-dGdLnBU0cd5xL5bF0ROTmHYbsstZnQKOEPfglvZi1vStvAjpld14X25K6mY3KGPTMWAzx6TbjKeq5dR+ILuMMA==
+
 react-native-fs@^2.20.0:
   version "2.20.0"
   resolved "https://registry.npmjs.org/react-native-fs/-/react-native-fs-2.20.0.tgz"

@@ -1,8 +1,16 @@
 import Axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import Config from 'react-native-config';
+
+console.log('API URL: ', Config.API_URL);
+
+if (!Config.API_URL) {
+  throw new Error('API_URL is not defined in .env file');
+}
+
 export const axios = Axios.create({
-  baseURL: 'http://192.168.1.201:4000/api',
+  baseURL: Config.API_URL,
   timeout: 10000,
 });
 
