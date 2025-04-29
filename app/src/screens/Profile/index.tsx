@@ -1,18 +1,9 @@
 import React, { useContext } from 'react';
-import {
-  SafeAreaView,
-  View,
-  StyleSheet,
-  Dimensions,
-  ScrollView,
-} from 'react-native';
+import { View, StyleSheet, Dimensions, ScrollView } from 'react-native';
 import { useQuery } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 
 import Avatar from '@/components/Avatar';
-import LoadingContent from '@/components/LoadingContent';
-
-import ProfileItem from './ProfileItem';
 
 import { Text, Box } from '@/theme';
 
@@ -21,6 +12,9 @@ import { fetchUser } from '@/api/users';
 import { User } from 'types';
 
 import { AuthContext } from '@/providers/AuthProvider';
+
+import ProfileItem from './ProfileItem';
+import LoadingContent from './LoadingSkeleton';
 
 const { width } = Dimensions.get('window');
 
@@ -109,7 +103,15 @@ const Profile = () => {
           </>
         )}
         {isLoading && (
-          <View style={{ marginTop: 160, flex: 1 }}>
+          <View style={{ marginTop: 80, flex: 1 }}>
+            <Box
+              width={100}
+              height={100}
+              backgroundColor="spacer"
+              borderRadius="full"
+              alignSelf="center"
+              mb="xxl"
+            />
             <LoadingContent numOfLines={3} />
           </View>
         )}
