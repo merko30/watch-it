@@ -24,7 +24,7 @@ router.post('/forgot-password', sendResetPasswordMail)
 
 router.put('/verify/:code', verifyResetCode)
 
-router.put('/reset', resetPassword)
+router.put('/reset-password', resetPassword)
 
 router.put('/email', updateUser)
 

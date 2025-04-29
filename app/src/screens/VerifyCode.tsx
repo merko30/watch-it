@@ -1,37 +1,37 @@
 import React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
+import { useMutation } from 'react-query';
+import { AxiosError, AxiosResponse } from 'axios';
 
-import {
-  // Message,
-  AuthLayout,
-} from '../components';
+import { AuthLayout, Message } from '../components';
 import Code from '../components/Code';
 
 import { AuthStackParamList } from '../navigation/AuthNavigator';
-
-// import {RootState} from '../store/reducers';
-// import {verifyResetCode} from '../store/reducers/auth';
-
-// import {useSelector, useDispatch} from 'react-redux';
+import { verifyCode } from '@/api/users';
+import { navigate } from '@/utils/navigation';
 
 interface VerifyCodeProps
   extends StackScreenProps<AuthStackParamList, 'VerifyCode'> {}
 
 const VerifyCode = ({
   route: {
-    // params: {email, code},
+    params: { email },
   },
 }: VerifyCodeProps) => {
-  // const dispatch = useDispatch();
-
-  // const {loading, error, message} = useSelector(
-  //   (state: RootState) => state.auth,
-  // );
-
-  // const onSubmit = (code: string) => {
-  //   dispatch(verifyResetCode({email, code}));
-  // };
+  const { mutate, error, variables } = useMutation<
+    AxiosResponse<{ message: string }>,
+    AxiosError<{ message: string }>,
+    { email: string; code: string }
+  >({
+    mutationKey: 'verify',
+    mutationFn: verifyCode,
+    onSuccess: () => {
+      navigate('ResetPassword', {
+        email,
+      });
+    },
+  });
 
   return (
     <AuthLayout
@@ -39,20 +39,15 @@ const VerifyCode = ({
       title="Here is a final step"
       text="Enter the code from email">
       <View style={{ flex: 1.4 }}>
-        {!true ? (
-          <>
-            {/* {error && <Message variant="error" message={error} />}
-            {message && <Message variant="success" message={message} />} */}
+        <>
+          {error && <Message variant="error" message={error.message} />}
 
-            <Code
-              length={6}
-              autoVerification={true}
-              onFilled={code => console.log(code)}
-            />
-          </>
-        ) : (
-          <ActivityIndicator size="large" />
-        )}
+          <Code
+            length={6}
+            autoVerification={true}
+            onFilled={code => mutate({ code, email })}
+          />
+        </>
       </View>
     </AuthLayout>
   );

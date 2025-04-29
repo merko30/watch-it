@@ -1,13 +1,18 @@
-import React, {useRef, useEffect, useState} from 'react';
-import {View, StyleSheet, StyleProp, ViewStyle} from 'react-native';
-import {TextInput} from 'react-native-gesture-handler';
+import React, { useRef, useEffect, useState } from 'react';
+import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
 
-import theme from '../theme';
+import theme, { Theme } from '../theme';
+import { useTheme } from '@shopify/restyle';
 
 const MARGIN = 5;
 
 const styles = StyleSheet.create({
-  container: {flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center'},
+  container: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+  },
   field: {
     borderRadius: theme.borderRadii.s,
     height: 60,
@@ -20,7 +25,7 @@ const styles = StyleSheet.create({
 });
 
 type CodeProps = {
-  length: number;
+  length?: number;
   fieldStyle?: StyleProp<ViewStyle>;
 } & (
   | {
@@ -35,21 +40,16 @@ type CodeProps = {
     }
 );
 
-const Code = ({
-  length,
-  onFilled,
-  autoVerification,
-  fieldStyle,
-  onChange,
-}: CodeProps) => {
+const Code = ({ onFilled, onChange, fieldStyle, length = 6 }: CodeProps) => {
+  const { colors } = useTheme<Theme>();
   const [width, setWidth] = useState(0);
   const [code, setCode] = useState('');
-  const refs = new Array(length).fill(0).map((x) => useRef<any>(null));
+  const refs = new Array(length).fill(0).map(x => useRef<any>(null));
 
   const onChangeCode = (text: string, i: number) => {
-    setCode((prevCode) => {
+    setCode(prevCode => {
       if (prevCode[i]) {
-        return prevCode.substr(0, i) + text + prevCode.substr(i + text.length);
+        return prevCode.slice(0, i) + text + prevCode.slice(i + 1);
       } else {
         return `${prevCode}${text}`;
       }
@@ -74,7 +74,7 @@ const Code = ({
   return (
     <View
       style={styles.container}
-      onLayout={(e) =>
+      onLayout={e =>
         setWidth(e.nativeEvent.layout.width / length - MARGIN * 2)
       }>
       {refs.map((c, i) => {
@@ -83,12 +83,13 @@ const Code = ({
             keyboardType="number-pad"
             ref={refs[i]}
             maxLength={1}
-            onChangeText={(text) => onChangeCode(text, i)}
+            onChangeText={text => onChangeCode(text, i)}
             key={i}
             style={[
               styles.field,
-              {minWidth: 42, maxWidth: 51, width},
+              { minWidth: 42, maxWidth: 51, width },
               fieldStyle,
+              { backgroundColor: colors.foreground },
             ]}
           />
         );

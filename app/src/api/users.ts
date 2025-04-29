@@ -33,6 +33,13 @@ export const verifyCode = async ({ code, email }: VerifyResetCodeParams) => {
   return await axios.put(`${API_URL}/verify/${code}`, { email });
 };
 
+export const resetPassword = async (
+  password: string,
+  email: string,
+): Promise<AxiosResponse<{ message: string }>> => {
+  return await axios.put(`${API_URL}/reset-password`, { password, email });
+};
+
 export const updateUser = async (
   data: Partial<User> & {
     newPassword?: string;

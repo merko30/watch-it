@@ -233,7 +233,11 @@ const sendResetPasswordMail: RequestHandler = async (req, res) => {
       .returning()
 
     await transporter.sendMail(mailOptions(token))
-    res.json({ email, message: 'The mail has been sent. Check your inbox!' })
+    res.json({
+      email,
+      message: 'The mail has been sent. Check your inbox!',
+      code: token
+    })
   } catch (error) {
     console.log(error)
     res.status(500).json({ message: 'Error sending email' })
@@ -241,37 +245,65 @@ const sendResetPasswordMail: RequestHandler = async (req, res) => {
 }
 
 const verifyResetCode: RequestHandler = async (req, res) => {
-  // try {
-  //   const user = await User.findOne({ email: req.body.email });
-
-  //   if (user.resetPasswordToken !== req.params.code) {
-  //     throw new Error("Wrong code or it's expired.");
-  //   }
-
-  //   user.resetPasswordToken = null;
-
-  //   await user.save();
-
-  //   res.json({ message: "Well done. Set your new password" });
-  // } catch (error) {
-  //   next(error);
-  // }
-  res.json({ message: 'Well done. Set your new password' })
+  try {
+    const { code } = req.params
+    const { email } = req.body
+    const [user] = await db.select().from(users).where(eq(users.email, email))
+    if (!user) {
+      res.status(404).json({ message: 'User not found' })
+      return
+    }
+    const now = new Date()
+    const expires = parseInt(user.resetPasswordExpires!)
+    const token = parseInt(user.resetPasswordToken!)
+    if (now.getTime() > expires) {
+      res.status(400).json({ message: 'Code expired' })
+      return
+    }
+    if (token !== parseInt(code)) {
+      res.status(400).json({ message: 'Code is incorrect' })
+      return
+    }
+    res.json({ message: 'Code is correct' })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error verifying code' })
+  }
 }
 
 const resetPassword: RequestHandler = async (req, res) => {
-  // try {
-  //   const user = await User.findOne({ email: req.body.email });
+  try {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, req.body.email))
+    if (!user) {
+      res.status(404).json({ message: 'User not found' })
+      return
+    }
+    const hashedPassword = await hashPassword(req.body.password)
+    const [updatedUser] = await db
+      .update(users)
+      .set({
+        password: hashedPassword,
+        resetPasswordToken: null,
+        resetPasswordExpires: null
+      })
+      .where(eq(users.id, user.id))
+      .returning()
 
-  //   user.password = req.body.password;
-
-  //   await user.save();
-
-  //   res.json({ message: "Your password has been updated" });
-  // } catch (error) {
-  //   next(error);
-  // }
-  res.json({ message: 'Your password has been updated' })
+    if (!updatedUser) {
+      res.status(404).json({ message: 'User not found' })
+      return
+    }
+    res.status(200).json({
+      updatedUser,
+      message: 'Your password has been reset'
+    })
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ message: 'Error resetting password' })
+  }
 }
 
 export {

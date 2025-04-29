@@ -27,7 +27,13 @@ const jwtMiddleware = expressjwt({
     '/api/auth/forgot-password',
     '/api/auth/reset-password',
     '/api/movies/search/:term'
-  ]
+  ],
+  custom: (req) => {
+    if (req.path.includes('verify')) {
+      return true
+    }
+    return false
+  }
 })
 
 app.use(express.json())

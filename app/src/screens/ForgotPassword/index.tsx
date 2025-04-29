@@ -2,6 +2,8 @@ import React from 'react';
 import { useFormik, FormikProvider } from 'formik';
 import { useTheme } from '@shopify/restyle';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useMutation } from 'react-query';
+import { AxiosError, AxiosResponse } from 'axios';
 
 import Message from '@/components/Message';
 import Button from '@/components/Button';
@@ -11,29 +13,32 @@ import FormikField from '@/components/TextField/FormikField';
 import { Theme } from '../../theme';
 
 import validationSchema from './validationSchema';
-import { useMutation } from 'react-query';
 import { sendResetMail } from '@/api/users';
-import { AxiosError, AxiosResponse } from 'axios';
-import { Notifier } from 'react-native-notifier';
+import { navigate } from '@/utils/navigation';
 
 const ForgotPassword = () => {
   const { fontSizes } = useTheme<Theme>();
 
-  const { mutate, error } = useMutation<
-    AxiosResponse<{ message: string }>,
+  const {
+    mutate,
+    error,
+    variables: email,
+  } = useMutation<
+    AxiosResponse<{ message: string; code: string }>,
     AxiosError<{ message: string }>,
     string
   >({
     mutationFn: sendResetMail,
-    onSuccess: () =>
-      Notifier.showNotification({
-        title: 'Success',
-        description: 'Check your email for further instructions',
-      }),
+    onSuccess: ({ data }) => {
+      navigate('VerifyCode', {
+        email,
+        code: data.code,
+      });
+    },
   });
 
   const formik = useFormik({
-    initialValues: { email: '' },
+    initialValues: { email: 'merim.hasanbegovic@outlook.com' },
     validationSchema,
     onSubmit: values => mutate(values.email),
   });
@@ -53,10 +58,6 @@ const ForgotPassword = () => {
               message={error.response?.data.message || 'Something went wrong'}
             />
           )}
-          {/* {message && (
-                      <Message variant="success" message={message} />
-                    )} */}
-
           <FormikField autoCapitalize="none" name="email" label="Email" />
 
           <Button

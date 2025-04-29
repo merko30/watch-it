@@ -1,7 +1,9 @@
 import React from 'react';
-import { FormikProvider, useFormik, FormikValues } from 'formik';
+import { FormikProvider, useFormik } from 'formik';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { StackScreenProps } from '@react-navigation/stack';
+import { useMutation } from 'react-query';
+import { AxiosError, AxiosResponse } from 'axios';
 
 import Button from '@/components/Button';
 import AuthLayout from '@/components/AuthLayout';
@@ -10,6 +12,9 @@ import FormikField from '@/components/TextField/FormikField';
 import { AuthStackParamList } from 'navigation/AuthNavigator';
 
 import validationSchema from './validationSchema';
+import { resetPassword } from '@/api/users';
+import { navigate } from '@/utils/navigation';
+import { Notifier } from 'react-native-notifier';
 
 interface ResetPasswordProps
   extends StackScreenProps<AuthStackParamList, 'ResetPassword'> {}
@@ -21,15 +26,28 @@ const ResetPassword = ({
 }: ResetPasswordProps) => {
   // const {fontSizes} = useTheme<Theme>();
 
-  const onSubmit = (values: FormikValues) => {
-    // TODO: send reset password email
-    console.log(email, values.password);
-  };
+  const { mutate } = useMutation<
+    AxiosResponse<{ message: string }>,
+    AxiosError<{ message: string }>,
+    { password: string; email: string }
+  >({
+    mutationFn: data => resetPassword(data.password, data.email),
+    onError: data => console.log(data.status),
+    onSuccess: () => {
+      navigate('Login');
+      Notifier.showNotification({
+        title: 'Success',
+        description: 'Password changed successfully',
+      });
+    },
+  });
 
   const formik = useFormik({
-    initialValues: { password: '', confirmPassword: '' },
+    initialValues: { password: 'newpassword', confirmPassword: 'newpassword' },
     validationSchema,
-    onSubmit,
+    onSubmit: values => {
+      mutate({ password: values.password, email });
+    },
   });
 
   const { handleSubmit } = formik;
@@ -41,11 +59,6 @@ const ResetPassword = ({
         title="Reset your password"
         text="Type your new password">
         <FormikProvider value={formik}>
-          {' '}
-          {/* {error && <Message variant="error" message={error} />}
-                    {message && (
-                      <Message variant="success" message={message} />
-                    )} */}
           <FormikField
             name="password"
             autoCapitalize="none"
@@ -56,7 +69,6 @@ const ResetPassword = ({
             name="confirmPassword"
             autoCapitalize="none"
             label="Confirm your password"
-            onSubmitEditing={handleSubmit}
             secureTextEntry
           />
           <Button
