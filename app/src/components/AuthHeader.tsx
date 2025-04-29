@@ -1,18 +1,19 @@
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { View, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import BackIcon from './BackIcon';
 
-import theme, {Text} from '../theme';
+import theme, { Text } from '../theme';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    paddingTop: 20,
   },
   icon: {
-    marginBottom: 10,
+    marginBottom: 20,
     backgroundColor: 'rgba(255,255,255,0.9)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -29,13 +30,13 @@ interface AuthHeaderProps {
   back?: boolean;
 }
 
-const AuthHeader = ({title, text, back}: AuthHeaderProps) => {
-  const {goBack} = useNavigation();
+const AuthHeader = ({ title, text, back }: AuthHeaderProps) => {
+  const { goBack } = useNavigation();
   return (
     <View style={styles.container}>
       {back && (
         <BackIcon
-          iconStyle={{marginLeft: 0}}
+          iconStyle={{ marginLeft: 0 }}
           style={styles.icon}
           onPress={() => goBack()}
         />

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View } from 'react-native';
 import { StackScreenProps } from '@react-navigation/stack';
 import { useMutation } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 
 import { AuthLayout, Message } from '../components';
+import Button from '../components/Button';
 import Code from '../components/Code';
 
 import { AuthStackParamList } from '../navigation/AuthNavigator';
@@ -19,7 +20,8 @@ const VerifyCode = ({
     params: { email },
   },
 }: VerifyCodeProps) => {
-  const { mutate, error, variables } = useMutation<
+  const [_code, setCode] = useState<string>('');
+  const { mutate, error, failureCount } = useMutation<
     AxiosResponse<{ message: string }>,
     AxiosError<{ message: string }>,
     { email: string; code: string }
@@ -40,13 +42,33 @@ const VerifyCode = ({
       text="Enter the code from email">
       <View style={{ flex: 1.4 }}>
         <>
-          {error && <Message variant="error" message={error.message} />}
+          {error && (
+            <Message
+              variant="error"
+              message={error.response?.data.message || 'Something went wrong'}
+            />
+          )}
 
           <Code
             length={6}
-            autoVerification={true}
-            onFilled={code => mutate({ code, email })}
+            onChange={(code: string) => {
+              setCode(code);
+            }}
+            onFilled={code => {
+              setCode(code);
+              mutate({ code, email });
+            }}
           />
+          {failureCount > 0 && _code.length === 6 && (
+            <Button
+              label="Try again"
+              color="primary"
+              containerStyle={{ marginTop: 20 }}
+              onPress={() => {
+                mutate({ email, code: _code });
+              }}
+            />
+          )}
         </>
       </View>
     </AuthLayout>

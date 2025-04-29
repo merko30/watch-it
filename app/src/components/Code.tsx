@@ -1,5 +1,12 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { View, StyleSheet, StyleProp, ViewStyle } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  StyleProp,
+  ViewStyle,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
+} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 
 import theme, { Theme } from '../theme';
@@ -27,18 +34,9 @@ const styles = StyleSheet.create({
 type CodeProps = {
   length?: number;
   fieldStyle?: StyleProp<ViewStyle>;
-} & (
-  | {
-      onFilled: (code: string) => void;
-      autoVerification: boolean;
-      onChange?: never;
-    }
-  | {
-      onFilled?: never;
-      autoVerification: never;
-      onChange?: (code: string) => void;
-    }
-);
+  onFilled?: (code: string) => void;
+  onChange?: (code: string) => void;
+};
 
 const Code = ({ onFilled, onChange, fieldStyle, length = 6 }: CodeProps) => {
   const { colors } = useTheme<Theme>();
@@ -65,25 +63,38 @@ const Code = ({ onFilled, onChange, fieldStyle, length = 6 }: CodeProps) => {
     }
   };
 
+  const onKeyPress = (
+    event: NativeSyntheticEvent<TextInputKeyPressEventData>,
+    i: number,
+  ) => {
+    if (event.nativeEvent.key === 'Backspace') {
+      if (i !== 0 && !code[i]) {
+        refs[i - 1].current.focus();
+      }
+    }
+  };
+
   useEffect(() => {
     if (onFilled && code.length === length) {
       onFilled(code);
     }
   }, [code]);
-
   return (
     <View
       style={styles.container}
       onLayout={e =>
         setWidth(e.nativeEvent.layout.width / length - MARGIN * 2)
       }>
-      {refs.map((c, i) => {
+      {refs.map((_, i) => {
         return (
           <TextInput
             keyboardType="number-pad"
             ref={refs[i]}
             maxLength={1}
-            onChangeText={text => onChangeCode(text, i)}
+            onKeyPress={event => onKeyPress(event, i)}
+            onChangeText={text => {
+              onChangeCode(text, i);
+            }}
             key={i}
             style={[
               styles.field,

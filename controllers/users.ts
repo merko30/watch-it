@@ -256,14 +256,13 @@ const verifyResetCode: RequestHandler = async (req, res) => {
     const now = new Date()
     const expires = parseInt(user.resetPasswordExpires!)
     const token = parseInt(user.resetPasswordToken!)
-    if (now.getTime() > expires) {
-      res.status(400).json({ message: 'Code expired' })
+    if (now.getTime() > expires || token !== parseInt(code)) {
+      res
+        .status(400)
+        .json({ message: 'Provided code has expired or it is invalid' })
       return
     }
-    if (token !== parseInt(code)) {
-      res.status(400).json({ message: 'Code is incorrect' })
-      return
-    }
+
     res.json({ message: 'Code is correct' })
   } catch (error) {
     console.log(error)
