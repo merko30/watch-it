@@ -25,24 +25,18 @@ const { width: wWidth } = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     position: 'relative',
+    flexDirection: 'row',
   },
   titleContainer: {
     width: wWidth,
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
     height: '100%',
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
   },
   iconsContainer: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
     flexDirection: 'row',
     width: '100%',
-    justifyContent: 'flex-end',
     height: '100%',
   },
 });
@@ -108,9 +102,9 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
     zIndex: position.value > -50 ? 20 : -1,
   }));
 
-  const animatedHeightStyle = useAnimatedStyle(() => ({
-    height: height.value,
-  }));
+  // const animatedHeightStyle = useAnimatedStyle(() => ({
+  //   height: height.value,
+  // }));
 
   const navigateToDetails = () => {
     navigation.navigate('Details', {
@@ -119,30 +113,27 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
     });
   };
 
-  const iconsStyle = useAnimatedStyle(() => ({
-    zIndex: position.value < -50 ? 30 : 0,
-  }));
-
   return (
     <GestureDetector gesture={panGesture}>
-      <Animated.View style={[styles.container, animatedHeightStyle]}>
+      <Animated.View style={[styles.container, animatedStyle]}>
         <Animated.View
           style={[
             styles.titleContainer,
             {
-              backgroundColor: colors.background,
+              backgroundColor: colors.success,
               borderBottomColor: colors.spacer,
               borderBottomWidth: last ? 0 : 1,
             },
-            animatedStyle,
           ]}>
-          <TouchableOpacity onPress={navigateToDetails}>
+          <TouchableOpacity
+            onPress={navigateToDetails}
+            style={{ width: wWidth }}>
             <Text color="foreground" variant="body" pl="m">
               {movie.title}
             </Text>
           </TouchableOpacity>
         </Animated.View>
-        <Animated.View style={[styles.iconsContainer, iconsStyle]}>
+        <Animated.View style={styles.iconsContainer}>
           <SlideIcon onPress={onDelete} icon="trash" backgroundColor="error" />
         </Animated.View>
       </Animated.View>
