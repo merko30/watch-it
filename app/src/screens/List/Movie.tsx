@@ -6,6 +6,8 @@ import Animated, {
   withTiming,
   useDerivedValue,
   useAnimatedStyle,
+  runOnUI,
+  runOnJS,
 } from 'react-native-reanimated';
 import { snapPoint } from 'react-native-redash';
 import { useNavigation } from '@react-navigation/native';
@@ -69,9 +71,8 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
   const position = useSharedValue(INITIAL_POSITION);
 
   const onDelete = () => {
-    onSwipe();
-    shouldRemove.value = 1;
-    position.value = withTiming(-wWidth, { duration: 300 });
+    'worklet';
+    runOnJS(onSwipe)();
   };
 
   const panGesture = Gesture.Pan()
@@ -87,6 +88,8 @@ const Movie = ({ movie, last, onSwipe }: MovieProps) => {
       const to = snapPoint(position.value, e.velocityX, SNAP_POINTS);
       // handle swipe delete
       if (to === -wWidth) {
+        shouldRemove.value = 1;
+        position.value = withTiming(-wWidth, { duration: 300 });
         onDelete();
       } else if (to === ICONS_WIDTH) {
         position.value = getPosition(ICONS_WIDTH);

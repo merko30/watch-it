@@ -1,6 +1,6 @@
 import React from 'react';
 import { FlatList, SafeAreaView, ActivityIndicator } from 'react-native';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { useTheme } from '@shopify/restyle';
 import { StackScreenProps } from '@react-navigation/stack';
@@ -13,7 +13,7 @@ import { Theme, Text } from '../../theme';
 
 import capitalize from '../../utils/capitalize';
 import { Movie as MovieI } from '@/types';
-import { getAll } from '@/api/movies';
+import { deleteMovie, getAll } from '@/api/movies';
 
 const List = ({
   route: { params },
@@ -27,6 +27,17 @@ const List = ({
   >('movies', () => getAll({ status: params.status }));
 
   const { movies = [] } = data?.data || {};
+
+  const { mutate } = useMutation<
+    AxiosResponse<{ movie: MovieI }>,
+    AxiosError<{ message: string }>,
+    number
+  >({
+    mutationKey: 'deleteMovie',
+    mutationFn: (id: number) => deleteMovie(id),
+  });
+
+  const onDelete = (item: MovieI) => mutate(item.id);
 
   return (
     <SafeAreaView
@@ -57,10 +68,7 @@ const List = ({
                 <Movie
                   movie={item}
                   last={last}
-                  onSwipe={() => {
-                    'worklet';
-                    console.log('delete', item.id);
-                  }}
+                  onSwipe={() => onDelete(item)}
                 />
               );
             }}

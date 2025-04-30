@@ -26,7 +26,7 @@ export const getMovieOrShow = async (id: number) => {
   return await axios.get(`${API_URL}/${id}`);
 };
 
-export const remove = async (id: number) => {
+export const deleteMovie = async (id: number) => {
   return await axios.delete(`${API_URL}/${id}`);
 };
 
